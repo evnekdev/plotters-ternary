@@ -1,4 +1,7 @@
-use super::{Component, Error, Normalization, TernaryPoint, Tolerance};
+use super::{
+    CartesianSegment, Component, Error, Normalization, TernaryPoint, TernaryViewport, Tolerance,
+    clip_segment, clip_segment_with_parameters,
+};
 
 /// The height of a unit-side equilateral triangle in logical Cartesian space.
 pub const EQUILATERAL_TRIANGLE_HEIGHT: f64 = 0.866_025_403_784_438_6;
@@ -95,6 +98,31 @@ pub enum TrianglePointLocation {
     Outside,
 }
 
+/// A directed geometric edge of the canonical triangle.
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+pub enum TriangleEdge {
+    /// Directed from the left base slot to the right base slot.
+    LeftRight,
+    /// Directed from the right base slot to the apex slot.
+    RightApex,
+    /// Directed from the apex slot to the left base slot.
+    ApexLeft,
+}
+
+impl TriangleEdge {
+    /// All edges in directed boundary order.
+    pub const ALL: [Self; 3] = [Self::LeftRight, Self::RightApex, Self::ApexLeft];
+}
+
+/// A visible edge fragment retaining its identity and source parameter range.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct VisibleTriangleEdge {
+    pub edge: TriangleEdge,
+    pub segment: CartesianSegment,
+    pub parameter_start: f64,
+    pub parameter_end: f64,
+}
+
 /// An equilateral ternary triangle and its component-to-vertex assignment.
 #[derive(Clone, Copy, Debug, Default, Eq, Hash, PartialEq)]
 pub struct TernaryGeometry {
@@ -136,6 +164,90 @@ impl TernaryGeometry {
     /// Return the vertices in stable semantic A/B/C order.
     pub fn vertices(self) -> [TernaryCartesian; 3] {
         Component::ALL.map(|component| self.vertex(component))
+    }
+
+    /// Return a complete directed geometric triangle edge.
+    pub fn triangle_edge(self, edge: TriangleEdge) -> CartesianSegment {
+        let [left, right, apex] = self.slot_vertices();
+        match edge {
+            TriangleEdge::LeftRight => CartesianSegment::new(left, right),
+            TriangleEdge::RightApex => CartesianSegment::new(right, apex),
+            TriangleEdge::ApexLeft => CartesianSegment::new(apex, left),
+        }
+    }
+
+    /// Return all complete edges in directed boundary order.
+    pub fn triangle_edges(self) -> [(TriangleEdge, CartesianSegment); 3] {
+        TriangleEdge::ALL.map(|edge| (edge, self.triangle_edge(edge)))
+    }
+
+    /// Clip every original triangle edge and retain its identity and parameters.
+    pub fn visible_edges(
+        self,
+        viewport: TernaryViewport,
+        tolerance: Tolerance,
+    ) -> Result<Vec<VisibleTriangleEdge>, Error> {
+        let mut visible = Vec::with_capacity(3);
+        for (edge, source) in self.triangle_edges() {
+            if let Some(clipped) = clip_segment_with_parameters(source, viewport, tolerance)? {
+                visible.push(VisibleTriangleEdge {
+                    edge,
+                    segment: clipped.segment,
+                    parameter_start: clipped.parameter_start,
+                    parameter_end: clipped.parameter_end,
+                });
+            }
+        }
+        Ok(visible)
+    }
+
+    /// Construct the full-triangle segment where a semantic component equals `value`.
+    ///
+    /// Values within tolerance of zero or one are snapped to that boundary.
+    /// `value = 0` returns the opposite edge and `value = 1` returns a
+    /// zero-length segment at the component vertex.
+    pub fn component_isoline(
+        self,
+        component: Component,
+        value: f64,
+        tolerance: Tolerance,
+    ) -> Result<CartesianSegment, Error> {
+        tolerance.validate()?;
+        if !value.is_finite()
+            || (value < 0.0 && !tolerance.is_close(value, 0.0))
+            || (value > 1.0 && !tolerance.is_close(value, 1.0))
+        {
+            return Err(Error::InvalidIsolineValue { value, tolerance });
+        }
+
+        let value = if tolerance.is_close(value, 0.0) {
+            0.0
+        } else if tolerance.is_close(value, 1.0) {
+            1.0
+        } else {
+            value
+        };
+        let vertex = self.vertex(component);
+        let [first_other, second_other] = component.others();
+        Ok(CartesianSegment::new(
+            interpolate(self.vertex(first_other), vertex, value),
+            interpolate(self.vertex(second_other), vertex, value),
+        ))
+    }
+
+    /// Construct and clip one semantic component isoline to a viewport.
+    pub fn visible_component_isoline(
+        self,
+        component: Component,
+        value: f64,
+        viewport: TernaryViewport,
+        tolerance: Tolerance,
+    ) -> Result<Option<CartesianSegment>, Error> {
+        clip_segment(
+            self.component_isoline(component, value, tolerance)?,
+            viewport,
+            tolerance,
+        )
     }
 
     /// Validate and project a composition into the normalised ternary plane.
@@ -288,6 +400,13 @@ impl TernaryGeometry {
             TrianglePointLocation::Inside
         }
     }
+}
+
+fn interpolate(start: TernaryCartesian, end: TernaryCartesian, parameter: f64) -> TernaryCartesian {
+    TernaryCartesian::new(
+        start.x + (end.x - start.x) * parameter,
+        start.y + (end.y - start.y) * parameter,
+    )
 }
 
 fn subtract(left: TernaryCartesian, right: TernaryCartesian) -> TernaryCartesian {
@@ -534,6 +653,250 @@ mod tests {
             geometry.unproject(TernaryCartesian::new(0.5, -1.0e-5), TOLERANCE),
             Err(Error::CartesianOutsideTriangle { .. })
         ));
+    }
+
+    fn oriented_viewport(
+        orientation: TriangleOrientation,
+        x_min: f64,
+        x_max: f64,
+        upward_y_min: f64,
+        upward_y_max: f64,
+    ) -> TernaryViewport {
+        match orientation {
+            TriangleOrientation::Up => {
+                TernaryViewport::new(x_min, x_max, upward_y_min, upward_y_max).unwrap()
+            }
+            TriangleOrientation::Down => {
+                TernaryViewport::new(x_min, x_max, -upward_y_max, -upward_y_min).unwrap()
+            }
+        }
+    }
+
+    #[test]
+    fn visible_edges_cover_full_cropped_interior_and_external_views() {
+        let height = EQUILATERAL_TRIANGLE_HEIGHT;
+        for orientation in [TriangleOrientation::Up, TriangleOrientation::Down] {
+            let geometry = TernaryGeometry::new(orientation, VertexOrder::default());
+            let full = geometry
+                .visible_edges(TernaryViewport::full(geometry), TOLERANCE)
+                .unwrap();
+            assert_eq!(full.len(), 3);
+            for visible in &full {
+                assert_eq!(visible.segment, geometry.triangle_edge(visible.edge));
+                assert_eq!(visible.parameter_start, 0.0);
+                assert_eq!(visible.parameter_end, 1.0);
+            }
+
+            let cases = [
+                (
+                    oriented_viewport(orientation, -0.05, 0.12, -0.05, 0.12),
+                    2,
+                    "left corner",
+                ),
+                (
+                    oriented_viewport(orientation, 0.88, 1.05, -0.05, 0.12),
+                    2,
+                    "right corner",
+                ),
+                (
+                    oriented_viewport(orientation, 0.45, 0.55, height - 0.12, height + 0.05),
+                    2,
+                    "apex corner",
+                ),
+                (
+                    oriented_viewport(orientation, 0.65, 1.05, -0.05, height + 0.05),
+                    2,
+                    "right crop",
+                ),
+                (
+                    oriented_viewport(orientation, -0.05, 0.35, -0.05, height + 0.05),
+                    2,
+                    "left crop",
+                ),
+                (
+                    oriented_viewport(orientation, 0.0, 1.0, 0.5, height + 0.05),
+                    2,
+                    "top crop",
+                ),
+                (
+                    oriented_viewport(orientation, 0.17, 0.25, 0.3, 0.4),
+                    1,
+                    "edge only",
+                ),
+                (
+                    oriented_viewport(orientation, 0.45, 0.55, 0.1, 0.2),
+                    0,
+                    "interior",
+                ),
+                (
+                    oriented_viewport(orientation, 2.0, 3.0, 2.0, 3.0),
+                    0,
+                    "external",
+                ),
+            ];
+
+            for (viewport, expected_count, description) in cases {
+                let visible = geometry.visible_edges(viewport, TOLERANCE).unwrap();
+                assert_eq!(
+                    visible.len(),
+                    expected_count,
+                    "{orientation:?}: {description}"
+                );
+                for fragment in visible {
+                    let source = geometry.triangle_edge(fragment.edge);
+                    assert_cartesian_close(
+                        fragment.segment.start,
+                        source.point_at(fragment.parameter_start),
+                    );
+                    assert_cartesian_close(
+                        fragment.segment.end,
+                        source.point_at(fragment.parameter_end),
+                    );
+                    assert!(fragment.parameter_start >= 0.0);
+                    assert!(fragment.parameter_end <= 1.0);
+                    assert!(fragment.parameter_start <= fragment.parameter_end);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn component_isolines_preserve_semantics_for_every_order_and_orientation() {
+        for orientation in [TriangleOrientation::Up, TriangleOrientation::Down] {
+            for order in all_orders() {
+                let geometry = TernaryGeometry::new(orientation, order);
+                for component in Component::ALL {
+                    for value in [0.0, 0.25, 0.5, 1.0] {
+                        let isoline = geometry
+                            .component_isoline(component, value, TOLERANCE)
+                            .unwrap();
+                        for endpoint in [isoline.start, isoline.end] {
+                            let composition = geometry.unproject(endpoint, TOLERANCE).unwrap();
+                            assert!(
+                                (composition.component(component) - value).abs()
+                                    < ASSERTION_EPSILON
+                            );
+                        }
+                        if value == 0.0 {
+                            let [first_other, second_other] = component.others();
+                            assert_cartesian_close(isoline.start, geometry.vertex(first_other));
+                            assert_cartesian_close(isoline.end, geometry.vertex(second_other));
+                        }
+                        if value == 1.0 {
+                            assert_cartesian_close(isoline.start, geometry.vertex(component));
+                            assert_eq!(isoline.start, isoline.end);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn isoline_tolerance_and_invalid_values_are_explicit() {
+        let geometry = TernaryGeometry::default();
+        for (value, expected) in [(-5.0e-10, 0.0), (1.0 + 5.0e-10, 1.0)] {
+            let isoline = geometry
+                .component_isoline(Component::A, value, TOLERANCE)
+                .unwrap();
+            for endpoint in [isoline.start, isoline.end] {
+                let point = geometry.unproject(endpoint, TOLERANCE).unwrap();
+                assert!((point.component(Component::A) - expected).abs() < ASSERTION_EPSILON);
+            }
+        }
+
+        for value in [-1.0e-5, 1.0 + 1.0e-5, f64::NAN, f64::INFINITY] {
+            assert!(matches!(
+                geometry.component_isoline(Component::A, value, TOLERANCE),
+                Err(Error::InvalidIsolineValue { .. })
+            ));
+        }
+    }
+
+    #[test]
+    fn viewport_and_triangle_classifications_remain_separate() {
+        let geometry = TernaryGeometry::default();
+        let interior = TernaryViewport::new(0.45, 0.55, 0.1, 0.2).unwrap();
+        assert!(
+            geometry
+                .visible_edges(interior, TOLERANCE)
+                .unwrap()
+                .is_empty()
+        );
+
+        let outside_triangle = TernaryCartesian::new(0.1, 0.8);
+        let local_viewport = TernaryViewport::new(0.05, 0.15, 0.75, 0.85).unwrap();
+        assert!(
+            local_viewport
+                .contains(outside_triangle, TOLERANCE)
+                .unwrap()
+        );
+        assert_eq!(
+            geometry.classify(outside_triangle, TOLERANCE).unwrap(),
+            TrianglePointLocation::Outside
+        );
+
+        let inside_triangle = TernaryCartesian::new(0.5, 0.2);
+        let remote_viewport = TernaryViewport::new(0.0, 0.2, 0.7, 0.8).unwrap();
+        assert_eq!(
+            geometry.classify(inside_triangle, TOLERANCE).unwrap(),
+            TrianglePointLocation::Inside
+        );
+        assert!(
+            !remote_viewport
+                .contains(inside_triangle, TOLERANCE)
+                .unwrap()
+        );
+    }
+
+    #[test]
+    fn cropped_edges_retain_expected_geometric_identities() {
+        let geometry = TernaryGeometry::default();
+        let height = EQUILATERAL_TRIANGLE_HEIGHT;
+        let cases = [
+            (
+                TernaryViewport::new(0.65, 1.05, -0.05, height + 0.05).unwrap(),
+                vec![TriangleEdge::LeftRight, TriangleEdge::RightApex],
+            ),
+            (
+                TernaryViewport::new(-0.05, 0.35, -0.05, height + 0.05).unwrap(),
+                vec![TriangleEdge::LeftRight, TriangleEdge::ApexLeft],
+            ),
+            (
+                TernaryViewport::new(0.0, 1.0, 0.5, height + 0.05).unwrap(),
+                vec![TriangleEdge::RightApex, TriangleEdge::ApexLeft],
+            ),
+            (
+                TernaryViewport::new(0.17, 0.25, 0.3, 0.4).unwrap(),
+                vec![TriangleEdge::ApexLeft],
+            ),
+        ];
+
+        for (viewport, expected) in cases {
+            let actual: Vec<_> = geometry
+                .visible_edges(viewport, TOLERANCE)
+                .unwrap()
+                .into_iter()
+                .map(|visible| visible.edge)
+                .collect();
+            assert_eq!(actual, expected);
+        }
+    }
+
+    #[test]
+    fn visible_component_isoline_uses_the_generic_clipper() {
+        let geometry = TernaryGeometry::default();
+        let viewport = TernaryViewport::new(0.4, 0.6, 0.4, 0.5).unwrap();
+        let visible = geometry
+            .visible_component_isoline(Component::C, 0.5, viewport, TOLERANCE)
+            .unwrap()
+            .unwrap();
+        assert!(viewport.contains(visible.start, TOLERANCE).unwrap());
+        assert!(viewport.contains(visible.end, TOLERANCE).unwrap());
+        for endpoint in [visible.start, visible.end] {
+            let composition = geometry.unproject(endpoint, TOLERANCE).unwrap();
+            assert!((composition.component(Component::C) - 0.5).abs() < ASSERTION_EPSILON);
+        }
     }
 
     proptest! {
