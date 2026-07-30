@@ -1,152 +1,508 @@
-# Development roadmap
+# Milestone implementation roadmap
 
-The implementation should be staged so that early code does not assume all three triangle corners or edges are visible.
+This roadmap is structured for implementation with Codex or another coding agent. Each milestone should be independently reviewable, keep the crate compiling, and end with objective evidence: tests, examples, generated artefacts, or all three.
 
-## Phase 0: dependency and Plotters spike
+The implementation must not assume that all three triangle corners or edges are visible. Rectangular logical viewports and cropped Gibbs triangles are foundational rather than a later add-on.
 
-Before fixing public signatures:
+## Working method
 
-- add the Plotters dependency and select a supported version range;
-- build a minimal Cartesian-backed triangle example for SVG and bitmap output;
-- verify how `ChartContext`, `DrawingArea`, `draw_series` and `SeriesAnno` lifetimes compose in a wrapper;
-- verify access to caption and legend layout;
-- test composable anchored elements;
-- document native text rotation limits;
-- determine whether Plotters provides usable clipping primitives or whether mathematical clipping is required throughout.
+For every milestone:
 
-Deliverable: a private experimental module or examples proving the integration approach.
+1. Start from a dedicated branch named `milestone/<number>-<topic>`.
+2. Ask Codex to read the architecture notes and relevant ADRs before editing.
+3. Keep the change limited to the milestone acceptance criteria.
+4. Require `cargo fmt --check`, `cargo clippy --all-targets --all-features -- -D warnings`, and `cargo test --all-features` where supported.
+5. Add or update examples whenever a public capability becomes visible.
+6. Commit generated example outputs only when they are intentional reference artefacts.
+7. Open a draft pull request and review API shape before merging.
 
-## Phase 1: geometry and viewport foundation
+Generated images are part of the acceptance evidence. Reference outputs should live under:
 
-Implement:
+```text
+examples/output/
+    png/
+    svg/
+```
 
-- `TernaryPoint`;
-- validation and normalisation;
-- component and vertex-order types;
-- forward and reverse projection;
-- `TernaryViewport`;
-- aspect-preserving logical-to-pixel mapping;
-- point classification;
-- segment clipping;
-- unit tests for all transforms and crop positions.
+Example programs should live under `examples/` and generate both raster and vector output where the backend supports it.
 
-Acceptance criteria:
+## Milestone 0: Plotters integration spike
 
-- full triangle maps correctly;
-- arbitrary vertex order is tested;
-- right, left, top and interior viewports map without distortion;
-- reverse projection reproduces valid compositions within tolerance.
+### Objective
 
-## Phase 2: chart and basic mesh
+Prove that the selected Plotters architecture works before fixing public signatures.
 
-Implement:
+### Implementation
+
+- Add the Plotters dependency and choose a supported version range.
+- Add minimal PNG and SVG backend features.
+- Create an experimental Cartesian chart containing an equilateral triangle.
+- Verify wrapping or owning the required `ChartContext` and `DrawingArea` lifetimes.
+- Verify ordinary Plotters captions, margins, series annotations and legends around the triangle.
+- Test composable anchored elements.
+- Record native text-rotation and clipping limitations.
+- Decide whether the spike can be evolved directly or should remain private.
+
+### Tests
+
+- Crate compiles with the selected backend feature combinations.
+- Minimal example executes successfully for PNG and SVG.
+
+### Visual artefacts
+
+No polished output is required, but retain temporary outputs during review if they expose integration constraints.
+
+### Exit criteria
+
+- The Cartesian-backed design is confirmed or ADR 0001 is revised.
+- The intended ownership/lifetime pattern is documented.
+- Caption and legend support is demonstrated.
+
+## Milestone 1: Geometry, compositions and projection
+
+### Objective
+
+Implement a backend-independent ternary geometry kernel.
+
+### Implementation
+
+- `TernaryPoint`.
+- validation and normalisation policies;
+- `Component`, `VertexOrder` and triangle orientation types;
+- forward ternary-to-Cartesian projection;
+- reverse Cartesian-to-ternary projection;
+- point classification for valid, invalid and outside-triangle points;
+- tolerance policy used consistently by geometry operations.
+
+### Tests
+
+- all three pure corners;
+- edge and centre compositions;
+- unnormalised compositions under each policy;
+- all supported vertex orders;
+- forward/reverse round trips;
+- invalid and near-boundary inputs.
+
+Property-based tests are desirable for normalised random compositions.
+
+### Visual artefacts
+
+None required. This milestone is intentionally numerical.
+
+### Exit criteria
+
+- Geometry has no dependency on `DrawingBackend`.
+- Reverse projection reproduces valid compositions within a documented tolerance.
+- Public naming is stable enough for the viewport layer.
+
+## Milestone 2: Rectangular viewport and clipping kernel
+
+### Objective
+
+Make full, cropped and interior ternary views first-class geometry operations.
+
+### Implementation
+
+- `TernaryViewport` with full and Cartesian constructors;
+- viewport validation;
+- aspect-preserving logical-to-pixel transform model;
+- viewport fit and alignment policies;
+- segment clipping against a rectangle, preferably Liang-Barsky;
+- visible triangle-edge calculation;
+- grid-isoline segment construction;
+- reverse mapping from viewport coordinates;
+- optional helper constructors such as viewport around a composition or fitted to points.
+
+### Tests
+
+- full triangle;
+- right-side crop;
+- left-side crop;
+- top crop;
+- crop containing one corner;
+- crop containing no corners or edges;
+- completely external viewport;
+- horizontal, vertical and diagonal segment clipping;
+- lines entering and leaving through every rectangle side;
+- no distortion under aspect-preserving fitting.
+
+### Visual artefacts
+
+A diagnostic example may draw the viewport rectangle, triangle and clipped segments, but the rectangle must be explicitly enabled as a debug overlay rather than treated as a chart feature.
+
+### Exit criteria
+
+- Cropping is mathematical, not post-render image cropping.
+- The viewport boundary is invisible by default in subsequent rendering milestones.
+- The clipping kernel is backend-independent and well tested.
+
+## Milestone 3: First rendered ternary chart
+
+### Objective
+
+Deliver the first user-visible chart abstraction and the first permanent generated images.
+
+### Implementation
 
 - `TernaryChartBuilder`;
 - Cartesian-backed `TernaryChart`;
 - full and cropped triangle boundary rendering;
-- major component grid lines;
-- basic axis and corner labels;
-- space for ordinary Plotters captions, margins and legends;
-- SVG and bitmap examples.
+- major ternary grid lines;
+- basic A/B/C corner names;
+- basic component-axis names;
+- Plotters caption and margin support;
+- escape hatch to the underlying Cartesian chart or plotting area;
+- invisible rectangular viewport clipping for chart-owned primitives.
 
-Acceptance criteria:
+### Examples
 
-- viewport boundary is invisible by default;
-- captions and legends remain outside the clipped ternary region;
-- a fully interior viewport can display grid lines without drawing a frame;
-- a full-triangle example requires only high-level ternary API calls.
+Create:
 
-## Phase 3: line and point series
+- `examples/full_triangle.rs`;
+- `examples/cropped_right.rs`;
+- `examples/interior_view.rs`.
 
-Implement:
+Each example should generate PNG and SVG outputs.
 
-- ternary polyline projection and clipping;
+### Required reference artefacts
+
+```text
+examples/output/png/full_triangle.png
+examples/output/svg/full_triangle.svg
+examples/output/png/cropped_right.png
+examples/output/svg/cropped_right.svg
+examples/output/png/interior_view.png
+examples/output/svg/interior_view.svg
+```
+
+The interior example must contain no visible triangular edge and no visible rectangular frame, only clipped internal grid lines.
+
+### Tests
+
+- mesh geometry and visible boundary segments;
+- viewport boundary remains absent from normal drawing commands;
+- examples execute without panic;
+- SVG output contains expected primitive categories or stable identifying text.
+
+### Exit criteria
+
+- A full triangle can be produced using only the high-level ternary API.
+- Captions remain outside the clipped ternary viewport.
+- Cropped and interior views are visually demonstrated in raster and vector formats.
+
+## Milestone 4: Lines, points and Plotters legends
+
+### Objective
+
+Support the main data-series workflows while retaining ordinary Plotters annotations and legends.
+
+### Implementation
+
+- ternary polyline projection;
+- segment clipping without prematurely discarding off-screen vertices;
 - `TernaryLineSeries`;
-- `TernaryPointSeries` and closure-based marker elements;
-- Plotters series annotation and legend integration;
-- marker clip modes, initially at least `Centre` and `None`;
-- examples with off-screen lines crossing the viewport.
+- visible-subpath splitting;
+- `TernaryPointSeries`;
+- closure-based marker elements;
+- marker clip modes, initially `Centre` and `None`;
+- integration with Plotters `SeriesAnno` and `configure_series_labels`;
+- Plotters-native `ShapeStyle`, colours and marker styles.
 
-Acceptance criteria:
+### Examples
 
-- off-screen endpoints produce correct visible intersections;
-- multiple visible subpaths are handled;
-- normal Plotters legends work without a separate legend API;
-- marker styles use ordinary Plotters types.
+Create or extend examples to demonstrate:
 
-## Phase 4: publication-quality axes
+- several styled curves;
+- a line whose endpoints are outside the viewport but whose middle crosses it;
+- circles, crosses, triangles and custom marker closures;
+- normal Plotters legends next to a full triangle;
+- a legend next to a cropped triangle.
 
-Implement:
+### Required reference artefacts
+
+At minimum:
+
+```text
+examples/output/png/lines_points_legend.png
+examples/output/svg/lines_points_legend.svg
+examples/output/png/cropped_crossing_series.png
+examples/output/svg/cropped_crossing_series.svg
+```
+
+### Tests
+
+- off-screen endpoints yield correct visible intersections;
+- multiple visible subpaths are retained;
+- invalid compositions produce documented errors or omissions;
+- marker closures receive the expected anchor coordinate;
+- series annotation is returned and legends render.
+
+### Exit criteria
+
+- Users can draw scientifically useful datasets.
+- No separate ternary legend API is introduced.
+- Raster and vector outputs demonstrate parity of content.
+
+## Milestone 5: Publication-quality axes and mesh
+
+### Objective
+
+Provide independently configurable ternary axes suitable for publications.
+
+### Implementation
 
 - independent A/B/C axis configuration;
-- major and minor tick counts, steps and explicit values;
+- `TickSpec` supporting count, step and explicit values;
+- major and minor ticks;
 - major and minor grid styles;
-- decimal, percentage and custom formatters;
-- tick direction, length and label offsets;
+- decimal, percentage and custom label formatters;
+- tick direction, length and label offset;
+- axis and corner font/style configuration;
 - visible-edge tick filtering;
-- `TickRangeMode`;
+- `TickRangeMode::FullCompositionRange` and `VisibleRange`;
 - corner-label visibility policies;
-- `CroppedAxisPolicy::TriangleEdgesOnly` and manual placement.
+- `CroppedAxisPolicy::TriangleEdgesOnly`;
+- manual axis-name and label placement for cropped views;
+- collision-avoidance rules for duplicate endpoint labels.
 
-Automatic relocation of missing axes can follow after manual placement is stable.
+Automatic relocation of missing axes should remain deferred until manual placement is stable.
 
-## Phase 5: polygons, annotations and stricter clipping
+### Examples
 
-Implement:
+Create:
 
-- polygon clipping;
-- `TernaryPolygon` for phase regions;
-- text annotations with offsets and anchors;
+- a full triangle with dense minor grid lines;
+- an asymmetric axis configuration;
+- a percentage-labelled composition chart;
+- a right-side crop with only visible-edge ticks;
+- an interior view with manually placed component labels.
+
+### Required reference artefacts
+
+At minimum:
+
+```text
+examples/output/png/custom_axes.png
+examples/output/svg/custom_axes.svg
+examples/output/png/cropped_axes.png
+examples/output/svg/cropped_axes.svg
+```
+
+### Tests
+
+- tick resolution for count, step and explicit modes;
+- formatter behaviour;
+- visible-range calculation;
+- no tick is emitted on an invisible triangle-edge fragment;
+- custom labels and Unicode chemical formulae are retained in SVG.
+
+### Exit criteria
+
+- Axis configuration covers the originally requested major/minor steps, labels and A/B/C names.
+- Cropped axes remain ternary axes; the viewport rectangle never becomes a Cartesian frame.
+- Example outputs are acceptable as initial publication-style figures.
+
+## Milestone 6: Polygons, regions and text annotations
+
+### Objective
+
+Support labelled phase regions and other common scientific annotations.
+
+### Implementation
+
+- rectangle clipping for polygons, preferably Sutherland-Hodgman;
+- `TernaryPolygon` with fill and border styles;
+- `TernaryText` with position, offset and anchor;
+- quarter-turn text rotation through Plotters where supported;
+- explicit capability reporting for unsupported arbitrary-angle rotation;
 - annotation clipping modes;
-- stricter marker bounds clipping where feasible;
-- layout tests for long labels and chemical formulas.
+- stricter marker-bounds clipping where practical;
+- layout tests for long labels and chemical formulae.
 
-## Phase 6: line contours
+### Examples
 
-Implement:
+- filled phase fields;
+- labelled regions;
+- annotations near and beyond viewport boundaries;
+- cropped filled polygons;
+- Unicode scientific text and subscripts.
 
-- triangular field representation;
+### Required reference artefacts
+
+```text
+examples/output/png/regions_annotations.png
+examples/output/svg/regions_annotations.svg
+examples/output/png/cropped_regions.png
+examples/output/svg/cropped_regions.svg
+```
+
+### Tests
+
+- polygon clipping across every viewport side;
+- concave input behaviour is either supported and tested or rejected explicitly;
+- annotation policies behave consistently;
+- SVG retains vector polygons and text rather than rasterising the whole chart.
+
+### Exit criteria
+
+- Phase-region diagrams can be produced without dropping to raw Cartesian coordinates.
+- Text limitations are documented rather than silently approximated.
+
+## Milestone 7: Line contours
+
+### Objective
+
+Add backend-independent isoline calculation and ternary contour rendering.
+
+### Implementation
+
+- triangular scalar-field representation;
+- regular and irregular triangular meshes;
 - marching-triangle isolines;
-- degeneracy rules;
+- deterministic degeneracy rules;
+- segment path joining;
+- `ContourSet` and `ContourLevel`;
+- `TernaryContourSeries`;
+- level styling;
+- optional basic contour labels if robust placement is available.
+
+### Examples
+
+- analytic scalar function sampled on a regular ternary grid;
+- several contour levels;
+- contours crossing a cropped viewport;
+- contours combined with markers and a legend.
+
+### Required reference artefacts
+
+```text
+examples/output/png/contours_full.png
+examples/output/svg/contours_full.svg
+examples/output/png/contours_cropped.png
+examples/output/svg/contours_cropped.svg
+```
+
+### Tests
+
+- individual triangle intersection cases;
+- exact-level vertex and edge degeneracies;
 - path joining;
-- `ContourSet` and `TernaryContourSeries`;
-- contour level styling and optional labels.
+- regular and irregular mesh cases;
+- contour computation without Plotters;
+- viewport clipping of contour paths.
 
-Acceptance criteria:
+### Exit criteria
 
-- regular and irregular triangular meshes are supported;
-- contours cross viewport boundaries correctly;
-- contour calculation is usable without Plotters.
+- Isoline construction can be used independently of rendering.
+- Full and cropped contour figures are generated in PNG and SVG.
 
-## Phase 7: advanced text and scientific helpers
+## Milestone 8: Release-quality API and documentation
 
-Explore and optionally implement:
+### Objective
 
-- arbitrary-angle text;
-- lightweight mathematical text;
+Prepare the first publishable crate version around the stable core.
+
+### Implementation
+
+- crate-level documentation;
+- `prelude` module;
+- comprehensive examples linked from docs;
+- error type review;
+- feature-flag review;
+- MSRV decision and CI matrix;
+- rustdoc links and examples;
+- README with generated image gallery;
+- changelog and dual licence files if selected;
+- API naming review for consistency with Plotters;
+- removal or sealing of experimental internals.
+
+### Visual artefacts
+
+Use the generated PNG images in the README gallery and link SVG versions for inspection. The gallery should include at least:
+
+- full triangle;
+- trimmed side view;
+- interior viewport;
+- lines, points and legend;
+- custom axes;
+- regions and annotations;
+- contours if Milestone 7 is included in the first release.
+
+### Exit criteria
+
+- all documented examples build and execute;
+- generated outputs are reproducible;
+- public API has no known milestone-blocking lifetime or ownership issues;
+- first release scope is explicitly declared.
+
+## Milestone 9 and later: advanced capabilities
+
+These should be implemented only after the core API has real usage experience:
+
+- automatic relocation of missing cropped axes;
+- arbitrary-angle vector text;
+- lightweight built-in mathematical text;
 - optional LaTeX or Typst renderer;
 - tie-line and phase-field helpers;
 - interpolation adapters;
 - filled contours;
-- reverse-coordinate interaction and hit testing.
+- reverse-coordinate interaction and hit testing;
+- GUI/backend-specific interaction helpers.
 
-## API stability strategy
+Each advanced feature should have its own ADR when it introduces an external process, backend-specific behaviour or a significant public abstraction.
 
-- Keep version 0.1 focused on geometry, chart, mesh, lines and points.
-- Mark experimental contour and math-text modules clearly until their topology and backend contracts stabilise.
-- Prefer additive extension over premature generic abstractions.
-- Reserve public names only when their semantics are clear.
-- Add examples for every major public workflow before publishing.
+## Suggested release cuts
 
-## Documentation deliverables
+### Internal prototype
 
-The first publishable release should include:
+After Milestone 3:
 
-- crate-level overview;
-- full triangle example;
-- right-side cropped example;
-- interior zoom example;
-- custom axes and tick example;
-- lines, points, text and legend example;
-- explanation of component ordering and normalisation;
-- documented clipping and unsupported text capabilities.
+- geometry;
+- rectangular viewport;
+- first full and cropped images.
+
+### Usable alpha (`0.1.0-alpha`)
+
+After Milestone 5:
+
+- chart, mesh, lines, points, legends and publication-quality axes;
+- full, side-cropped and interior examples in PNG and SVG.
+
+### First broadly useful release (`0.1.0`)
+
+After Milestone 6 or 7, depending on whether contours are considered mandatory for the initial audience.
+
+### Experimental modules
+
+Contours, math text and interactive helpers may be feature-gated or clearly marked experimental until their contracts stabilise.
+
+## Codex task template
+
+Each Codex implementation request should include:
+
+```text
+Read docs/architecture/README.md and all linked architecture notes and ADRs.
+Implement Milestone N from docs/architecture/roadmap.md only.
+Do not expand scope beyond its acceptance criteria without documenting the reason.
+Keep numerical geometry independent of Plotters backends.
+Use Plotters-native styles and legend machinery.
+Add unit tests and required examples.
+Generate the specified PNG and SVG reference outputs.
+Run formatting, clippy and tests.
+Summarise public API changes, assumptions, generated artefacts and unresolved risks.
+```
+
+## Documentation baseline for the first release
+
+The first publishable release should explain:
+
+- component ordering and normalisation;
+- full versus rectangularly trimmed viewports;
+- invisible viewport clipping;
+- axis and corner naming;
+- tick count versus tick step configuration;
+- lines, points, polygons, text and legends;
+- supported raster and vector backends;
+- clipping semantics;
+- text rotation and mathematical-text limitations;
+- how to reproduce every gallery image.
