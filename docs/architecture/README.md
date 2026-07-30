@@ -24,6 +24,11 @@ The crate should support:
 - [`viewport-and-clipping.md`](viewport-and-clipping.md): rectangular viewports and trimmed triangles.
 - [`rendering-and-series.md`](rendering-and-series.md): mesh, drawing elements, contours and text.
 - [`roadmap.md`](roadmap.md): staged implementation plan and acceptance criteria.
+- [`geometry-kernel.md`](geometry-kernel.md): implemented composition validation and projection.
+- [`viewport-kernel.md`](viewport-kernel.md): implemented viewport fitting and clipping.
+- [`chart-kernel.md`](chart-kernel.md): implemented Cartesian-backed chart and mesh.
+- [`series-kernel.md`](series-kernel.md): implemented lines, points and native legends.
+- [`bitmap-quality.md`](bitmap-quality.md): temporary optional supersampling for example PNGs.
 
 ## Decision records
 

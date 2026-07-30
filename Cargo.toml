@@ -10,6 +10,9 @@ plotters = { version = "0.3.7", default-features = false, features = [
     "svg_backend",
     "ttf",
 ] }
+plotters-backend = "0.3.7"
+spline1d = { version = "0.1.0", default-features = false, features = ["alloc"] }
 
 [dev-dependencies]
+image = { version = "0.25.8", default-features = false, features = ["png"] }
 proptest = "1.6"

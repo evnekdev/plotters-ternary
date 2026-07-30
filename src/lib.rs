@@ -2,6 +2,7 @@
 
 pub mod chart;
 pub mod coord;
+pub mod series;
 
 pub use chart::{
     CartesianChartContext, CartesianPlottingArea, TernaryChart, TernaryChartBuilder,
@@ -13,4 +14,9 @@ pub use coord::{
     TernaryViewport, Tolerance, TriangleEdge, TriangleOrientation, TrianglePointLocation,
     VertexOrder, ViewportAlignment, ViewportFit, ViewportPointLocation, ViewportTransform,
     VisibleTriangleEdge, clip_segment, clip_segment_with_parameters,
+};
+pub use series::{
+    InvalidPointPolicy, MarkerClipMode, MarkerShape, SeriesError, TernaryInterpolation,
+    TernaryLineSeries, TernaryPointSeries, TernarySeries, TernarySmoothSeries, prepare_points,
+    prepare_polyline,
 };

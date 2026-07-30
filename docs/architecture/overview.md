@@ -32,6 +32,11 @@ Owns:
 - component isolines and triangle edges;
 - point classification.
 
+The canonical default places semantic A at the apex, B at the left base
+vertex, and C at the right base vertex for both orientations. Semantic
+composition order never changes; custom `VertexOrder` values only change the
+geometric assignment.
+
 This layer must not depend on a Plotters backend.
 
 ### 2. Viewport and clipping

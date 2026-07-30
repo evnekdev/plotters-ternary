@@ -41,7 +41,8 @@ fn full_svg_is_vector_only_and_contains_boundary_grid_caption_and_names() {
     assert!(svg.contains("Corner C"));
     assert!(svg.contains("<polyline"));
     assert!(svg.contains("#010203"));
-    assert_eq!(svg.matches("<rect").count(), 1);
+    assert!(svg.matches("<rect").count() > 1);
+    assert!(svg.contains("width=\"1\" height=\"1\""));
 }
 
 #[test]

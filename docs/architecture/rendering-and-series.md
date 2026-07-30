@@ -200,15 +200,32 @@ Boundary and major-grid paths are mathematically clipped by the coordinate
 kernel before Plotters receives them. A generic `TernaryChartError<E>` keeps
 Plotters backend errors separate from `coord::Error`.
 
-The initial `TernaryMeshConfig` deliberately has one common major step and
-basic horizontal semantic axis/corner names. Axis names use the normal midpoint
-of the opposite full triangle edge and are omitted when that anchor is cropped;
-corner names are omitted when their semantic vertex is cropped. It does not
-relocate either kind of name to an invisible viewport side. Independent steps,
-ticks, tick labels, minor grids, and advanced cropped-axis policy remain
-Milestone 5 work.
+The initial `TernaryMeshConfig` deliberately has one common major step. Corner
+names are semantic, offset outward from visible vertices, and anchored away
+from the boundary. Axis names use the midpoint of the semantic opposite edge,
+are offset outward, and follow that edge's actual pixel-space angle. Horizontal
+names remain native Plotters text. Sloping names use the isolated rotated-glyph
+element documented in `chart-kernel.md`: PNG is raster, SVG remains vector-only
+but the sloping glyphs are rectangle outlines rather than searchable text.
+Names whose geometric anchors are cropped are omitted, never relocated to an
+invisible viewport side.
 
-The chart exposes `cartesian_chart`, `cartesian_chart_mut`, and `plotting_area`.
-Production ternary data-series adapters and native `SeriesAnno` return values
-remain Milestone 4 work; the original Plotters integration spike continues to
-verify ordinary annotation and legend behavior.
+`TernaryLineSeries` and `TernaryPointSeries` now carry explicit
+`Normalization`, `Tolerance`, and `InvalidPointPolicy` configuration. Strict
+unit-sum validation and indexed errors are defaults. `Break` terminates a line
+run at an invalid point and never joins its neighbours. Line preparation clips
+every complete source segment and assembles separate owned visible subpaths,
+retaining outside-to-outside crossings and traversal direction.
+
+`TernarySmoothSeries` is the explicit interpolation path; ordinary lines remain
+exact. It uses `spline1d` 0.1.0 for PCHIP, Akima, MAKIMA, or Steffen interpolation
+of semantic A(t) and B(t), derives C(t), validates every private rendering
+sample, then projects and clips the complete sampled curve. The initial bounded
+fallback uses 24 samples per source interval rather than an adaptive
+pixel-deviation criterion. PNG and SVG share this backend-neutral sampled
+logical path.
+Point series provide circle, cross, and triangle markers plus an owned custom
+Plotters-element closure. `Centre` clipping tests only the projected anchor;
+`None` is the explicit unfiltered escape hatch. `TernaryChart::draw_series`
+returns native `&mut SeriesAnno`, and `configure_series_labels` forwards native
+`SeriesLabelStyle`, preserving ordinary Plotters legends without wrappers.

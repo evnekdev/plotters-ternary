@@ -41,6 +41,20 @@ apex is `(0.5, sqrt(3)/2)` for `Up` and `(0.5, -sqrt(3)/2)` for `Down`, where
 constant. The `apex` slot replaces the provisional `top` name because it stays
 unambiguous under downward orientation.
 
+The canonical default assigns A to the orientation-dependent apex, B to the
+left base slot, and C to the right base slot:
+
+```text
+        A                 B-----C
+       / \                   \ /
+      B---C        or         A
+        Up                  Down
+```
+
+Thus default upward pure A projects to `(0.5, sqrt(3)/2)`, pure B to
+`(0, 0)`, and pure C to `(1, 0)`. A tuple `(a, b, c)` always retains semantic
+A/B/C order. Custom `VertexOrder` permutations remain supported.
+
 `VertexOrder` maps semantic components to the left/right/apex slots and can
 contain each component only once. Projection first produces unit weights, then
 calculates the barycentric sum `a * vertex(A) + b * vertex(B) + c * vertex(C)`.

@@ -78,11 +78,12 @@ impl VertexOrder {
 }
 
 impl Default for VertexOrder {
+    /// Use A at the apex, B at the left base, and C at the right base.
     fn default() -> Self {
         Self {
-            left: Component::A,
-            right: Component::B,
-            apex: Component::C,
+            left: Component::B,
+            right: Component::C,
+            apex: Component::A,
         }
     }
 }
@@ -293,7 +294,7 @@ impl TernaryGeometry {
     ///
     /// let point = TernaryGeometry::default()
     ///     .unproject(TernaryCartesian::new(0.5, 0.0), Tolerance::default())?;
-    /// assert_eq!(point.as_array(), [0.5, 0.5, 0.0]);
+    /// assert_eq!(point.as_array(), [0.0, 0.5, 0.5]);
     /// # Ok::<(), plotters_ternary::Error>(())
     /// ```
     pub fn unproject(
@@ -470,76 +471,34 @@ mod tests {
     fn conventional_pure_corners_edges_and_centroid_project_correctly() {
         let geometry = TernaryGeometry::default();
         let height = EQUILATERAL_TRIANGLE_HEIGHT;
-        assert_cartesian_close(
-            geometry
-                .project(
-                    unit_point(1.0, 0.0, 0.0),
-                    Normalization::RequireUnitSum,
-                    TOLERANCE,
-                )
-                .unwrap(),
-            TernaryCartesian::new(0.0, 0.0),
-        );
-        assert_cartesian_close(
-            geometry
-                .project(
-                    unit_point(0.0, 1.0, 0.0),
-                    Normalization::RequireUnitSum,
-                    TOLERANCE,
-                )
-                .unwrap(),
-            TernaryCartesian::new(1.0, 0.0),
-        );
-        assert_cartesian_close(
-            geometry
-                .project(
-                    unit_point(0.0, 0.0, 1.0),
-                    Normalization::RequireUnitSum,
-                    TOLERANCE,
-                )
-                .unwrap(),
-            TernaryCartesian::new(0.5, height),
-        );
-        assert_cartesian_close(
-            geometry
-                .project(
-                    unit_point(0.5, 0.5, 0.0),
-                    Normalization::RequireUnitSum,
-                    TOLERANCE,
-                )
-                .unwrap(),
-            TernaryCartesian::new(0.5, 0.0),
-        );
-        assert_cartesian_close(
-            geometry
-                .project(
-                    unit_point(0.5, 0.0, 0.5),
-                    Normalization::RequireUnitSum,
-                    TOLERANCE,
-                )
-                .unwrap(),
-            TernaryCartesian::new(0.25, height / 2.0),
-        );
-        assert_cartesian_close(
-            geometry
-                .project(
-                    unit_point(0.0, 0.5, 0.5),
-                    Normalization::RequireUnitSum,
-                    TOLERANCE,
-                )
-                .unwrap(),
-            TernaryCartesian::new(0.75, height / 2.0),
-        );
-        assert_cartesian_close(
-            geometry
-                .project(
-                    unit_point(1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0),
-                    Normalization::RequireUnitSum,
-                    TOLERANCE,
-                )
-                .unwrap(),
-            TernaryCartesian::new(0.5, height / 3.0),
-        );
+        for (point, expected) in [
+            (
+                unit_point(1.0, 0.0, 0.0),
+                TernaryCartesian::new(0.5, height),
+            ),
+            (unit_point(0.0, 1.0, 0.0), TernaryCartesian::new(0.0, 0.0)),
+            (unit_point(0.0, 0.0, 1.0), TernaryCartesian::new(1.0, 0.0)),
+            (
+                unit_point(0.5, 0.5, 0.0),
+                TernaryCartesian::new(0.25, height / 2.0),
+            ),
+            (
+                unit_point(0.5, 0.0, 0.5),
+                TernaryCartesian::new(0.75, height / 2.0),
+            ),
+            (unit_point(0.0, 0.5, 0.5), TernaryCartesian::new(0.5, 0.0)),
+            (
+                unit_point(1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0),
+                TernaryCartesian::new(0.5, height / 3.0),
+            ),
+        ] {
+            assert_cartesian_close(
+                geometry
+                    .project(point, Normalization::RequireUnitSum, TOLERANCE)
+                    .unwrap(),
+                expected,
+            );
+        }
     }
 
     #[test]
@@ -580,7 +539,7 @@ mod tests {
         ] {
             let geometry = TernaryGeometry::new(orientation, VertexOrder::default());
             assert_cartesian_close(
-                geometry.vertex(Component::C),
+                geometry.vertex(Component::A),
                 TernaryCartesian::new(0.5, apex_y),
             );
             let projected = geometry
@@ -588,6 +547,68 @@ mod tests {
                 .unwrap();
             assert_point_close(geometry.unproject(projected, TOLERANCE).unwrap(), point);
         }
+    }
+
+    #[test]
+    fn canonical_default_order_and_reverse_corners_are_semantic_abc() {
+        let order = VertexOrder::default();
+        assert_eq!(order.apex(), Component::A);
+        assert_eq!(order.left(), Component::B);
+        assert_eq!(order.right(), Component::C);
+
+        let geometry = TernaryGeometry::default();
+        for (component, vertex) in [
+            (
+                Component::A,
+                TernaryCartesian::new(0.5, EQUILATERAL_TRIANGLE_HEIGHT),
+            ),
+            (Component::B, TernaryCartesian::new(0.0, 0.0)),
+            (Component::C, TernaryCartesian::new(1.0, 0.0)),
+        ] {
+            assert_cartesian_close(geometry.vertex(component), vertex);
+            let recovered = geometry.unproject(vertex, TOLERANCE).unwrap();
+            for candidate in Component::ALL {
+                let expected = if candidate == component { 1.0 } else { 0.0 };
+                assert!((recovered.component(candidate) - expected).abs() < ASSERTION_EPSILON);
+            }
+        }
+    }
+
+    #[test]
+    fn default_component_isolines_are_parallel_to_semantic_opposite_edges() {
+        let geometry = TernaryGeometry::default();
+        for component in Component::ALL {
+            let isoline = geometry
+                .component_isoline(component, 0.4, TOLERANCE)
+                .unwrap();
+            let [first, second] = component.others();
+            let edge = CartesianSegment::new(geometry.vertex(first), geometry.vertex(second));
+            assert!(
+                cross(
+                    subtract(isoline.end, isoline.start),
+                    subtract(edge.end, edge.start),
+                )
+                .abs()
+                    < ASSERTION_EPSILON
+            );
+        }
+    }
+
+    #[test]
+    fn downward_default_keeps_a_apex_b_left_c_right() {
+        let geometry = TernaryGeometry::new(TriangleOrientation::Down, VertexOrder::default());
+        assert_cartesian_close(
+            geometry.vertex(Component::A),
+            TernaryCartesian::new(0.5, -EQUILATERAL_TRIANGLE_HEIGHT),
+        );
+        assert_cartesian_close(
+            geometry.vertex(Component::B),
+            TernaryCartesian::new(0.0, 0.0),
+        );
+        assert_cartesian_close(
+            geometry.vertex(Component::C),
+            TernaryCartesian::new(1.0, 0.0),
+        );
     }
 
     #[test]
@@ -888,14 +909,14 @@ mod tests {
         let geometry = TernaryGeometry::default();
         let viewport = TernaryViewport::new(0.4, 0.6, 0.4, 0.5).unwrap();
         let visible = geometry
-            .visible_component_isoline(Component::C, 0.5, viewport, TOLERANCE)
+            .visible_component_isoline(Component::A, 0.5, viewport, TOLERANCE)
             .unwrap()
             .unwrap();
         assert!(viewport.contains(visible.start, TOLERANCE).unwrap());
         assert!(viewport.contains(visible.end, TOLERANCE).unwrap());
         for endpoint in [visible.start, visible.end] {
             let composition = geometry.unproject(endpoint, TOLERANCE).unwrap();
-            assert!((composition.component(Component::C) - 0.5).abs() < ASSERTION_EPSILON);
+            assert!((composition.component(Component::A) - 0.5).abs() < ASSERTION_EPSILON);
         }
     }
 

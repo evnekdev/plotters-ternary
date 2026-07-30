@@ -49,6 +49,8 @@ pub enum TriangleOrientation {
 
 pub struct VertexOrder { /* validated private left/right/apex fields */ }
 
+// Canonical default: left=B, right=C, apex=A.
+
 pub struct TernaryCartesian {
     pub x: f64,
     pub y: f64,
@@ -153,7 +155,7 @@ clip_segment_with_parameters(segment, viewport, tolerance)
 ```rust
 pub struct TernaryChartBuilder<'root, DB> { /* drawing-area layout inputs */ }
 pub struct TernaryChart<'series, DB> { /* owned Cartesian ChartContext */ }
-pub struct TernaryMeshConfig<'chart, 'series, 'font, DB> { /* borrowed config */ }
+pub struct TernaryMeshConfig<'chart, 'series, 'axis, 'corner, DB> { /* borrowed config */ }
 pub enum TernaryChartError<E> { /* geometry, drawing, grid, layout */ }
 ```
 
@@ -185,15 +187,19 @@ chart.geometry()
 chart.viewport()
 chart.viewport_fit()
 chart.viewport_alignment()
+chart.draw_series(series)
+chart.draw_point_series(series, marker)
+chart.configure_series_labels()
 ```
 
 `TernaryChart` owns a
 `ChartContext<'series, DB, Cartesian2d<RangedCoordf64, RangedCoordf64>>`.
 Its annotation lifetime is independent of the root borrow used during build.
 `CartesianChartContext` and `CartesianPlottingArea` aliases describe the narrow
-escape-hatch return types. Production `draw_series`, series-label, projection,
-and annotation conveniences remain Milestone 4 work; their eventual return
-types must preserve ordinary Plotters series annotation and legend support.
+escape-hatch return types. `draw_series` projects and clips a `TernarySeries`,
+delegates owned Plotters elements to the Cartesian context, and returns
+Plotters' native `&mut SeriesAnno<'series, DB>`. `configure_series_labels`
+forwards Plotters' native `SeriesLabelStyle`.
 
 The initial mesh supports:
 
@@ -203,6 +209,8 @@ chart.configure_mesh()
     .boundary_style(...)
     .major_grid_style(...)
     .text_style(...)
+    .axis_label_offset(...)
+    .corner_label_offset(...)
     .axis_a_name(...).axis_b_name(...).axis_c_name(...)
     .corner_a_name(...).corner_b_name(...).corner_c_name(...)
     .hide_axis_names()
@@ -289,18 +297,24 @@ chart
 
 ## Drawing elements and series
 
-Proposed high-level types:
+Implemented Milestone 4 types:
 
 ```rust
-TernarySegment
-TernaryPolyline
-TernaryLineSeries
-TernaryPointSeries
-TernaryPolygon
-TernaryText
-TernaryElement
-TernaryContourSeries
+pub struct TernaryLineSeries<I> { /* points and validation/style policy */ }
+pub struct TernaryPointSeries<I> { /* points and marker policy */ }
+pub struct TernarySmoothSeries<I> { /* explicit composition spline policy */ }
+pub enum TernaryInterpolation { Pchip, Akima, Makima, Steffen }
+pub enum InvalidPointPolicy { Error, Break }
+pub enum MarkerShape { Circle, Cross, Triangle }
+pub enum MarkerClipMode { Centre, None }
+pub enum SeriesError { /* indexed point validation, marker configuration */ }
+pub trait TernarySeries<DB: DrawingBackend> { /* chart dispatch */ }
 ```
+
+`prepare_polyline` and `prepare_points` expose backend-neutral preparation.
+Remaining proposed types include `TernarySegment`, `TernaryPolyline`,
+`TernaryPolygon`, `TernaryText`, `TernaryElement`, and
+`TernaryContourSeries`.
 
 ### Lines
 
@@ -311,16 +325,17 @@ Features:
 - clipping while preserving off-screen segments needed for intersections;
 - missing-value segmentation;
 - optional dashed or dotted strategies;
-- future interpolation helpers kept separate from basic rendering.
+- exact straight segments for TernaryLineSeries;
+- explicit composition-space interpolation through TernarySmoothSeries;
+- bounded private sampling followed by the normal clipping pipeline.
 
 ### Markers
 
-Built-in conveniences may include circles, squares, triangles, diamonds, crosses and plus signs. Advanced users must also be able to provide Plotters element closures.
+Milestone 4 provides circle, cross, and triangle conveniences. `draw_point_series` accepts a closure returning an owned ordinary Plotters element at the projected anchor.
 
 ```rust
 pub enum MarkerClipMode {
     Centre,
-    Bounds,
     None,
 }
 ```
