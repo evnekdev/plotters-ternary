@@ -2,6 +2,8 @@ use std::fmt;
 
 use crate::coord;
 
+use super::MarkerError;
+
 /// How invalid compositions affect a ternary series.
 #[derive(Clone, Copy, Debug, Default, Eq, Hash, PartialEq)]
 pub enum InvalidPointPolicy {
@@ -31,6 +33,12 @@ pub enum SeriesError {
     TooManySmoothSamples { requested: usize, maximum: usize },
     /// Marker size zero has no useful rendering semantics.
     InvalidMarkerSize { size: u32 },
+    /// A scientific marker configuration was invalid for an optional source
+    /// index. `None` denotes a legacy uniform marker before point preparation.
+    Marker {
+        index: Option<usize>,
+        source: MarkerError,
+    },
 }
 
 impl fmt::Display for SeriesError {
@@ -62,6 +70,19 @@ impl fmt::Display for SeriesError {
             Self::InvalidMarkerSize { size } => {
                 write!(formatter, "marker size must be greater than zero: {size}")
             }
+            Self::Marker {
+                index: Some(index),
+                source,
+            } => {
+                write!(
+                    formatter,
+                    "invalid marker for ternary series point at index {index}: {source}"
+                )
+            }
+            Self::Marker {
+                index: None,
+                source,
+            } => write!(formatter, "invalid marker style: {source}"),
         }
     }
 }
@@ -76,6 +97,7 @@ impl std::error::Error for SeriesError {
             | Self::InvalidSmoothSampling { .. }
             | Self::TooManySmoothSamples { .. }
             | Self::InvalidMarkerSize { .. } => None,
+            Self::Marker { source, .. } => Some(source),
         }
     }
 }

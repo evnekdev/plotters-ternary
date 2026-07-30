@@ -1,13 +1,13 @@
 use plotters::backend::DrawingBackend;
 use plotters::chart::SeriesAnno;
-use plotters::element::{Circle, Cross, PathElement, TriangleMarker};
+use plotters::element::PathElement;
 
 use crate::chart::{TernaryChart, TernaryChartError};
 use crate::coord::TernaryPoint;
 
 use super::{
-    MarkerShape, SeriesError, TernaryLineSeries, TernaryPointSeries, TernarySmoothSeries,
-    prepare_points, prepare_polyline,
+    MarkerElement, MarkerStyle, PointMarkerStyleProvider, SeriesError, TernaryLineSeries,
+    TernaryPointSeries, TernarySmoothSeries, prepare_points_with_source, prepare_polyline,
     smooth::{SmoothPreparation, prepare_smooth_polyline},
 };
 
@@ -55,11 +55,12 @@ where
     }
 }
 
-impl<DB, I, P> TernarySeries<DB> for TernaryPointSeries<I>
+impl<DB, I, P, Provider> TernarySeries<DB> for TernaryPointSeries<I, Provider>
 where
     DB: DrawingBackend,
     I: IntoIterator<Item = P>,
     P: Into<TernaryPoint>,
+    Provider: PointMarkerStyleProvider,
 {
     fn draw<'chart, 'series>(
         self,
@@ -68,12 +69,29 @@ where
     where
         DB: 'series,
     {
-        let (points, size, style, marker, clip_mode, normalization, tolerance, invalid_policy) =
-            self.into_parts();
+        let (
+            points,
+            size,
+            legacy_style,
+            marker,
+            explicit_style,
+            provider,
+            clip_mode,
+            normalization,
+            tolerance,
+            invalid_policy,
+        ) = self.into_parts();
         if size == 0 {
             return Err(SeriesError::InvalidMarkerSize { size }.into());
         }
-        let anchors = prepare_points(
+        let fallback =
+            explicit_style.unwrap_or(MarkerStyle::from_legacy(marker, legacy_style).map_err(
+                |source| SeriesError::Marker {
+                    index: None,
+                    source,
+                },
+            )?);
+        let elements = prepare_points_with_source(
             chart.geometry,
             chart.viewport,
             points,
@@ -83,24 +101,20 @@ where
             clip_mode,
         )?
         .into_iter()
-        .map(|point| (point.x, point.y));
-
-        match marker {
-            MarkerShape::Circle => chart
-                .context
-                .draw_series(anchors.map(|point| Circle::new(point, size, style)))
-                .map_err(Into::into),
-            MarkerShape::Cross => chart
-                .context
-                .draw_series(anchors.map(|point| Cross::new(point, size, style)))
-                .map_err(Into::into),
-            MarkerShape::Triangle => chart
-                .context
-                .draw_series(anchors.map(|point| TriangleMarker::new(point, size, style)))
-                .map_err(Into::into),
-        }
+        .map(|point| {
+            let style = provider.marker_style(point.index, point.composition, &fallback);
+            MarkerElement::new((point.cartesian.x, point.cartesian.y), size, style).map_err(
+                |source| SeriesError::Marker {
+                    index: Some(point.index),
+                    source,
+                },
+            )
+        })
+        .collect::<Result<Vec<_>, _>>()?;
+        chart.context.draw_series(elements).map_err(Into::into)
     }
 }
+
 impl<DB, I, P> TernarySeries<DB> for TernarySmoothSeries<I>
 where
     DB: DrawingBackend,

@@ -7,7 +7,9 @@ use plotters::element::{Drawable, PointCollection};
 use plotters::style::ShapeStyle;
 
 use crate::coord::{TernaryGeometry, TernaryViewport, Tolerance, ViewportAlignment, ViewportFit};
-use crate::series::{SeriesError, TernaryPointSeries, TernarySeries, prepare_points};
+use crate::series::{
+    PointMarkerStyleProvider, SeriesError, TernaryPointSeries, TernarySeries, prepare_points,
+};
 
 use super::{TernaryChartError, TernaryMeshConfig};
 
@@ -53,21 +55,32 @@ impl<'a, DB: DrawingBackend> TernaryChart<'a, DB> {
     /// The closure receives the projected logical anchor, configured backend
     /// pixel size, and Plotters `ShapeStyle`. Composable elements can begin at
     /// `EmptyElement::at(anchor)` and use local backend coordinates thereafter.
-    pub fn draw_point_series<'chart, I, P, F, E>(
+    pub fn draw_point_series<'chart, I, P, Provider, F, E>(
         &'chart mut self,
-        series: TernaryPointSeries<I>,
+        series: TernaryPointSeries<I, Provider>,
         make_marker: F,
     ) -> Result<&'chart mut SeriesAnno<'a, DB>, TernaryChartError<DB::ErrorType>>
     where
         DB: 'a,
         I: IntoIterator<Item = P>,
         P: Into<crate::coord::TernaryPoint>,
+        Provider: PointMarkerStyleProvider,
         F: Fn((f64, f64), u32, ShapeStyle) -> E,
         for<'element> &'element E: PointCollection<'element, (f64, f64)>,
         E: Drawable<DB>,
     {
-        let (points, size, style, _marker, clip_mode, normalization, tolerance, invalid_policy) =
-            series.into_parts();
+        let (
+            points,
+            size,
+            style,
+            _marker,
+            _custom_style,
+            _provider,
+            clip_mode,
+            normalization,
+            tolerance,
+            invalid_policy,
+        ) = series.into_parts();
         if size == 0 {
             return Err(SeriesError::InvalidMarkerSize { size }.into());
         }

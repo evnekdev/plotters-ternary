@@ -1,11 +1,14 @@
 #![allow(dead_code)]
 
+#[path = "../examples/legend_support/mod.rs"]
+mod legend_support;
 #[path = "../examples/output_support/mod.rs"]
 mod output_support;
 #[path = "../examples/series_common/mod.rs"]
 mod series_common;
 
-use series_common::{LegendRowLayout, SeriesExample};
+use legend_support::LegendRowLayout;
+use series_common::SeriesExample;
 
 const SYMBOL_SLOT_WIDTH: i32 = 34;
 const SYMBOL_LABEL_GAP: i32 = 12;

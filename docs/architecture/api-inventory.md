@@ -301,11 +301,17 @@ Implemented Milestone 4 types:
 
 ```rust
 pub struct TernaryLineSeries<I> { /* points and validation/style policy */ }
-pub struct TernaryPointSeries<I> { /* points and marker policy */ }
+pub struct TernaryPointSeries<I, Provider = ()> { /* points and marker policy */ }
 pub struct TernarySmoothSeries<I> { /* explicit composition spline policy */ }
 pub enum TernaryInterpolation { Pchip, Akima, Makima, Steffen }
 pub enum InvalidPointPolicy { Error, Break }
-pub enum MarkerShape { Circle, Cross, Triangle }
+pub enum MarkerShape { /* fillable and stroke-only scientific shapes */ }
+pub struct MarkerGeometry { /* validated shape plus rotation */ }
+pub struct MarkerStyle { /* geometry, fill, one outer edge */ }
+pub enum MarkerFill { Empty, Solid { .. }, Partitioned { .. } }
+pub enum MarkerPartition { Radial { .. }, Horizontal, Vertical, /* ... */ }
+pub struct MarkerSlice { pub weight: f64, pub color: RGBAColor }
+pub struct MarkerElement<Coord> { /* concrete owned Plotters element */ }
 pub enum MarkerClipMode { Centre, None }
 pub enum SeriesError { /* indexed point validation, marker configuration */ }
 pub trait TernarySeries<DB: DrawingBackend> { /* chart dispatch */ }
@@ -331,7 +337,14 @@ Features:
 
 ### Markers
 
-Milestone 4 provides circle, cross, and triangle conveniences. `draw_point_series` accepts a closure returning an owned ordinary Plotters element at the projected anchor.
+The scientific-marker extension retains `Circle`, `Cross`, and `Triangle` compatibility while adding `Ellipse`, rectangles and rounded squares, diamonds, four triangle directions, regular polygons, stars, plus, diagonal cross, and asterisk shapes. `MarkerStyle` separates geometry, `MarkerFill`, and one common edge. It supports empty contours, solid independent fill/edge colours, and radial, horizontal, vertical, diagonal, or quadrant partitions through `MarkerSlice` values.
+
+`TernaryPointSeries::marker_style` selects a uniform complete style;
+`point_style_provider(|source_index, normalized_abc| ...)` selects one without
+changing source observations or creating one Plotters series per variant. The
+concrete `MarkerElement<Coord>` can be returned from custom marker code and a
+native `SeriesAnno::legend` closure. `draw_point_series` continues to accept a
+closure returning any owned ordinary Plotters element at the projected anchor.
 
 ```rust
 pub enum MarkerClipMode {
@@ -339,6 +352,8 @@ pub enum MarkerClipMode {
     None,
 }
 ```
+
+`Centre` remains centre-only clipping rather than marker-bounds clipping.
 
 ### Polygons
 
