@@ -1,13 +1,15 @@
 use plotters::backend::DrawingBackend;
 use plotters::chart::SeriesAnno;
-use plotters::element::PathElement;
+use plotters::element::{EmptyElement, PathElement, Text};
 
 use crate::chart::{TernaryChart, TernaryChartError};
 use crate::coord::TernaryPoint;
 
 use super::{
-    MarkerElement, MarkerStyle, PointMarkerStyleProvider, SeriesError, TernaryLineSeries,
-    TernaryPointSeries, TernarySmoothSeries, prepare_points_with_source, prepare_polyline,
+    AnnotationClipMode, AnnotationError, MarkerElement, MarkerStyle, PointMarkerStyleProvider,
+    PolygonElement, SeriesError, TernaryLineSeries, TernaryPointSeries, TernaryPolygon,
+    TernarySmoothSeries, TernaryText, prepare_points_with_source, prepare_polygon,
+    prepare_polyline,
     smooth::{SmoothPreparation, prepare_smooth_polyline},
 };
 
@@ -112,6 +114,78 @@ where
         })
         .collect::<Result<Vec<_>, _>>()?;
         chart.context.draw_series(elements).map_err(Into::into)
+    }
+}
+
+impl<DB, I, P> TernarySeries<DB> for TernaryPolygon<I>
+where
+    DB: DrawingBackend,
+    I: IntoIterator<Item = P>,
+    P: Into<TernaryPoint>,
+{
+    fn draw<'chart, 'series>(
+        self,
+        chart: &'chart mut TernaryChart<'series, DB>,
+    ) -> Result<&'chart mut SeriesAnno<'series, DB>, TernaryChartError<DB::ErrorType>>
+    where
+        DB: 'series,
+    {
+        let (points, fill, border, normalization, tolerance) = self.into_parts();
+        let polygon = prepare_polygon(
+            points,
+            chart.geometry,
+            chart.viewport,
+            normalization,
+            tolerance,
+        )
+        .map_err(SeriesError::Polygon)?;
+        let vertices = polygon
+            .vertices()
+            .iter()
+            .map(|point| (point.x, point.y))
+            .collect();
+        chart
+            .context
+            .draw_series(std::iter::once(PolygonElement::new(vertices, fill, border)))
+            .map_err(Into::into)
+    }
+}
+
+impl<DB> TernarySeries<DB> for TernaryText
+where
+    DB: DrawingBackend,
+{
+    fn draw<'chart, 'series>(
+        self,
+        chart: &'chart mut TernaryChart<'series, DB>,
+    ) -> Result<&'chart mut SeriesAnno<'series, DB>, TernaryChartError<DB::ErrorType>>
+    where
+        DB: 'series,
+    {
+        let (point, text, style, anchor, offset, clip_mode, rotation, normalization, tolerance) =
+            self.into_parts();
+        let logical = chart
+            .geometry
+            .project(point, normalization, tolerance)
+            .map_err(|source| SeriesError::Annotation(AnnotationError::InvalidAnchor { source }))?;
+        let visible =
+            clip_mode == AnnotationClipMode::None || chart.viewport.contains(logical, tolerance)?;
+        if !visible {
+            return chart
+                .context
+                .draw_series(std::iter::empty::<PathElement<(f64, f64)>>())
+                .map_err(Into::into);
+        }
+        let text_style = style
+            .plotters_style()
+            .pos(anchor.plotters_pos())
+            .transform(rotation.plotters_transform());
+        let element =
+            EmptyElement::at((logical.x, logical.y)) + Text::new(text, offset, text_style);
+        chart
+            .context
+            .draw_series(std::iter::once(element))
+            .map_err(Into::into)
     }
 }
 

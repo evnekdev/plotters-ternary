@@ -229,7 +229,8 @@ three legend entries. Both formats have final dimensions of 1000 by 800. The ful
 
 Milestone 5 must add publication-quality axes, independent tick/grid policy,
 and cropped-label placement without changing the native annotation path.
-Milestone 6 must reuse visible-subpath concepts for polygon and region
-clipping. Marker-bounds clipping, explicit optional/missing-value inputs beyond
-invalid compositions, dashed-path semantics across split subpaths, and
-legend/layout reservation outside the fitted plot remain future design work.
+Milestone 6 now supplies simple polygon/region clipping and composition-anchored
+text through the same native annotation path. Marker-bounds clipping, explicit
+optional/missing-value inputs beyond invalid compositions, dashed-path semantics
+across split subpaths, and legend/layout reservation outside the fitted plot
+remain future design work.

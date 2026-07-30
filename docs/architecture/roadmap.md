@@ -378,6 +378,16 @@ examples/output/svg/cropped_regions.svg
 - Phase-region diagrams can be produced without dropping to raw Cartesian coordinates.
 - Text limitations are documented rather than silently approximated.
 
+### Implemented first release
+
+Milestone 6 implements simple convex and concave `TernaryPolygon` loops with
+strict self-intersection rejection, Sutherland?Hodgman viewport clipping,
+independent fill/border styles, and native Plotters annotations/legends.
+`TernaryText` supports owned Unicode content, composition anchors, final-pixel
+offsets, portable alignment, `Anchor`/`None` clipping, and native quarter turns.
+Bounds clipping, callouts, general arbitrary-angle annotations, holes, and
+filled contours remain explicitly deferred.
+
 ## Milestone 7: Line contours
 
 ### Objective

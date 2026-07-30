@@ -125,9 +125,10 @@ native object, and `draw_point_series` accepts owned custom marker elements. `Te
 Milestone 5 adds independent axis steps, ticks and tick labels, visible-edge
 tick filtering, and explicit cropped-axis policies. The arbitrary-angle
 side-name adapter is deliberately narrow: it covers axis names in the shared
-PNG/SVG output pipeline, while a general public annotation-text rotation API
-remains future work. Bounds-aware marker clipping and richer explicit gap input
-types also remain future series work.
+PNG/SVG output pipeline. Milestone 6 adds public composition-anchored text
+with native quarter turns; general arbitrary-angle annotations remain future
+work. Bounds-aware marker clipping and richer explicit gap input types also
+remain future series work.
 
 
 ## Milestone 5 mesh phases
