@@ -5,6 +5,15 @@ use crate::coord::{
 
 use super::{InvalidPointPolicy, MarkerClipMode, SeriesError};
 
+/// A point prepared for marker rendering while retaining its source identity.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub(crate) struct PreparedPoint {
+    pub index: usize,
+    /// Validated and normalized semantic composition in A/B/C order.
+    pub composition: TernaryPoint,
+    pub cartesian: TernaryCartesian,
+}
+
 /// Project and clip a ternary polyline into directed visible logical subpaths.
 ///
 /// Invalid points either return [`SeriesError::InvalidPoint`] or terminate the
@@ -51,6 +60,9 @@ where
 }
 
 /// Project a point series and apply centre-based or unrestricted marker policy.
+///
+/// This public convenience projection discards source identity. Internally,
+/// [`prepare_points_with_source`] retains it for per-point marker styles.
 pub fn prepare_points<I, P>(
     geometry: TernaryGeometry,
     viewport: TernaryViewport,
@@ -64,24 +76,62 @@ where
     I: IntoIterator<Item = P>,
     P: Into<TernaryPoint>,
 {
+    Ok(prepare_points_with_source(
+        geometry,
+        viewport,
+        points,
+        normalization,
+        tolerance,
+        invalid_policy,
+        clip_mode,
+    )?
+    .into_iter()
+    .map(|point| point.cartesian)
+    .collect())
+}
+
+/// Project marker points while retaining original index and normalized semantic
+/// composition for a per-point style provider.
+pub(crate) fn prepare_points_with_source<I, P>(
+    geometry: TernaryGeometry,
+    viewport: TernaryViewport,
+    points: I,
+    normalization: Normalization,
+    tolerance: Tolerance,
+    invalid_policy: InvalidPointPolicy,
+    clip_mode: MarkerClipMode,
+) -> Result<Vec<PreparedPoint>, SeriesError>
+where
+    I: IntoIterator<Item = P>,
+    P: Into<TernaryPoint>,
+{
     let mut prepared = Vec::new();
-    for (index, point) in points.into_iter().enumerate() {
-        match geometry.project(point.into(), normalization, tolerance) {
-            Ok(projected) => {
-                if clip_mode == MarkerClipMode::None
-                    || viewport
-                        .contains(projected, tolerance)
-                        .map_err(|source| SeriesError::InvalidPoint { index, source })?
-                {
-                    prepared.push(projected);
-                }
-            }
+    for (index, source) in points.into_iter().enumerate() {
+        let validated = match source.into().validate(normalization, tolerance) {
+            Ok(point) => point,
             Err(source) => match invalid_policy {
                 InvalidPointPolicy::Error => {
                     return Err(SeriesError::InvalidPoint { index, source });
                 }
-                InvalidPointPolicy::Break => {}
+                InvalidPointPolicy::Break => continue,
             },
+        };
+        let sum = validated.sum();
+        let [a, b, c] = validated.as_array();
+        let composition = TernaryPoint::new(a / sum, b / sum, c / sum);
+        let cartesian = geometry
+            .project(composition, Normalization::RequireUnitSum, tolerance)
+            .map_err(|source| SeriesError::InvalidPoint { index, source })?;
+        if clip_mode == MarkerClipMode::None
+            || viewport
+                .contains(cartesian, tolerance)
+                .map_err(|source| SeriesError::InvalidPoint { index, source })?
+        {
+            prepared.push(PreparedPoint {
+                index,
+                composition,
+                cartesian,
+            });
         }
     }
     Ok(prepared)

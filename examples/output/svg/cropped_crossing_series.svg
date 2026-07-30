@@ -19,7 +19,7 @@
 <polyline fill="none" opacity="1" stroke="#D23732" stroke-width="5" points="219,464 780,464 "/>
 <polyline fill="none" opacity="1" stroke="#0066CC" stroke-width="4" points="349,558 433,90 "/>
 <polyline fill="none" opacity="1" stroke="#0066CC" stroke-width="4" points="565,90 649,558 "/>
-<circle cx="499" cy="485" r="8" opacity="1" fill="#199669" stroke="none" stroke-width="1"/>
+<polygon opacity="1" fill="#199669" points="507,485 507,483 506,482 506,481 505,479 503,478 502,478 501,477 499,477 497,477 496,478 495,478 493,479 492,481 492,482 491,483 491,485 491,487 492,488 492,489 493,491 495,492 496,492 497,493 499,493 501,493 502,492 503,492 505,491 506,489 506,488 507,487 "/>
 <rect x="224" y="95" width="343" height="96" opacity="0.88" fill="#FFFFFF" stroke="none"/>
 <rect x="224" y="95" width="343" height="96" opacity="1" fill="none" stroke="#232D3C"/>
 <polyline fill="none" opacity="1" stroke="#D23732" stroke-width="5" points="236,116 270,116 "/>

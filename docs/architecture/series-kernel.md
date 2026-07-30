@@ -7,7 +7,8 @@ Milestone 4 adds backend-neutral preparation and Plotters-backed drawing through
 - `TernaryLineSeries<I>`;
 - `TernaryPointSeries<I>`;
 - `TernarySeries<DB>` as the dispatch bound for `TernaryChart::draw_series`;
-- `MarkerShape::{Circle, Cross, Triangle}`;
+- compatibility `MarkerShape::{Circle, Cross, Triangle}` plus fillable and stroke-only scientific shapes;
+- `MarkerGeometry`, `MarkerStyle`, `MarkerFill`, `MarkerPartition`, `MarkerSlice`, and concrete `MarkerElement<Coord>`;
 - `MarkerClipMode::{Centre, None}`;
 - `InvalidPointPolicy::{Error, Break}`;
 - `SeriesError`;
@@ -126,9 +127,13 @@ let series = TernaryPointSeries::new([
 .marker(MarkerShape::Circle);
 ```
 
-`size` is a backend-pixel radius or half-size and must be nonzero. Built-in
-markers delegate to Plotters `Circle`, `Cross`, and `TriangleMarker` elements.
-Styles are ordinary `ShapeStyle` values.
+`size` is a backend-pixel radius or half-size and must be nonzero. The
+compatibility style path remains ordinary Plotters `ShapeStyle`; it is converted
+to the crate-owned concrete `MarkerElement` before it reaches the Cartesian
+chart. This preserves native `SeriesAnno` while also supporting full scientific
+styles through `.marker_style(...)` and source-indexed
+`.point_style_provider(...)`. See [`marker-kernel.md`](marker-kernel.md) for
+the shape, fill, partition, and centring contract.
 
 Custom composition works through `TernaryChart::draw_point_series(series,
 closure)`. The closure receives `((x, y), size, style)`, where `(x, y)` is the
@@ -193,6 +198,9 @@ adjacent SVG row centres differ by at most one pixel.
 This is shared example/output infrastructure, not a replacement for the
 public native `SeriesAnno::legend` API. In the adapter's custom-symbol contract
 its closure coordinate is the physical centre of the allocated symbol slot.
+`MarkerElement<(i32, i32)>` follows that same contract, so partitioned
+scientific marker samples and ordinary line swatches have identical row centres,
+slot widths, label starts, and symbol-to-label gaps.
 PNG geometry and SVG use the same adapter; the final-resolution PNG text pass
 uses the same unscaled label starts and font size.
 

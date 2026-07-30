@@ -1,3 +1,4 @@
+mod legend_support;
 mod output_support;
 mod series_common;
 

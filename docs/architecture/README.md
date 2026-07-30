@@ -28,6 +28,7 @@ The crate should support:
 - [`viewport-kernel.md`](viewport-kernel.md): implemented viewport fitting and clipping.
 - [`chart-kernel.md`](chart-kernel.md): implemented Cartesian-backed chart and mesh.
 - [`series-kernel.md`](series-kernel.md): implemented lines, points and native legends.
+- [`marker-kernel.md`](marker-kernel.md): portable scientific-marker geometry, fills and partitions.
 - [`bitmap-quality.md`](bitmap-quality.md): temporary optional supersampling for example PNGs.
 
 ## Decision records

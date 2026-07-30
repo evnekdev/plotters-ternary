@@ -243,6 +243,36 @@ examples/output/svg/cropped_crossing_series.svg
 - No separate ternary legend API is introduced.
 - Raster and vector outputs demonstrate parity of content.
 
+## Scientific marker extension: custom scientific markers
+
+### Objective
+
+Extend `TernaryPointSeries` with portable fillable and partitioned scientific
+markers while preserving Plotters-native `SeriesAnno` annotations and legends.
+
+### Implementation
+
+- centred local marker geometry for ellipses, polygonal shapes, stars, four
+  triangle directions, and stroke-only plus/cross/asterisk symbols;
+- independent fill and edge styling, empty contours, solid fills, and common
+  outer-edge draw order;
+- weighted radial, two-way linear/diagonal, and four-quadrant partitions;
+- concrete `MarkerElement` usable in point series and ordinary legend closures;
+- source-indexed per-point marker-style providers for experimental phase
+  combinations;
+- permanent PNG/SVG marker gallery generated through the existing optional
+  bitmap-quality helper and native SVG path.
+
+### Exit criteria
+
+- the legacy `.style(...).marker(MarkerShape::Circle)` API remains valid;
+- normal Plotters legend configuration is retained, with every marker centred
+  in the shared fixed symbol slot;
+- PNG and SVG receive equivalent local marker geometry, with no SVG raster
+  images;
+- marker geometry remains separate from interpolation, ternary coordinates,
+  viewport clipping, phase regions, and annotations.
+
 ## Milestone 5: Publication-quality axes and mesh
 
 ### Objective
