@@ -8,7 +8,9 @@ use plotters_ternary::{
     TernaryChartBuilder, TernaryGeometry, TernaryViewport, ViewportAlignment, ViewportFit,
 };
 
-use crate::output_support::{BitmapQuality, BitmapRenderOptions, render_png, render_svg, scaled};
+use crate::output_support::{
+    BitmapQuality, BitmapRenderOptions, render_png, render_svg, reserve_final_caption_space, scaled,
+};
 
 const OUTPUT_SIZE: (u32, u32) = (1_000, 800);
 const BITMAP_QUALITY: BitmapQuality = BitmapQuality::Supersampled { factor: 3 };
@@ -109,21 +111,21 @@ where
 
     let geometry = TernaryGeometry::default();
     let viewport = view.viewport(geometry);
-    let caption_color = if pass.draws_text() {
-        BLACK.mix(1.0)
+    let chart_root = if pass.draws_geometry() {
+        reserve_final_caption_space(&root, view.caption(), 32, scale)?
     } else {
-        BLACK.mix(0.0)
+        root.clone()
     };
-    let mut chart = TernaryChartBuilder::on(&root)
-        .caption(
+    let builder = TernaryChartBuilder::on(&chart_root);
+    let builder = if pass.draws_text() {
+        builder.caption(
             view.caption(),
-            (
-                "sans-serif",
-                scaled(32, scale),
-                FontStyle::Bold,
-                &caption_color,
-            ),
+            ("sans-serif", scaled(32, scale), FontStyle::Bold, &BLACK),
         )
+    } else {
+        builder
+    };
+    let mut chart = builder
         .margin(scaled(view.margin(), scale))
         .geometry(geometry)
         .viewport(viewport)

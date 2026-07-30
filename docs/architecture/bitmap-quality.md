@@ -26,10 +26,13 @@ is resized with `image::imageops::FilterType::Lanczos3`.
 
 The text closure then receives a `BitMapBackend` over the already-downsampled
 final RGB image. Captions, corner labels, axis names, and legend text are drawn
-once at final resolution and are never filtered. Invisible scaled font metrics
-may reserve equivalent layout space in the high-resolution geometry pass, but
-no glyph pixels are emitted there. Logical ternary coordinates and viewport
-coordinates are never scaled. No high-resolution temporary file is created.
+once at final resolution and are never filtered. The geometry pass reserves a
+caption strip measured at final resolution before scaling it, but emits no
+caption glyphs. The shared series-example legend adapter also reconciles
+Plotters' high-resolution integer callback anchors with the final text rows,
+so symbols and labels retain the same centres. Logical ternary coordinates and
+viewport coordinates are never scaled. No high-resolution temporary file is
+created.
 
 Factors must be in `1..=4`; zero and larger values are rejected, scaled
 arithmetic is checked for overflow, and the RGB allocation is limited to 512

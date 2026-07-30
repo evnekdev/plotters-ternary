@@ -42,14 +42,14 @@
 <line opacity="1" stroke="#7D41A5" stroke-width="2" x1="528" y1="539" x2="546" y2="557"/>
 <line opacity="1" stroke="#7D41A5" stroke-width="2" x1="528" y1="557" x2="546" y2="539"/>
 <circle cx="537" cy="548" r="4" opacity="1" fill="none" stroke="#7D41A5" stroke-width="2"/>
-<rect x="627" y="95" width="246" height="151" opacity="0.88" fill="#FFFFFF" stroke="none"/>
-<rect x="627" y="95" width="246" height="151" opacity="1" fill="none" stroke="#232D3C"/>
-<polyline fill="none" opacity="1" stroke="#005FAA" stroke-width="4" points="639,115 663,115 "/>
-<polyline fill="none" opacity="1" stroke="#14915F" stroke-width="3" points="639,143 663,143 "/>
-<circle cx="639" cy="170" r="6" opacity="1" fill="#CD2D37" stroke="none" stroke-width="1"/>
-<polygon opacity="1" fill="#EE9119" points="639,191 633,202 646,202 "/>
-<line opacity="1" stroke="#7D41A5" stroke-width="2" x1="632" y1="218" x2="646" y2="232"/>
-<line opacity="1" stroke="#7D41A5" stroke-width="2" x1="632" y1="232" x2="646" y2="218"/>
+<rect x="615" y="95" width="258" height="151" opacity="0.88" fill="#FFFFFF" stroke="none"/>
+<rect x="615" y="95" width="258" height="151" opacity="1" fill="none" stroke="#232D3C"/>
+<polyline fill="none" opacity="1" stroke="#005FAA" stroke-width="4" points="627,116 661,116 "/>
+<polyline fill="none" opacity="1" stroke="#14915F" stroke-width="3" points="627,144 661,144 "/>
+<circle cx="644" cy="171" r="6" opacity="1" fill="#CD2D37" stroke="none" stroke-width="1"/>
+<polygon opacity="1" fill="#EE9119" points="644,192 637,206 651,206 "/>
+<line opacity="1" stroke="#7D41A5" stroke-width="2" x1="637" y1="219" x2="651" y2="233"/>
+<line opacity="1" stroke="#7D41A5" stroke-width="2" x1="637" y1="233" x2="651" y2="219"/>
 </g>
 <g id="ternary-text">
 

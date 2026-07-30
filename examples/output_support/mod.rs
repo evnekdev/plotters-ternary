@@ -3,14 +3,38 @@ use std::fmt::{Display, Formatter};
 use std::path::Path;
 
 use image::{RgbImage, imageops::FilterType};
+use plotters::backend::DrawingBackend;
 use plotters::coord::Shift;
-use plotters::drawing::{DrawingArea, IntoDrawingArea};
-use plotters::prelude::{BitMapBackend, SVGBackend};
+use plotters::drawing::{DrawingArea, DrawingAreaErrorKind, IntoDrawingArea};
+use plotters::prelude::{BitMapBackend, FontStyle, IntoTextStyle, SVGBackend};
 
 pub const DEFAULT_BITMAP_SUPERSAMPLING: u32 = 3;
 pub const MAX_BITMAP_SUPERSAMPLING: u32 = 4;
 /// Development guardrail for the in-memory high-resolution RGB buffer.
 pub const MAX_BITMAP_BUFFER_BYTES: usize = 512 * 1024 * 1024;
+
+/// Reserve the same caption strip as the final-resolution text pass.
+///
+/// Plotters' font measurement is backend-specific and is not always perfectly
+/// proportional when the bitmap geometry pass is supersampled. Measure the
+/// caption with its final font size, then scale the resulting strip in pixels.
+/// The geometry pass can omit caption glyphs while retaining the exact final
+/// layout used by the text pass.
+pub fn reserve_final_caption_space<DB>(
+    root: &DrawingArea<DB, Shift>,
+    caption: &str,
+    final_font_size: u32,
+    scale: u32,
+) -> Result<DrawingArea<DB, Shift>, DrawingAreaErrorKind<DB::ErrorType>>
+where
+    DB: DrawingBackend,
+{
+    let style = ("sans-serif", final_font_size, FontStyle::Bold).into_text_style(root);
+    let (_, text_height) = root.estimate_text_size(caption, &style)?;
+    let vertical_padding = (text_height / 2).min(5);
+    let strip_height = text_height.saturating_add(vertical_padding.saturating_mul(2));
+    Ok(root.margin(strip_height.saturating_mul(scale), 0, 0, 0))
+}
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 #[allow(dead_code)]

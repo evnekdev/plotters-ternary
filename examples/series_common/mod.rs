@@ -9,10 +9,132 @@ use plotters_ternary::{
     TernaryPoint, TernaryPointSeries, TernarySmoothSeries, TernaryViewport,
 };
 
-use crate::output_support::{BitmapQuality, BitmapRenderOptions, render_png, render_svg, scaled};
+use crate::output_support::{
+    BitmapQuality, BitmapRenderOptions, render_png, render_svg, reserve_final_caption_space, scaled,
+};
 
 const OUTPUT_SIZE: (u32, u32) = (1_000, 800);
 const BITMAP_QUALITY: BitmapQuality = BitmapQuality::Supersampled { factor: 3 };
+const LEGEND_SYMBOL_SLOT_WIDTH: u32 = 34;
+const LEGEND_SYMBOL_LABEL_GAP: u32 = 12;
+const LEGEND_OUTER_PADDING: u32 = 12;
+const LEGEND_TEXT_SIZE: u32 = 22;
+// Plotters supplies the floor of an odd-height label box midpoint to legend closures.
+const LEGEND_TEXT_CENTRE_CEILING_CORRECTION: u32 = 1;
+// The fitted high-resolution Plotters layout rounds its origin per scale step.
+const LEGEND_SUPERSAMPLED_X_ORIGIN_ROUNDING: i32 = 5;
+// Plotters' fitted high-resolution layout has a stable non-integral Y-origin
+// offset. This conversion maps its integer callback anchors back to the
+// final-resolution legend-row centres for the supported 2x, 3x, and 4x modes.
+const LEGEND_SUPERSAMPLED_Y_ORIGIN_ROUNDING_NUMERATOR: u32 = 17;
+const LEGEND_SUPERSAMPLED_Y_ORIGIN_ROUNDING_DENOMINATOR: u32 = 3;
+
+/// The shared physical layout for one Plotters legend row.
+///
+/// Plotters supplies the left edge of its legend area to a `SeriesAnno`
+/// closure. This adapter reserves a fixed symbol slot at that edge, then
+/// supplies its centre to every built-in and custom symbol renderer. Text
+/// starts after the slot and a fixed gap, which is the same coordinate that
+/// Plotters uses after `legend_area_size` is configured below.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) struct LegendRowLayout {
+    pub(crate) row_center_y: i32,
+    pub(crate) symbol_center_x: i32,
+    pub(crate) symbol_slot_width: u32,
+    pub(crate) label_start_x: i32,
+}
+
+impl LegendRowLayout {
+    pub(crate) fn from_plotters_anchor(anchor: (i32, i32), scale: u32) -> Self {
+        let symbol_slot_width = scaled(LEGEND_SYMBOL_SLOT_WIDTH, scale);
+        let label_gap = scaled(LEGEND_SYMBOL_LABEL_GAP, scale);
+        let scale_steps = scale.saturating_sub(1);
+        let x_origin_correction =
+            LEGEND_SUPERSAMPLED_X_ORIGIN_ROUNDING.saturating_mul(scale_steps as i32);
+        let y_center_correction = LEGEND_TEXT_CENTRE_CEILING_CORRECTION.saturating_add(
+            LEGEND_SUPERSAMPLED_Y_ORIGIN_ROUNDING_NUMERATOR
+                .saturating_mul(scale_steps)
+                .saturating_add(1)
+                / LEGEND_SUPERSAMPLED_Y_ORIGIN_ROUNDING_DENOMINATOR,
+        ) as i32;
+        let symbol_slot_left_x = anchor.0 - x_origin_correction;
+        Self {
+            row_center_y: anchor.1 + y_center_correction,
+            symbol_center_x: symbol_slot_left_x + symbol_slot_width as i32 / 2,
+            symbol_slot_width,
+            label_start_x: symbol_slot_left_x + symbol_slot_width as i32 + label_gap as i32,
+        }
+    }
+
+    pub(crate) const fn symbol_center(self) -> (i32, i32) {
+        (self.symbol_center_x, self.row_center_y)
+    }
+
+    pub(crate) fn line_endpoints(self) -> ((i32, i32), (i32, i32)) {
+        let half_width = self.symbol_slot_width as i32 / 2;
+        (
+            (self.symbol_center_x - half_width, self.row_center_y),
+            (self.symbol_center_x + half_width, self.row_center_y),
+        )
+    }
+
+    /// Call a custom legend-symbol closure with the centre of its symbol slot.
+    pub(crate) fn custom_symbol<E, F>(self, make_symbol: F) -> E
+    where
+        F: FnOnce((i32, i32)) -> E,
+    {
+        make_symbol(self.symbol_center())
+    }
+}
+
+fn line_legend_symbol(
+    anchor: (i32, i32),
+    scale: u32,
+    style: ShapeStyle,
+) -> PathElement<(i32, i32)> {
+    let layout = LegendRowLayout::from_plotters_anchor(anchor, scale);
+    let (start, end) = layout.line_endpoints();
+    PathElement::new(vec![start, end], style)
+}
+
+fn circle_legend_symbol(
+    anchor: (i32, i32),
+    scale: u32,
+    radius: u32,
+    style: ShapeStyle,
+) -> Circle<(i32, i32), u32> {
+    let layout = LegendRowLayout::from_plotters_anchor(anchor, scale);
+    Circle::new(layout.symbol_center(), scaled(radius, scale), style)
+}
+
+fn triangle_legend_symbol(
+    anchor: (i32, i32),
+    scale: u32,
+    half_extent: u32,
+    style: ShapeStyle,
+) -> Polygon<(i32, i32)> {
+    let layout = LegendRowLayout::from_plotters_anchor(anchor, scale);
+    let centre = layout.symbol_center();
+    let extent = scaled(half_extent, scale) as i32;
+    Polygon::new(
+        [
+            (centre.0, centre.1 - extent),
+            (centre.0 - extent, centre.1 + extent),
+            (centre.0 + extent, centre.1 + extent),
+        ],
+        style,
+    )
+}
+
+fn cross_legend_symbol(
+    anchor: (i32, i32),
+    scale: u32,
+    half_extent: u32,
+    style: ShapeStyle,
+) -> Cross<(i32, i32), u32> {
+    let layout = LegendRowLayout::from_plotters_anchor(anchor, scale);
+    layout.custom_symbol(|centre| Cross::new(centre, scaled(half_extent, scale), style))
+}
 
 #[derive(Clone, Copy)]
 enum RenderPass {
@@ -70,6 +192,30 @@ pub fn write_outputs(example: SeriesExample) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+#[cfg(test)]
+pub(crate) fn render_svg_string_for_test(example: SeriesExample) -> Result<String, Box<dyn Error>> {
+    crate::output_support::render_svg_string(
+        OUTPUT_SIZE,
+        |root| render(root, example, RenderPass::Geometry, 1),
+        |root| render(root, example, RenderPass::Text, 1),
+    )
+}
+
+#[cfg(test)]
+pub(crate) fn render_geometry_svg_for_test(
+    example: SeriesExample,
+    scale: u32,
+) -> Result<String, Box<dyn Error>> {
+    let mut svg = String::new();
+    {
+        let root =
+            SVGBackend::with_string(&mut svg, (OUTPUT_SIZE.0 * scale, OUTPUT_SIZE.1 * scale))
+                .into_drawing_area();
+        render(root, example, RenderPass::Geometry, scale)?;
+    }
+    Ok(svg)
+}
+
 fn render<DB>(
     root: DrawingArea<DB, Shift>,
     example: SeriesExample,
@@ -99,19 +245,22 @@ where
     DB: DrawingBackend,
     DB::ErrorType: 'static,
 {
-    let caption_color = BLACK.mix(if pass.draws_text() { 1.0 } else { 0.0 });
-    let mut chart = TernaryChartBuilder::on(&root)
-        .caption(
-            "Ternary lines, points and Plotters legends",
-            (
-                "sans-serif",
-                scaled(32, scale),
-                FontStyle::Bold,
-                &caption_color,
-            ),
+    let caption = "Ternary lines, points and Plotters legends";
+    let chart_root = if pass.draws_geometry() {
+        reserve_final_caption_space(&root, caption, 32, scale)?
+    } else {
+        root.clone()
+    };
+    let builder = TernaryChartBuilder::on(&chart_root);
+    let builder = if pass.draws_text() {
+        builder.caption(
+            caption,
+            ("sans-serif", scaled(32, scale), FontStyle::Bold, &BLACK),
         )
-        .margin(scaled(55, scale))
-        .build()?;
+    } else {
+        builder
+    };
+    let mut chart = builder.margin(scaled(55, scale)).build()?;
     let mesh = chart
         .configure_mesh()
         .major_step(0.1)
@@ -162,9 +311,7 @@ where
             liquidus_style,
         ))?
         .label("Liquidus boundary")
-        .legend(move |(x, y)| {
-            PathElement::new([(x, y), (x + scaled(24, scale) as i32, y)], liquidus_style)
-        });
+        .legend(move |(x, y)| line_legend_symbol((x, y), scale, liquidus_style));
 
     let solvus_style = stroke_style(RGBColor(20, 145, 95), 3, pass, scale);
     chart
@@ -182,9 +329,7 @@ where
             .interpolation(TernaryInterpolation::Pchip),
         )?
         .label("PCHIP solvus boundary")
-        .legend(move |(x, y)| {
-            PathElement::new([(x, y), (x + scaled(24, scale) as i32, y)], solvus_style)
-        });
+        .legend(move |(x, y)| line_legend_symbol((x, y), scale, solvus_style));
 
     let measured_style = fill_style(RGBColor(205, 45, 55), pass);
     chart
@@ -199,7 +344,7 @@ where
             .marker(MarkerShape::Circle),
         )?
         .label("Measured samples")
-        .legend(move |coordinate| Circle::new(coordinate, scaled(6, scale), measured_style));
+        .legend(move |coordinate| circle_legend_symbol(coordinate, scale, 6, measured_style));
 
     let reference_style = fill_style(RGBColor(238, 145, 25), pass);
     chart
@@ -210,9 +355,7 @@ where
                 .marker(MarkerShape::Triangle),
         )?
         .label("Reference samples")
-        .legend(move |coordinate| {
-            TriangleMarker::new(coordinate, scaled(7, scale), reference_style)
-        });
+        .legend(move |coordinate| triangle_legend_symbol(coordinate, scale, 7, reference_style));
 
     let calibration_style = stroke_style(RGBColor(125, 65, 165), 2, pass, scale);
     chart
@@ -227,7 +370,7 @@ where
             },
         )?
         .label("Calibration composition")
-        .legend(move |coordinate| Cross::new(coordinate, scaled(7, scale), calibration_style));
+        .legend(move |coordinate| cross_legend_symbol(coordinate, scale, 7, calibration_style));
 
     draw_legend(&mut chart, SeriesLabelPosition::UpperRight, pass, scale)?;
     drop(chart);
@@ -245,17 +388,22 @@ where
     DB::ErrorType: 'static,
 {
     let viewport = TernaryViewport::new(0.35, 0.65, 0.15, 0.50)?;
-    let caption_color = BLACK.mix(if pass.draws_text() { 1.0 } else { 0.0 });
-    let mut chart = TernaryChartBuilder::on(&root)
-        .caption(
-            "Mathematically clipped crossing series",
-            (
-                "sans-serif",
-                scaled(32, scale),
-                FontStyle::Bold,
-                &caption_color,
-            ),
+    let caption = "Mathematically clipped crossing series";
+    let chart_root = if pass.draws_geometry() {
+        reserve_final_caption_space(&root, caption, 32, scale)?
+    } else {
+        root.clone()
+    };
+    let builder = TernaryChartBuilder::on(&chart_root);
+    let builder = if pass.draws_text() {
+        builder.caption(
+            caption,
+            ("sans-serif", scaled(32, scale), FontStyle::Bold, &BLACK),
         )
+    } else {
+        builder
+    };
+    let mut chart = builder
         .margin(scaled(55, scale))
         .viewport(viewport)
         .build()?;
@@ -285,9 +433,7 @@ where
             .normalization(Normalization::Normalize),
         )?
         .label("Outside endpoints, visible crossing")
-        .legend(move |(x, y)| {
-            PathElement::new([(x, y), (x + scaled(24, scale) as i32, y)], crossing_style)
-        });
+        .legend(move |(x, y)| line_legend_symbol((x, y), scale, crossing_style));
 
     let reentry_style = stroke_style(RGBColor(0, 102, 204), 4, pass, scale);
     chart
@@ -303,9 +449,7 @@ where
             .normalization(Normalization::Normalize),
         )?
         .label("Exit and re-entry (two subpaths)")
-        .legend(move |(x, y)| {
-            PathElement::new([(x, y), (x + scaled(24, scale) as i32, y)], reentry_style)
-        });
+        .legend(move |(x, y)| line_legend_symbol((x, y), scale, reentry_style));
 
     let marker_style = fill_style(RGBColor(25, 150, 105), pass);
     chart
@@ -320,7 +464,7 @@ where
             .marker(MarkerShape::Circle),
         )?
         .label("Centre-clipped markers")
-        .legend(move |coordinate| Circle::new(coordinate, scaled(6, scale), marker_style));
+        .legend(move |coordinate| circle_legend_symbol(coordinate, scale, 6, marker_style));
 
     draw_legend(&mut chart, SeriesLabelPosition::UpperLeft, pass, scale)?;
     drop(chart);
@@ -363,12 +507,15 @@ where
         .border_style(border)
         .label_font((
             "sans-serif",
-            scaled(22, scale),
+            scaled(LEGEND_TEXT_SIZE, scale),
             FontStyle::Normal,
             &text_color,
         ))
-        .legend_area_size(scaled(34, scale))
-        .margin(scaled(12, scale))
+        .legend_area_size(scaled(
+            LEGEND_SYMBOL_SLOT_WIDTH + LEGEND_SYMBOL_LABEL_GAP,
+            scale,
+        ))
+        .margin(scaled(LEGEND_OUTER_PADDING, scale))
         .draw()?;
     Ok(())
 }

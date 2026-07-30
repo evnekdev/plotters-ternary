@@ -180,6 +180,12 @@ chart
 chart.configure_series_labels().draw()?;
 ```
 
+The permanent series examples use a shared internal legend-row adapter around
+those ordinary Plotters closures. It reserves one fixed symbol slot and gives
+line and marker renderers the same slot-centre coordinate; its layout controls
+slot width, label gap, and outer padding in one place. This corrects visual
+alignment without changing the public native legend API.
+
 ## Rendering tests
 
 Rendering tests should combine numerical assertions and reference images:
