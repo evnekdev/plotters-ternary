@@ -1,0 +1,44 @@
+<svg width="1000" height="800" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+<g id="ternary-geometry" shape-rendering="geometricPrecision" stroke-linecap="round" stroke-linejoin="round">
+
+<rect x="0" y="0" width="1000" height="800" opacity="1" fill="#FFFFFF" stroke="none"/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="219,701 780,701 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="219,539 780,539 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="219,377 780,377 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="219,216 780,216 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="707,90 780,216 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="520,90 780,539 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="333,90 711,744 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="219,216 524,744 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="219,539 337,744 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="291,90 219,216 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="478,90 219,539 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="665,90 287,744 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="780,216 474,744 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="780,539 661,744 "/>
+<polyline fill="none" opacity="1" stroke="#D23732" stroke-width="5" points="219,464 780,464 "/>
+<polyline fill="none" opacity="1" stroke="#0066CC" stroke-width="4" points="349,558 433,90 "/>
+<polyline fill="none" opacity="1" stroke="#0066CC" stroke-width="4" points="565,90 649,558 "/>
+<circle cx="499" cy="485" r="8" opacity="1" fill="#199669" stroke="none" stroke-width="1"/>
+<rect x="224" y="95" width="331" height="96" opacity="0.88" fill="#FFFFFF" stroke="none"/>
+<rect x="224" y="95" width="331" height="96" opacity="1" fill="none" stroke="#232D3C"/>
+<polyline fill="none" opacity="1" stroke="#D23732" stroke-width="5" points="236,115 260,115 "/>
+<polyline fill="none" opacity="1" stroke="#0066CC" stroke-width="4" points="236,143 260,143 "/>
+<circle cx="236" cy="170" r="6" opacity="1" fill="#199669" stroke="none" stroke-width="1"/>
+</g>
+<g id="ternary-text">
+
+<text x="500" y="5" dy="0.76em" text-anchor="middle" font-family="sans-serif" font-size="25.806451612903228" opacity="1" fill="#000000" font-weight="bold">
+Mathematically clipped crossing series
+</text>
+<text x="270" y="107" dy="0.76em" text-anchor="start" font-family="sans-serif" font-size="17.741935483870968" opacity="1" fill="#000000">
+Outside endpoints, visible crossing
+</text>
+<text x="270" y="135" dy="0.76em" text-anchor="start" font-family="sans-serif" font-size="17.741935483870968" opacity="1" fill="#000000">
+Exit and re-entry (two subpaths)
+</text>
+<text x="270" y="162" dy="0.76em" text-anchor="start" font-family="sans-serif" font-size="17.741935483870968" opacity="1" fill="#000000">
+Centre-clipped markers
+</text>
+</g>
+</svg>

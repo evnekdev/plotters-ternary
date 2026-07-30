@@ -3,7 +3,7 @@ use std::fmt;
 
 use plotters::drawing::DrawingAreaErrorKind;
 
-use crate::coord;
+use crate::{coord, series::SeriesError};
 
 /// An error produced while laying out or drawing a ternary chart.
 #[derive(Debug)]
@@ -11,6 +11,8 @@ use crate::coord;
 pub enum TernaryChartError<E: StdError + Send + Sync> {
     /// Backend-independent geometry or viewport preparation failed.
     Geometry(coord::Error),
+    /// Backend-independent series preparation failed.
+    Series(SeriesError),
     /// Plotters could not complete a drawing operation.
     Drawing(DrawingAreaErrorKind<E>),
     /// The common major-grid step is unusable.
@@ -23,6 +25,7 @@ impl<E: StdError + Send + Sync> fmt::Display for TernaryChartError<E> {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Geometry(error) => write!(formatter, "ternary geometry error: {error}"),
+            Self::Series(error) => write!(formatter, "ternary series error: {error}"),
             Self::Drawing(error) => write!(formatter, "Plotters drawing error: {error}"),
             Self::InvalidMajorStep { value } => write!(
                 formatter,
@@ -40,6 +43,7 @@ impl<E: StdError + Send + Sync + 'static> StdError for TernaryChartError<E> {
     fn source(&self) -> Option<&(dyn StdError + 'static)> {
         match self {
             Self::Geometry(error) => Some(error),
+            Self::Series(error) => Some(error),
             Self::Drawing(error) => Some(error),
             Self::InvalidMajorStep { .. } | Self::InsufficientDrawingArea { .. } => None,
         }
@@ -49,6 +53,12 @@ impl<E: StdError + Send + Sync + 'static> StdError for TernaryChartError<E> {
 impl<E: StdError + Send + Sync> From<coord::Error> for TernaryChartError<E> {
     fn from(error: coord::Error) -> Self {
         Self::Geometry(error)
+    }
+}
+
+impl<E: StdError + Send + Sync> From<SeriesError> for TernaryChartError<E> {
+    fn from(error: SeriesError) -> Self {
+        Self::Series(error)
     }
 }
 

@@ -1,21 +1,27 @@
 <svg width="1000" height="800" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+<g id="ternary-geometry" shape-rendering="geometricPrecision" stroke-linecap="round" stroke-linejoin="round">
+
 <rect x="0" y="0" width="1000" height="800" opacity="1" fill="#FFFFFF" stroke="none"/>
-<text x="500" y="5" dy="0.76em" text-anchor="middle" font-family="sans-serif" font-size="24.193548387096776" opacity="1" fill="#000000" font-weight="bold">
-Interior ternary viewport
-</text>
-<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="944,203 939,195 "/>
-<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="944,588 717,195 "/>
-<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="751,639 494,195 "/>
-<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="529,639 272,195 "/>
-<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="307,639 55,203 "/>
-<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="84,639 55,588 "/>
-<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="55,203 59,195 "/>
-<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="55,588 281,195 "/>
-<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="247,639 504,195 "/>
-<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="469,639 726,195 "/>
-<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="691,639 944,203 "/>
-<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="914,639 944,588 "/>
 <polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="55,588 944,588 "/>
 <polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="55,396 944,396 "/>
 <polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="55,203 944,203 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="939,195 944,203 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="717,195 944,588 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="494,195 751,639 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="272,195 529,639 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="55,203 307,639 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="55,588 84,639 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="59,195 55,203 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="281,195 55,588 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="504,195 247,639 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="726,195 469,639 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="944,203 691,639 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="944,588 914,639 "/>
+</g>
+<g id="ternary-text">
+
+<text x="500" y="5" dy="0.76em" text-anchor="middle" font-family="sans-serif" font-size="25.806451612903228" opacity="1" fill="#000000" font-weight="bold">
+Interior ternary viewport
+</text>
+</g>
 </svg>
