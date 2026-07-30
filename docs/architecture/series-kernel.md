@@ -176,6 +176,26 @@ as they do with ordinary Plotters.
 background, border, font, position, margin, and legend-area methods therefore
 remain available. The crate introduces no ternary legend type.
 
+### Reference legend alignment
+
+The shared series-example renderer keeps native Plotters legends, but adapts
+the callback coordinate through a private `LegendRowLayout`. Plotters supplies
+the left edge of its legend area; the adapter reserves a 34-pixel symbol slot
+and a 12-pixel label gap, then supplies the slot centre to every line, circle,
+triangle, cross, and custom-symbol closure. The configured native legend area
+is therefore 46 pixels wide, with 12 pixels of outer padding. Plotters still
+measures label widths and row heights when it sizes the box. At final
+1000-by-800 resolution the full-series legend uses centre X = 644 and label
+start X = 673; the cropped legend uses centre X = 253 and label start X = 282.
+The nominal row height is rendered with normal integer-pixel rounding, so
+adjacent SVG row centres differ by at most one pixel.
+
+This is shared example/output infrastructure, not a replacement for the
+public native `SeriesAnno::legend` API. In the adapter's custom-symbol contract
+its closure coordinate is the physical centre of the allocated symbol slot.
+PNG geometry and SVG use the same adapter; the final-resolution PNG text pass
+uses the same unscaled label starts and font size.
+
 ## Error strategy
 
 `TernaryChartError<E>` now has a `Series(SeriesError)` variant alongside the

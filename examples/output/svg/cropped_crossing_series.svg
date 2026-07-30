@@ -20,24 +20,24 @@
 <polyline fill="none" opacity="1" stroke="#0066CC" stroke-width="4" points="349,558 433,90 "/>
 <polyline fill="none" opacity="1" stroke="#0066CC" stroke-width="4" points="565,90 649,558 "/>
 <circle cx="499" cy="485" r="8" opacity="1" fill="#199669" stroke="none" stroke-width="1"/>
-<rect x="224" y="95" width="331" height="96" opacity="0.88" fill="#FFFFFF" stroke="none"/>
-<rect x="224" y="95" width="331" height="96" opacity="1" fill="none" stroke="#232D3C"/>
-<polyline fill="none" opacity="1" stroke="#D23732" stroke-width="5" points="236,115 260,115 "/>
-<polyline fill="none" opacity="1" stroke="#0066CC" stroke-width="4" points="236,143 260,143 "/>
-<circle cx="236" cy="170" r="6" opacity="1" fill="#199669" stroke="none" stroke-width="1"/>
+<rect x="224" y="95" width="343" height="96" opacity="0.88" fill="#FFFFFF" stroke="none"/>
+<rect x="224" y="95" width="343" height="96" opacity="1" fill="none" stroke="#232D3C"/>
+<polyline fill="none" opacity="1" stroke="#D23732" stroke-width="5" points="236,116 270,116 "/>
+<polyline fill="none" opacity="1" stroke="#0066CC" stroke-width="4" points="236,144 270,144 "/>
+<circle cx="253" cy="171" r="6" opacity="1" fill="#199669" stroke="none" stroke-width="1"/>
 </g>
 <g id="ternary-text">
 
 <text x="500" y="5" dy="0.76em" text-anchor="middle" font-family="sans-serif" font-size="25.806451612903228" opacity="1" fill="#000000" font-weight="bold">
 Mathematically clipped crossing series
 </text>
-<text x="270" y="107" dy="0.76em" text-anchor="start" font-family="sans-serif" font-size="17.741935483870968" opacity="1" fill="#000000">
+<text x="282" y="107" dy="0.76em" text-anchor="start" font-family="sans-serif" font-size="17.741935483870968" opacity="1" fill="#000000">
 Outside endpoints, visible crossing
 </text>
-<text x="270" y="135" dy="0.76em" text-anchor="start" font-family="sans-serif" font-size="17.741935483870968" opacity="1" fill="#000000">
+<text x="282" y="135" dy="0.76em" text-anchor="start" font-family="sans-serif" font-size="17.741935483870968" opacity="1" fill="#000000">
 Exit and re-entry (two subpaths)
 </text>
-<text x="270" y="162" dy="0.76em" text-anchor="start" font-family="sans-serif" font-size="17.741935483870968" opacity="1" fill="#000000">
+<text x="282" y="162" dy="0.76em" text-anchor="start" font-family="sans-serif" font-size="17.741935483870968" opacity="1" fill="#000000">
 Centre-clipped markers
 </text>
 </g>
