@@ -35,7 +35,7 @@ pub struct TernaryChart<'a, DB: DrawingBackend> {
 
 impl<'a, DB: DrawingBackend> TernaryChart<'a, DB> {
     /// Configure and draw the Milestone 3 boundary, grid, and basic names.
-    pub fn configure_mesh(&mut self) -> TernaryMeshConfig<'_, 'a, 'static, 'static, DB> {
+    pub fn configure_mesh(&mut self) -> TernaryMeshConfig<'_, 'a, DB> {
         TernaryMeshConfig::new(self)
     }
     /// Draw a ternary-aware series and return Plotters' native annotation.

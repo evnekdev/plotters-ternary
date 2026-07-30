@@ -127,3 +127,13 @@ visible-edge tick filtering, and explicit cropped-axis policies. The current
 arbitrary-angle side-name element is deliberately narrow; searchable/native SVG
 arbitrary-angle text remains a Plotters capability risk. Bounds-aware marker
 clipping and richer explicit gap input types also remain future series work.
+
+
+## Milestone 5 mesh phases
+
+The mesh now has explicit `draw_geometry_scaled(scale)` and `draw_text()`
+phases. The shared bitmap output helper calls these independently so boundary,
+grids and ticks are supersampled while captions, tick labels, corner labels,
+axis names and legend text remain final-resolution raster text. `draw()` is
+kept for single-pass direct Plotters use. Axis configuration and true-edge-only
+cropped tick preparation are specified in [axis-kernel.md](axis-kernel.md).

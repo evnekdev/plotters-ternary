@@ -235,3 +235,9 @@ Plotters-element closure. `Centre` clipping tests only the projected anchor;
 `None` is the explicit unfiltered escape hatch. `TernaryChart::draw_series`
 returns native `&mut SeriesAnno`, and `configure_series_labels` forwards native
 `SeriesLabelStyle`, preserving ordinary Plotters legends without wrappers.
+
+## Milestone 5 mesh rendering
+
+Axis ticks are prepared from clipped original triangle edges, then rendered in
+the geometry phase. Numeric labels are a separate text phase; the rectangular
+viewport is not a drawable axis frame. See [axis-kernel.md](axis-kernel.md).

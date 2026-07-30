@@ -17,6 +17,12 @@ pub enum TernaryChartError<E: StdError + Send + Sync> {
     Drawing(DrawingAreaErrorKind<E>),
     /// The common major-grid step is unusable.
     InvalidMajorStep { value: f64 },
+    /// A tick specification could not produce a meaningful sequence.
+    InvalidTickCount { count: usize },
+    /// A tick step is not finite, positive, or safely bounded.
+    InvalidTickStep { value: f64 },
+    /// An explicit tick value is not finite or lies outside unit composition space.
+    InvalidTickValue { value: f64 },
     /// Caption and margins left no usable plotting rectangle.
     InsufficientDrawingArea { width: u32, height: u32 },
 }
@@ -30,6 +36,20 @@ impl<E: StdError + Send + Sync> fmt::Display for TernaryChartError<E> {
             Self::InvalidMajorStep { value } => write!(
                 formatter,
                 "major grid step must be finite, in (0, 1], and produce at most 10,000 intervals: {value:?}"
+            ),
+            Self::InvalidTickCount { count } => {
+                write!(
+                    formatter,
+                    "tick count must be at least one interval; received {count}"
+                )
+            }
+            Self::InvalidTickStep { value } => write!(
+                formatter,
+                "tick step must be finite, in (0, 1], and produce at most 10,000 intervals: {value:?}"
+            ),
+            Self::InvalidTickValue { value } => write!(
+                formatter,
+                "tick value must be finite and within the unit composition range: {value:?}"
             ),
             Self::InsufficientDrawingArea { width, height } => write!(
                 formatter,
@@ -45,7 +65,11 @@ impl<E: StdError + Send + Sync + 'static> StdError for TernaryChartError<E> {
             Self::Geometry(error) => Some(error),
             Self::Series(error) => Some(error),
             Self::Drawing(error) => Some(error),
-            Self::InvalidMajorStep { .. } | Self::InsufficientDrawingArea { .. } => None,
+            Self::InvalidMajorStep { .. }
+            | Self::InvalidTickCount { .. }
+            | Self::InvalidTickStep { .. }
+            | Self::InvalidTickValue { .. }
+            | Self::InsufficientDrawingArea { .. } => None,
         }
     }
 }

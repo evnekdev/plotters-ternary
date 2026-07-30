@@ -136,8 +136,8 @@ where
     let mesh = chart
         .configure_mesh()
         .major_step(0.1)
-        .boundary_style(RGBColor(35, 45, 60).stroke_width(scaled(3, scale)))
-        .major_grid_style(RGBColor(166, 177, 190).stroke_width(scale))
+        .boundary_style(RGBColor(35, 45, 60).stroke_width(3))
+        .major_grid_style(RGBColor(166, 177, 190).stroke_width(1))
         .axis_a_name("Component A axis")
         .axis_b_name("Component B axis")
         .axis_c_name("Component C axis")
@@ -158,17 +158,11 @@ where
         ))
         .axis_label_offset(scaled(34, scale))
         .corner_label_offset(scaled(24, scale));
-    let mesh = if pass.draws_geometry() {
-        mesh
+    if pass.draws_geometry() {
+        mesh.draw_geometry_scaled(scale)?;
     } else {
-        mesh.hide_grid_lines().hide_triangle_boundary()
-    };
-    let mesh = if pass.draws_text() {
-        mesh
-    } else {
-        mesh.hide_axis_names().hide_corner_names()
-    };
-    mesh.draw()?;
+        mesh.draw_text()?;
+    }
 
     drop(chart);
     root.present()?;

@@ -428,3 +428,13 @@ The crate should expose an error type that distinguishes:
 - wrapped Plotters drawing errors where practical.
 
 Exact generic error wrapping should be designed after experimenting with Plotters' backend error types.
+
+## Milestone 5 implemented axis API
+
+`TernaryAxis`, `TernaryAxisConfig`, `TickSpec`, `TickRangeMode`,
+`CroppedAxisPolicy`, `TickDirection`, `AxisLabelFormat`,
+`EndpointLabelPolicy`, `CornerLabelVisibility`, `AxisNamePosition`,
+`AxisTextStyle`, and `TickStyle` are now exported. Configure a semantic axis
+with `mesh.axis(TernaryAxis::A, |axis| { ... })`; compatibility shortcuts
+remain available on `TernaryMeshConfig`. See [axis-kernel.md](axis-kernel.md)
+for the implemented opposite-edge and clipping semantics.
