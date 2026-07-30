@@ -30,6 +30,7 @@ The crate should support:
 - [`series-kernel.md`](series-kernel.md): implemented lines, points and native legends.
 - [`marker-kernel.md`](marker-kernel.md): portable scientific-marker geometry, fills and partitions.
 - [`bitmap-quality.md`](bitmap-quality.md): temporary optional supersampling for example PNGs.
+- [`axis-kernel.md`](axis-kernel.md): implemented publication mesh, ticks, and axis labels.
 
 ## Decision records
 

@@ -536,3 +536,10 @@ The first publishable release should explain:
 - clipping semantics;
 - text rotation and mathematical-text limitations;
 - how to reproduce every gallery image.
+
+### Milestone 5 implementation status
+
+Milestone 5 is implemented with independent semantic axis configuration,
+true-edge-only cropped ticks, minor grids, deterministic endpoint ownership,
+and split geometry/text draw phases. Advanced cropped-axis relocation and
+general text collision resolution remain deferred.

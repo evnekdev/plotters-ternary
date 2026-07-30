@@ -87,8 +87,8 @@ where
     let mesh = chart
         .configure_mesh()
         .major_step(0.1)
-        .boundary_style(RGBColor(35, 45, 60).stroke_width(scaled(3, scale)))
-        .major_grid_style(RGBColor(214, 220, 228).stroke_width(scale))
+        .boundary_style(RGBColor(35, 45, 60).stroke_width(3))
+        .major_grid_style(RGBColor(214, 220, 228).stroke_width(1))
         .axis_a_name("Component A")
         .axis_b_name("Component B")
         .axis_c_name("Component C")
@@ -109,17 +109,11 @@ where
         ))
         .axis_label_offset(scaled(35, scale))
         .corner_label_offset(scaled(25, scale));
-    let mesh = if pass.geometry() {
-        mesh
+    if pass.geometry() {
+        mesh.draw_geometry_scaled(scale)?;
     } else {
-        mesh.hide_grid_lines().hide_triangle_boundary()
-    };
-    let mesh = if pass.text() {
-        mesh
-    } else {
-        mesh.hide_axis_names().hide_corner_names()
-    };
-    mesh.draw()?;
+        mesh.draw_text()?;
+    }
 
     let marker_styles = gallery_styles()?;
     let marker_points = triangular_lattice(marker_styles.len());
@@ -173,10 +167,10 @@ where
         .label("Four-phase experimental points")
         .legend(legend_marker(pass, scale, phase_styles[0].clone()));
 
-    let boundary_style = RGBColor(105, 55, 160).stroke_width(scaled(3, scale));
+    let boundary_style = RGBColor(105, 55, 160).stroke_width(3);
     let text_boundary_style = RGBColor(105, 55, 160)
         .mix(if pass.geometry() { 1.0 } else { 0.0 })
-        .stroke_width(scaled(3, scale));
+        .stroke_width(3);
     chart
         .draw_series(TernaryLineSeries::new(
             [

@@ -5,8 +5,10 @@ pub mod coord;
 pub mod series;
 
 pub use chart::{
-    CartesianChartContext, CartesianPlottingArea, TernaryChart, TernaryChartBuilder,
-    TernaryChartError, TernaryMeshConfig,
+    AxisLabelFormat, AxisNamePosition, AxisTextStyle, CartesianChartContext, CartesianPlottingArea,
+    CornerLabelVisibility, CroppedAxisPolicy, EndpointLabelPolicy, TernaryAxis, TernaryAxisConfig,
+    TernaryChart, TernaryChartBuilder, TernaryChartError, TernaryMeshConfig, TickDirection,
+    TickRangeMode, TickSpec, TickStyle,
 };
 pub use coord::{
     CartesianSegment, ClippedSegment, Component, EQUILATERAL_TRIANGLE_HEIGHT, Error, Normalization,
