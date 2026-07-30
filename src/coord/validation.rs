@@ -106,6 +106,39 @@ pub enum Error {
         y: f64,
         tolerance: Tolerance,
     },
+    /// One or more logical viewport bounds are NaN or infinite.
+    NonFiniteViewportBounds {
+        x_min: f64,
+        x_max: f64,
+        y_min: f64,
+        y_max: f64,
+    },
+    /// A viewport range is reversed, zero, near-zero, or otherwise unusable.
+    InvalidViewport {
+        x_min: f64,
+        x_max: f64,
+        y_min: f64,
+        y_max: f64,
+        minimum_span: f64,
+    },
+    /// An allocated pixel rectangle has a zero width or height.
+    InvalidPixelRect {
+        x: i32,
+        y: i32,
+        width: u32,
+        height: u32,
+    },
+    /// A floating-point pixel coordinate is NaN or infinite.
+    NonFinitePixelCoordinate { x: f64, y: f64 },
+    /// At least one endpoint of a Cartesian segment is NaN or infinite.
+    NonFiniteSegment {
+        start_x: f64,
+        start_y: f64,
+        end_x: f64,
+        end_y: f64,
+    },
+    /// A component-isoline value is materially outside the unit interval.
+    InvalidIsolineValue { value: f64, tolerance: Tolerance },
 }
 
 impl fmt::Display for Error {
@@ -161,6 +194,50 @@ impl fmt::Display for Error {
             Self::CartesianOutsideTriangle { x, y, tolerance } => write!(
                 formatter,
                 "Cartesian point ({x:?}, {y:?}) is outside the ternary triangle within {tolerance:?}"
+            ),
+            Self::NonFiniteViewportBounds {
+                x_min,
+                x_max,
+                y_min,
+                y_max,
+            } => write!(
+                formatter,
+                "viewport bounds must be finite: x={x_min:?}..{x_max:?}, y={y_min:?}..{y_max:?}"
+            ),
+            Self::InvalidViewport {
+                x_min,
+                x_max,
+                y_min,
+                y_max,
+                minimum_span,
+            } => write!(
+                formatter,
+                "viewport ranges must be ordered and wider than {minimum_span:?}: x={x_min:?}..{x_max:?}, y={y_min:?}..{y_max:?}"
+            ),
+            Self::InvalidPixelRect {
+                x,
+                y,
+                width,
+                height,
+            } => write!(
+                formatter,
+                "pixel rectangle at ({x}, {y}) must have non-zero dimensions: {width}x{height}"
+            ),
+            Self::NonFinitePixelCoordinate { x, y } => {
+                write!(formatter, "pixel coordinate is not finite: ({x:?}, {y:?})")
+            }
+            Self::NonFiniteSegment {
+                start_x,
+                start_y,
+                end_x,
+                end_y,
+            } => write!(
+                formatter,
+                "segment endpoints must be finite: ({start_x:?}, {start_y:?}) to ({end_x:?}, {end_y:?})"
+            ),
+            Self::InvalidIsolineValue { value, tolerance } => write!(
+                formatter,
+                "component-isoline value {value:?} is outside [0, 1] within {tolerance:?}"
             ),
         }
     }

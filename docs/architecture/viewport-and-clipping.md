@@ -26,22 +26,18 @@ A full triangle is simply the default logical viewport.
 ## Viewport type
 
 ```rust
-pub struct TernaryViewport {
-    pub x: Range<f64>,
-    pub y: Range<f64>,
-}
+pub struct TernaryViewport { /* private x_min/x_max/y_min/y_max */ }
 ```
 
-Suggested constructors:
+Implemented constructors:
 
 ```rust
-TernaryViewport::full()
-TernaryViewport::cartesian(x, y)
-TernaryViewport::around_composition(centre, width, height)
-TernaryViewport::fitted_to_points(points, padding)
+TernaryViewport::new(x_min, x_max, y_min, y_max)
+TernaryViewport::new_with_tolerance(x_min, x_max, y_min, y_max, tolerance)
+TernaryViewport::full(geometry)
 ```
 
-The raw Cartesian constructor is necessary for exact control. Composition-oriented constructors are conveniences that compute projected rectangular bounds.
+The raw scalar constructor provides exact control. Composition-oriented convenience constructors remain deferred until their padding and degenerate-input policies are required.
 
 ## Mapping and aspect ratio
 
@@ -55,6 +51,8 @@ pub enum ViewportFit {
 ```
 
 `PreserveAspect` may leave unused pixels in the allocated chart rectangle. Alignment should be configurable. `Stretch` is available only as an explicit opt-in.
+
+`PixelRect` uses a top-left origin with pixel Y increasing downward. `ViewportTransform` stores floating fitted bounds, applies one of nine alignments to unused space, and reversibly maps logical and floating pixel coordinates. Integer rounding is deferred to rendering.
 
 ## Fundamental rendering rule
 
@@ -83,7 +81,7 @@ Use a standard rectangle-segment clipping algorithm such as Liang-Barsky. For a 
 
 ### Polygons
 
-Use Sutherland-Hodgman clipping against the four sides of the rectangular viewport. This is appropriate because the clipping window is convex.
+Polygon clipping is deferred to Milestone 6. Sutherland-Hodgman against the four sides remains the intended algorithm because the clipping window is convex.
 
 ### Grid lines
 
@@ -128,13 +126,13 @@ The original triangle edges remain geometric entities even when partly or comple
 
 ```rust
 pub enum TriangleEdge {
-    AB,
-    BC,
-    CA,
+    LeftRight,
+    RightApex,
+    ApexLeft,
 }
 ```
 
-For each edge, calculate its intersection with the viewport. The result is zero or one visible segment for a convex rectangular window.
+Edges use geometric slot names so their identities remain stable across component vertex orders. For each directed edge, calculate its intersection with the viewport. `VisibleTriangleEdge` retains the original edge identity and the clipped parameter range in `[0, 1]`.
 
 Ticks are generated in composition space and drawn only when their projected positions lie on a visible original triangle-edge fragment. The viewport boundary itself is not automatically drawn and is not automatically treated as an axis.
 
@@ -194,15 +192,14 @@ Manual placement should allow a missing corner name to be pinned to a viewport s
 ## Point classification
 
 ```rust
-pub enum PointStatus {
-    Visible,
-    OutsideViewport,
-    OutsideTriangle,
-    InvalidComposition,
+pub enum ViewportPointLocation {
+    Inside,
+    Boundary,
+    Outside,
 }
 ```
 
-This distinction is useful for diagnostics, interaction and deciding whether a failed draw is an error or ordinary clipping.
+Viewport classification is deliberately separate from `TrianglePointLocation` and composition validation. A later chart may combine those results explicitly, but the geometry kernel does not introduce a conflated `Visible` status.
 
 ## Testing requirements
 

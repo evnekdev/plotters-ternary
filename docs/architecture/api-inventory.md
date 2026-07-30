@@ -23,13 +23,6 @@ pub struct Tolerance {
     pub absolute: f64,
     pub relative: f64,
 }
-
-pub enum PointStatus {
-    Visible,
-    OutsideViewport,
-    OutsideTriangle,
-    InvalidComposition,
-}
 ```
 
 Expected operations:
@@ -70,14 +63,34 @@ geometry.unproject(cartesian, tolerance)
 geometry.vertex(component)
 geometry.vertices()
 geometry.classify(cartesian, tolerance)
+geometry.triangle_edge(edge)
+geometry.visible_edges(viewport, tolerance)
+geometry.component_isoline(component, value, tolerance)
+geometry.visible_component_isoline(component, value, viewport, tolerance)
 ```
 
 ## Viewport
 
 ```rust
-pub struct TernaryViewport {
-    pub x: Range<f64>,
-    pub y: Range<f64>,
+pub struct TernaryViewport { /* private scalar bounds */ }
+
+pub struct PixelRect {
+    pub x: i32,
+    pub y: i32,
+    pub width: u32,
+    pub height: u32,
+}
+
+pub struct PixelPoint {
+    pub x: f64,
+    pub y: f64,
+}
+
+pub struct PixelBounds {
+    pub x_min: f64,
+    pub x_max: f64,
+    pub y_min: f64,
+    pub y_max: f64,
 }
 
 pub enum ViewportFit {
@@ -96,15 +109,43 @@ pub enum ViewportAlignment {
     BottomLeft,
     BottomRight,
 }
+
+pub enum ViewportPointLocation {
+    Inside,
+    Boundary,
+    Outside,
+}
+
+pub struct ViewportTransform { /* viewport, allocation, fitted bounds */ }
+
+pub struct CartesianSegment {
+    pub start: TernaryCartesian,
+    pub end: TernaryCartesian,
+}
+
+pub enum TriangleEdge {
+    LeftRight,
+    RightApex,
+    ApexLeft,
+}
 ```
 
-Expected constructors:
+Implemented operations:
 
 ```rust
-TernaryViewport::full()
-TernaryViewport::cartesian(x_range, y_range)
-TernaryViewport::around_composition(centre, width, height)
-TernaryViewport::fitted_to_points(points, padding)
+TernaryViewport::new(x_min, x_max, y_min, y_max)
+TernaryViewport::new_with_tolerance(x_min, x_max, y_min, y_max, tolerance)
+TernaryViewport::full(geometry)
+viewport.classify(cartesian, tolerance)
+viewport.contains(cartesian, tolerance)
+
+ViewportTransform::new(viewport, pixel_rect, fit, alignment)
+transform.logical_to_pixel(cartesian)
+transform.pixel_to_logical(pixel)
+transform.pixel_to_logical_checked(pixel)
+
+clip_segment(segment, viewport, tolerance)
+clip_segment_with_parameters(segment, viewport, tolerance)
 ```
 
 ## Chart
