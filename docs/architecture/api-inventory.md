@@ -355,33 +355,24 @@ pub enum MarkerClipMode {
 
 `Centre` remains centre-only clipping rather than marker-bounds clipping.
 
-### Polygons
+### Polygons and text annotations
 
-Support independent fill and border styles. Polygon clipping must occur against the rectangular viewport.
+Milestone 6 implements backend-neutral `prepare_polygon` and public
+`TernaryPolygon<I>`. A polygon accepts compositions convertible to
+`TernaryPoint`, supports independently optional `.fill_style(...)` and
+`.border_style(...)`, and is rendered through the normal
+`chart.draw_series(...)` route with native Plotters `SeriesAnno` legends.
+Open and explicitly closed simple loops are accepted. Fewer than three distinct
+vertices, zero area, invalid source compositions, and self intersections are
+reported through `PolygonError`; simple concave subjects are supported.
+Sutherland?Hodgman clipping occurs against the logical rectangular viewport
+before Plotters receives the final vertices.
 
-### Text
-
-```rust
-pub enum TextRotation {
-    None,
-    Deg90,
-    Deg180,
-    Deg270,
-    Angle(f64),
-}
-```
-
-Arbitrary angles may initially be unsupported or implemented through an optional renderer. The API should reserve the concept without claiming backend-independent vector support prematurely.
-
-Text annotations should support:
-
-- ternary anchor point;
-- pixel offset;
-- Plotters text style;
-- anchor/alignment;
-- rotation;
-- optional background and border;
-- optional mathematical-text renderer.
+`TernaryText` has an owned ternary anchor, UTF-8 text, owned `AxisTextStyle`,
+`TextAnchor`, final-pixel offset, validation policy, `AnnotationClipMode`, and
+native quarter-turn `TextRotation`. `AnnotationClipMode::Anchor` tests only the
+logical anchor; `None` is unrestricted. Bounds-aware clipping and general
+arbitrary-angle annotations are deliberately not claimed yet.
 
 ## Contours
 

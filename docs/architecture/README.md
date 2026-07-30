@@ -31,6 +31,7 @@ The crate should support:
 - [`marker-kernel.md`](marker-kernel.md): portable scientific-marker geometry, fills and partitions.
 - [`bitmap-quality.md`](bitmap-quality.md): temporary optional supersampling for example PNGs.
 - [`axis-kernel.md`](axis-kernel.md): implemented publication mesh, ticks, and axis labels.
+- [`region-annotation-kernel.md`](region-annotation-kernel.md): implemented phase polygons and text annotations.
 
 ## Decision records
 

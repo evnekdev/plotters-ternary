@@ -2,7 +2,7 @@ use std::fmt;
 
 use crate::coord;
 
-use super::MarkerError;
+use super::{AnnotationError, MarkerError, PolygonError};
 
 /// How invalid compositions affect a ternary series.
 #[derive(Clone, Copy, Debug, Default, Eq, Hash, PartialEq)]
@@ -33,6 +33,10 @@ pub enum SeriesError {
     TooManySmoothSamples { requested: usize, maximum: usize },
     /// Marker size zero has no useful rendering semantics.
     InvalidMarkerSize { size: u32 },
+    /// Polygon validation, projection, or clipping preparation failed.
+    Polygon(PolygonError),
+    /// A ternary text annotation could not be prepared.
+    Annotation(AnnotationError),
     /// A scientific marker configuration was invalid for an optional source
     /// index. `None` denotes a legacy uniform marker before point preparation.
     Marker {
@@ -70,6 +74,8 @@ impl fmt::Display for SeriesError {
             Self::InvalidMarkerSize { size } => {
                 write!(formatter, "marker size must be greater than zero: {size}")
             }
+            Self::Polygon(source) => write!(formatter, "ternary polygon error: {source}"),
+            Self::Annotation(source) => write!(formatter, "ternary annotation error: {source}"),
             Self::Marker {
                 index: Some(index),
                 source,
@@ -98,6 +104,8 @@ impl std::error::Error for SeriesError {
             | Self::TooManySmoothSamples { .. }
             | Self::InvalidMarkerSize { .. } => None,
             Self::Marker { source, .. } => Some(source),
+            Self::Polygon(source) => Some(source),
+            Self::Annotation(source) => Some(source),
         }
     }
 }

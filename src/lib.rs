@@ -19,9 +19,11 @@ pub use coord::{
     VisibleTriangleEdge, clip_segment, clip_segment_with_parameters,
 };
 pub use series::{
-    InvalidPointPolicy, LocalPoint, LocalSegment, MarkerClipMode, MarkerDrawing, MarkerElement,
-    MarkerError, MarkerFill, MarkerFillPolygon, MarkerGeometry, MarkerPartition, MarkerShape,
-    MarkerSlice, MarkerStyle, PointMarkerStyleProvider, SeriesError, SweepDirection,
-    TernaryInterpolation, TernaryLineSeries, TernaryPointSeries, TernarySeries,
-    TernarySmoothSeries, prepare_points, prepare_polyline,
+    AnnotationClipMode, AnnotationError, AnnotationTextStyle, HorizontalAnchor, InvalidPointPolicy,
+    LocalPoint, LocalSegment, MarkerClipMode, MarkerDrawing, MarkerElement, MarkerError,
+    MarkerFill, MarkerFillPolygon, MarkerGeometry, MarkerPartition, MarkerShape, MarkerSlice,
+    MarkerStyle, PointMarkerStyleProvider, PolygonError, PreparedPolygon, SeriesError,
+    SweepDirection, TernaryInterpolation, TernaryLineSeries, TernaryPointSeries, TernaryPolygon,
+    TernarySeries, TernarySmoothSeries, TernaryText, TextAnchor, TextRotation, VerticalAnchor,
+    prepare_points, prepare_polygon, prepare_polyline,
 };

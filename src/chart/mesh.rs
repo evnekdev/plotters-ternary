@@ -159,7 +159,7 @@ impl AxisTextStyle {
             RGBAColor(color.rgb.0, color.rgb.1, color.rgb.2, color.alpha),
         )
     }
-    fn plotters_style(&self) -> TextStyle<'_> {
+    pub(crate) fn plotters_style(&self) -> TextStyle<'_> {
         (self.family.as_str(), self.size, self.font_style)
             .into_font()
             .color(&self.color)

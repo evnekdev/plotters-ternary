@@ -1,0 +1,42 @@
+<svg width="1000" height="800" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+<g id="ternary-geometry" shape-rendering="geometricPrecision" stroke-linecap="round" stroke-linejoin="round">
+
+<rect x="0" y="0" width="1000" height="800" opacity="1" fill="#FFFFFF" stroke="none"/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="215,525 329,723 "/>
+<polyline fill="none" opacity="1" stroke="#192332" stroke-width="3" points="784,525 545,111 "/>
+<polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="570,155 575,149 "/>
+<polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="641,278 648,274 "/>
+<polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="712,401 720,399 "/>
+<polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="784,525 792,526 "/>
+<polygon opacity="0.23" fill="#5A91D2" points="784,723 784,525 545,111 215,111 215,723 "/>
+<polyline fill="none" opacity="1" stroke="#1E5596" stroke-width="2" points="784,723 784,525 545,111 215,111 215,723 784,723 "/>
+<polygon opacity="0.36" fill="#E1694B" points="215,111 429,111 542,155 542,549 215,617 "/>
+<polyline fill="none" opacity="1" stroke="#963023" stroke-width="3" points="215,111 429,111 542,155 542,549 215,617 215,111 "/>
+</g>
+<g id="ternary-text">
+
+<text x="500" y="5" dy="0.76em" text-anchor="middle" font-family="sans-serif" font-size="25.806451612903228" opacity="1" fill="#000000" font-weight="bold">
+Cropped phase regions: mathematical viewport clipping
+</text>
+<text x="575" y="149" dy="-0.5ex" text-anchor="start" font-family="sans-serif" font-size="14.516129032258064" opacity="1" fill="#192332">
+0.4
+</text>
+<text x="648" y="274" dy="-0.5ex" text-anchor="start" font-family="sans-serif" font-size="14.516129032258064" opacity="1" fill="#192332">
+0.5
+</text>
+<text x="720" y="399" dy="-0.5ex" text-anchor="start" font-family="sans-serif" font-size="14.516129032258064" opacity="1" fill="#192332">
+0.6
+</text>
+<text x="792" y="526" dy="0.76em" text-anchor="start" font-family="sans-serif" font-size="14.516129032258064" opacity="1" fill="#192332">
+0.7
+</text>
+<text x="315" y="306" dy="0.5ex" text-anchor="middle" font-family="sans-serif" font-size="18.548387096774192" opacity="1" fill="#192332" font-weight="bold">
+Visible clipped region
+</text>
+<text x="227" y="517" dy="0.5ex" text-anchor="middle" font-family="sans-serif" font-size="18.548387096774192" opacity="1" fill="#192332" font-weight="bold">
+Outside-anchor note
+</text>
+<text x="662" y="266" text-anchor="middle" dominant-baseline="middle" transform="rotate(60.010309 662 266)" font-family="sans-serif" font-size="25" fill="#192332" fill-opacity="1.000000" font-weight="bold">B component</text>
+<text x="659" y="212" text-anchor="middle" dominant-baseline="middle" transform="rotate(-59.975434 659 212)" font-family="sans-serif" font-size="25" fill="#192332" fill-opacity="1.000000" font-weight="bold">C, manual</text>
+</g>
+</svg>
