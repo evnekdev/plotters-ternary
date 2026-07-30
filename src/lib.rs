@@ -1,9 +1,12 @@
-//! Backend-independent geometry for ternary compositions.
-//!
-//! Plotters chart and rendering integration deliberately follow in later milestones.
+//! Ternary composition geometry and Cartesian-backed Plotters charts.
 
+pub mod chart;
 pub mod coord;
 
+pub use chart::{
+    CartesianChartContext, CartesianPlottingArea, TernaryChart, TernaryChartBuilder,
+    TernaryChartError, TernaryMeshConfig,
+};
 pub use coord::{
     CartesianSegment, ClippedSegment, Component, EQUILATERAL_TRIANGLE_HEIGHT, Error, Normalization,
     PixelBounds, PixelPoint, PixelRect, TernaryCartesian, TernaryGeometry, TernaryPoint,

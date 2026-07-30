@@ -151,40 +151,69 @@ clip_segment_with_parameters(segment, viewport, tolerance)
 ## Chart
 
 ```rust
-pub struct TernaryChartBuilder<'a, DB> { /* provisional */ }
-pub struct TernaryChart<'a, DB> { /* provisional */ }
+pub struct TernaryChartBuilder<'root, DB> { /* drawing-area layout inputs */ }
+pub struct TernaryChart<'series, DB> { /* owned Cartesian ChartContext */ }
+pub struct TernaryMeshConfig<'chart, 'series, 'font, DB> { /* borrowed config */ }
+pub enum TernaryChartError<E> { /* geometry, drawing, grid, layout */ }
 ```
 
-Intended builder operations:
+Implemented Milestone 3 builder operations:
 
 ```rust
 TernaryChartBuilder::on(&root)
     .caption(...)
-    .subtitle(...)
     .margin(...)
+    .geometry(...)
     .viewport(...)
     .viewport_fit(...)
     .viewport_alignment(...)
-    .normalization(...)
     .build()
 ```
 
-Intended chart operations:
+The implicit viewport is the full viewport of the final geometry. Once an
+explicit viewport is selected, later geometry changes do not replace it.
+Caption and margins are resolved before a fitted Plotters subarea is created.
+
+Implemented chart operations:
 
 ```rust
 chart.configure_mesh()
-chart.draw_series(...)
-chart.draw_text(...)
-chart.configure_series_labels()
 chart.plotting_area()
 chart.cartesian_chart()
 chart.cartesian_chart_mut()
-chart.project(point)
-chart.unproject(pixel_or_cartesian)
-chart.classify(point)
+chart.geometry()
+chart.viewport()
+chart.viewport_fit()
+chart.viewport_alignment()
 ```
 
-The exact return type from `draw_series` should preserve ordinary Plotters series annotation and legend support.
+`TernaryChart` owns a
+`ChartContext<'series, DB, Cartesian2d<RangedCoordf64, RangedCoordf64>>`.
+Its annotation lifetime is independent of the root borrow used during build.
+`CartesianChartContext` and `CartesianPlottingArea` aliases describe the narrow
+escape-hatch return types. Production `draw_series`, series-label, projection,
+and annotation conveniences remain Milestone 4 work; their eventual return
+types must preserve ordinary Plotters series annotation and legend support.
+
+The initial mesh supports:
+
+```rust
+chart.configure_mesh()
+    .major_step(0.1)
+    .boundary_style(...)
+    .major_grid_style(...)
+    .text_style(...)
+    .axis_a_name(...).axis_b_name(...).axis_c_name(...)
+    .corner_a_name(...).corner_b_name(...).corner_c_name(...)
+    .hide_axis_names()
+    .hide_corner_names()
+    .hide_grid_lines()
+    .hide_triangle_boundary()
+    .draw()
+```
+
+Independent axis tick specifications, tick labels, and cropped-axis placement
+remain provisional Milestone 5 concepts below.
 
 ## Axes, ticks and mesh
 

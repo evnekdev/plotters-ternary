@@ -1,0 +1,54 @@
+<svg width="1000" height="800" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+<rect x="0" y="0" width="1000" height="800" opacity="1" fill="#FFFFFF" stroke="none"/>
+<text x="500" y="5" dy="0.76em" text-anchor="middle" font-family="sans-serif" font-size="24.193548387096776" opacity="1" fill="#000000" font-weight="bold">
+Full ternary diagram
+</text>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="802,744 461,155 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="726,744 423,220 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="650,744 385,286 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="575,744 348,351 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="499,744 310,417 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="423,744 272,482 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="348,744 234,548 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="272,744 196,613 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="196,744 158,679 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="196,744 537,155 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="272,744 575,220 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="348,744 613,286 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="423,744 650,351 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="499,744 688,417 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="575,744 726,482 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="650,744 764,548 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="726,744 802,613 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="802,744 840,679 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="158,679 840,679 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="196,613 802,613 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="234,548 764,548 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="272,482 726,482 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="310,417 688,417 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="348,351 650,351 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="385,286 613,286 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="423,220 575,220 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="461,155 537,155 "/>
+<polyline fill="none" opacity="1" stroke="#232D3C" stroke-width="3" points="121,744 878,744 "/>
+<polyline fill="none" opacity="1" stroke="#232D3C" stroke-width="3" points="878,744 499,89 "/>
+<polyline fill="none" opacity="1" stroke="#232D3C" stroke-width="3" points="499,89 121,744 "/>
+<text x="688" y="417" dy="0.5ex" text-anchor="start" font-family="sans-serif" font-size="15.32258064516129" opacity="1" fill="#192332">
+Component A axis
+</text>
+<text x="310" y="417" dy="0.5ex" text-anchor="end" font-family="sans-serif" font-size="15.32258064516129" opacity="1" fill="#192332">
+Component B axis
+</text>
+<text x="499" y="744" dy="0.76em" text-anchor="middle" font-family="sans-serif" font-size="15.32258064516129" opacity="1" fill="#192332">
+Component C axis
+</text>
+<text x="121" y="744" dy="0.76em" text-anchor="start" font-family="sans-serif" font-size="15.32258064516129" opacity="1" fill="#192332">
+Pure A corner
+</text>
+<text x="878" y="744" dy="0.76em" text-anchor="end" font-family="sans-serif" font-size="15.32258064516129" opacity="1" fill="#192332">
+Pure B corner
+</text>
+<text x="499" y="89" dy="-0.5ex" text-anchor="middle" font-family="sans-serif" font-size="15.32258064516129" opacity="1" fill="#192332">
+Pure C corner
+</text>
+</svg>
