@@ -215,3 +215,19 @@ Viewport tests should include:
 - polygons surrounding the viewport;
 - aspect-preserving mapping into wide, square and tall pixel areas;
 - reverse transformation near viewport boundaries.
+
+## Milestone 3 rendering integration
+
+Rendering uses the fitted-subarea strategy. After Plotters allocates the caption
+and the chart applies its outer margin, `ViewportTransform` calculates the
+fitted bounds. Those floating bounds are rounded once to an integer
+`DrawingArea::shrink` subarea, and the Cartesian chart uses the requested
+viewport ranges exactly. `PreserveAspect` therefore keeps equal logical X/Y
+scale to within one pixel of layout rounding; `ViewportAlignment` places unused
+space around that subarea. `Stretch` uses the full post-layout allocation.
+
+The requested viewport remains both the mathematical clipping rectangle and
+the internal Cartesian logical range. It is never rendered. Triangle edges and
+component isolines are clipped with `visible_edges` and
+`visible_component_isoline` before becoming Plotters paths; the plotting-area
+boundary is not used as a substitute for mathematical clipping.

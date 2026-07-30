@@ -1,0 +1,33 @@
+<svg width="1000" height="800" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+<rect x="0" y="0" width="1000" height="800" opacity="1" fill="#FFFFFF" stroke="none"/>
+<text x="500" y="5" dy="0.76em" text-anchor="middle" font-family="sans-serif" font-size="24.193548387096776" opacity="1" fill="#000000" font-weight="bold">
+Right-cropped ternary diagram
+</text>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="610,716 273,132 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="513,716 273,299 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="417,716 273,465 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="321,716 273,632 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="273,132 297,89 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="273,299 369,132 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="273,465 417,215 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="273,632 465,299 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="321,716 513,382 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="417,716 562,465 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="513,716 610,549 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="610,716 658,632 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="273,632 658,632 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="273,549 610,549 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="273,465 562,465 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="273,382 513,382 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="273,299 465,299 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="273,215 417,215 "/>
+<polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="273,132 369,132 "/>
+<polyline fill="none" opacity="1" stroke="#232D3C" stroke-width="3" points="273,716 706,716 "/>
+<polyline fill="none" opacity="1" stroke="#232D3C" stroke-width="3" points="706,716 345,89 "/>
+<text x="465" y="299" dy="0.5ex" text-anchor="start" font-family="sans-serif" font-size="15.32258064516129" opacity="1" fill="#192332">
+Component A axis
+</text>
+<text x="706" y="716" dy="0.76em" text-anchor="end" font-family="sans-serif" font-size="15.32258064516129" opacity="1" fill="#192332">
+Pure B corner
+</text>
+</svg>

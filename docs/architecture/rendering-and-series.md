@@ -190,3 +190,25 @@ Rendering tests should combine numerical assertions and reference images:
 - examples covering full, side-cropped and interior viewports;
 - legends and captions outside the clipped viewport;
 - backend parity checks where practical.
+
+## Milestone 3 implemented chart integration
+
+The first production chart now owns a Cartesian `ChartContext` and lays it out
+on an aspect-fitted Plotters subarea after caption and margin allocation. The
+internal Cartesian ranges remain exactly the requested logical viewport.
+Boundary and major-grid paths are mathematically clipped by the coordinate
+kernel before Plotters receives them. A generic `TernaryChartError<E>` keeps
+Plotters backend errors separate from `coord::Error`.
+
+The initial `TernaryMeshConfig` deliberately has one common major step and
+basic horizontal semantic axis/corner names. Axis names use the normal midpoint
+of the opposite full triangle edge and are omitted when that anchor is cropped;
+corner names are omitted when their semantic vertex is cropped. It does not
+relocate either kind of name to an invisible viewport side. Independent steps,
+ticks, tick labels, minor grids, and advanced cropped-axis policy remain
+Milestone 5 work.
+
+The chart exposes `cartesian_chart`, `cartesian_chart_mut`, and `plotting_area`.
+Production ternary data-series adapters and native `SeriesAnno` return values
+remain Milestone 4 work; the original Plotters integration spike continues to
+verify ordinary annotation and legend behavior.
