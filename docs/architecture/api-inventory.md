@@ -5,11 +5,7 @@ This document inventories the intended public concepts. Names and signatures are
 ## Coordinates and validation
 
 ```rust
-pub struct TernaryPoint {
-    pub a: f64,
-    pub b: f64,
-    pub c: f64,
-}
+pub struct TernaryPoint { /* private A/B/C fields */ }
 
 pub enum Component {
     A,
@@ -21,6 +17,11 @@ pub enum Normalization {
     RequireUnitSum,
     Normalize,
     RequireSum(f64),
+}
+
+pub struct Tolerance {
+    pub absolute: f64,
+    pub relative: f64,
 }
 
 pub enum PointStatus {
@@ -35,11 +36,10 @@ Expected operations:
 
 ```rust
 TernaryPoint::new(a, b, c)
-TernaryPoint::from_ab(a, b)
 point.sum()
-point.normalized()
 point.validate(policy, tolerance)
 point.component(Component::A)
+point.as_array()
 ```
 
 Tuple and array conversions should be supported without making raw tuples the primary API.
@@ -47,21 +47,14 @@ Tuple and array conversions should be supported without making raw tuples the pr
 ## Geometry
 
 ```rust
-pub struct TernaryGeometry {
-    pub orientation: TriangleOrientation,
-    pub vertex_order: VertexOrder,
-}
+pub struct TernaryGeometry { /* private orientation and vertex order */ }
 
 pub enum TriangleOrientation {
     Up,
     Down,
 }
 
-pub struct VertexOrder {
-    pub left: Component,
-    pub right: Component,
-    pub top: Component,
-}
+pub struct VertexOrder { /* validated private left/right/apex fields */ }
 
 pub struct TernaryCartesian {
     pub x: f64,
@@ -72,11 +65,11 @@ pub struct TernaryCartesian {
 Expected operations:
 
 ```rust
-geometry.project(point)
-geometry.unproject(cartesian)
+geometry.project(point, normalization, tolerance)
+geometry.unproject(cartesian, tolerance)
 geometry.vertex(component)
-geometry.edge(TriangleEdge::AB)
-geometry.component_isoline(Component::A, value)
+geometry.vertices()
+geometry.classify(cartesian, tolerance)
 ```
 
 ## Viewport

@@ -10,3 +10,6 @@ plotters = { version = "0.3.7", default-features = false, features = [
     "svg_backend",
     "ttf",
 ] }
+
+[dev-dependencies]
+proptest = "1.6"

@@ -1,14 +1,10 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+//! Backend-independent geometry for ternary compositions.
+//!
+//! Rendering and viewport support deliberately follow in later milestones.
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+pub mod coord;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+pub use coord::{
+    Component, Error, Normalization, TernaryCartesian, TernaryGeometry, TernaryPoint, Tolerance,
+    TriangleOrientation, TrianglePointLocation, VertexOrder,
+};
