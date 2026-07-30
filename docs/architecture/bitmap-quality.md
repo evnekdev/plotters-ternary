@@ -48,6 +48,22 @@ primitives in narrowly scoped groups. `ternary-geometry` carries
 interpolates, subdivides, resamples, or rewrites any path coordinate. SVG is
 still the preferred publication-quality output.
 
+## Arbitrary-angle axis text
+
+Geometry supersampling intentionally excludes all text. Sloped B/C axis names
+are also excluded from that layer: their prepared final-layout command is
+captured during the bitmap text pass and rendered at the final output resolution
+with a transparent coverage mask. The default text-mask scale is 4x (bounded to
+1x through 4x), followed by inverse-mapped bilinear rotation and source-over
+alpha compositing. This improves sloped glyph edges without rescaling nominal
+font sizes, offsets, or anchors, and it works over any background colour.
+
+The SVG adapter consumes the identical prepared command as native rotated SVG
+`<text>` with no raster image or per-pixel glyph rectangles. Horizontal text,
+captions, tick labels, corner labels, and legend text remain Plotters-native
+text. The helper performs no global SVG text replacement and changes no
+geometry path coordinates.
+
 This module is deliberately a portable, removable fallback, not a permanent
 crate antialiasing API and not "native antialiasing". If a future Plotters
 bitmap backend exposes native antialiasing, the output helper can select it or

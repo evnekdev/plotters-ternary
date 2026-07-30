@@ -88,7 +88,7 @@ where
         .corner_label_style(("sans-serif", 28, FontStyle::Bold, &navy))
         .corner_label_offset(scaled(26, scale))
         .axis_a(|axis| {
-            axis.axis_name("A ? apex component")
+            axis.axis_name("A \u{2192} apex component")
                 .axis_name_style(axis_text.clone())
                 .axis_name_offset(scaled(42, scale))
                 .major_ticks(TickSpec::Count(5))
@@ -108,7 +108,7 @@ where
                 .endpoint_label_policy(EndpointLabelPolicy::AutoAvoidDuplicates);
         })
         .axis_b(|axis| {
-            axis.axis_name("B ? lower-left component")
+            axis.axis_name("B \u{2192} lower-left component")
                 .axis_name_style(axis_text.clone())
                 .axis_name_offset(scaled(42, scale))
                 .major_ticks(TickSpec::Values(vec![0.0, 0.2, 0.5, 0.8, 1.0]))
@@ -126,7 +126,7 @@ where
                 .endpoint_label_policy(EndpointLabelPolicy::AutoAvoidDuplicates);
         })
         .axis_c(|axis| {
-            axis.axis_name("C ? lower-right component")
+            axis.axis_name("C \u{2192} lower-right component")
                 .axis_name_style(axis_text)
                 .axis_name_offset(scaled(42, scale))
                 .major_ticks(TickSpec::Step(0.25))

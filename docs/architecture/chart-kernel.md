@@ -86,14 +86,14 @@ never relocated to viewport sides.
 An axis name uses the midpoint of the full edge opposite its semantic component,
 is offset outward along the centroid-to-midpoint direction, and has a baseline
 parallel to that edge in actual backend-pixel space. `axis_label_offset` and
-`corner_label_offset` configure the two distances. Plotters' common text API only
-supports quarter turns, so horizontal names use native vector text while side
-names use a small crate-owned arbitrary-angle element. It rotates only the
-configured font's glyph pixels. PNG receives raster glyph pixels; SVG receives
-vector rectangle primitives rather than an embedded image, but those side names
-are not searchable SVG `<text>`. The direct `plotters-backend` dependency exists
-only to implement this sound generic Plotters element. Missing labels are not
-relocated to clipped viewport sides.
+`corner_label_offset` configure the two distances. Horizontal and quarter-turn
+text remains native Plotters text. Sloped side names use a prepared arbitrary-angle
+text command after the same layout calculation: bitmap output uses a bounded,
+antialiased coverage-mask rotation in the final text pass, and the shared SVG
+adapter emits one native searchable `<text transform="rotate(...)">` node. This
+never enters the geometry-supersampling pass, does not add an `image` dependency
+to chart APIs, and preserves style, anchor, offset, and semantic edge association.
+Missing labels are not relocated to clipped viewport sides.
 
 ## Error strategy
 
@@ -122,11 +122,12 @@ context, and returns Plotters' native mutable `SeriesAnno`. Ordinary
 retained projected geometry. `configure_series_labels` forwards Plotters'
 native object, and `draw_point_series` accepts owned custom marker elements. `TernarySmoothSeries` is an explicit `spline1d`-backed composition-space path; it does not change exact `TernaryLineSeries` semantics.
 
-Milestone 5 must add independent axis steps, ticks and tick labels,
-visible-edge tick filtering, and explicit cropped-axis policies. The current
-arbitrary-angle side-name element is deliberately narrow; searchable/native SVG
-arbitrary-angle text remains a Plotters capability risk. Bounds-aware marker
-clipping and richer explicit gap input types also remain future series work.
+Milestone 5 adds independent axis steps, ticks and tick labels, visible-edge
+tick filtering, and explicit cropped-axis policies. The arbitrary-angle
+side-name adapter is deliberately narrow: it covers axis names in the shared
+PNG/SVG output pipeline, while a general public annotation-text rotation API
+remains future work. Bounds-aware marker clipping and richer explicit gap input
+types also remain future series work.
 
 
 ## Milestone 5 mesh phases

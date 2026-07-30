@@ -84,7 +84,7 @@ where
         .corner_label_offset(scaled(26, scale))
         .corner_label_visibility(CornerLabelVisibility::Auto)
         .axis_a(|axis| {
-            axis.axis_name("A axis (B?C edge)")
+            axis.axis_name("A axis (B\u{2013}C edge)")
                 .axis_name_style(name_style.clone())
                 .axis_name_offset(scaled(36, scale))
                 .major_ticks(TickSpec::Step(0.1))
@@ -104,7 +104,7 @@ where
                 .endpoint_label_policy(EndpointLabelPolicy::AutoAvoidDuplicates);
         })
         .axis_b(|axis| {
-            axis.axis_name("B axis (C?A edge)")
+            axis.axis_name("B axis (C\u{2013}A edge)")
                 .axis_name_style(name_style.clone())
                 .axis_name_offset(scaled(36, scale))
                 .major_ticks(TickSpec::Values(vec![0.0, 0.2, 0.4, 0.6, 0.8, 1.0]))

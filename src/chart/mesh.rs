@@ -1,13 +1,13 @@
-use std::iter::{Once, once};
 use std::sync::Arc;
 
 use plotters::backend::DrawingBackend;
-use plotters::element::{Drawable, EmptyElement, PathElement, PointCollection, Text};
+use plotters::element::{EmptyElement, PathElement, Text};
 use plotters::style::text_anchor::{HPos, Pos, VPos};
 use plotters::style::{
     BLACK, Color, FontStyle, IntoFont, IntoTextStyle, RGBAColor, RGBColor, ShapeStyle, TextStyle,
 };
 
+use super::rotated_text::RotatedText;
 use super::{TernaryChart, TernaryChartError};
 use crate::Tolerance;
 use crate::coord::{
@@ -780,20 +780,22 @@ impl<'chart, 'series, DB: DrawingBackend> TernaryMeshConfig<'chart, 'series, DB>
         }
         let edge = semantic_axis_edge(self.chart.geometry, axis.axis.component());
         let layout = axis_name_layout(self.chart, edge, anchor, config.name_offset);
-        let style = config.name_style.plotters_style();
         if layout.angle.abs() <= 1.0e-12 {
             let text = EmptyElement::<_, DB>::at((anchor.x, anchor.y))
                 + Text::new(
                     name.clone(),
                     layout.offset,
-                    style.pos(Pos::new(HPos::Center, VPos::Center)),
+                    config
+                        .name_style
+                        .plotters_style()
+                        .pos(Pos::new(HPos::Center, VPos::Center)),
                 );
             self.chart.plotting_area().draw(&text)?;
         } else {
             self.chart.plotting_area().draw(&RotatedText::new(
                 (anchor.x, anchor.y),
                 name.clone(),
-                style,
+                config.name_style.clone(),
                 layout.angle,
                 layout.offset,
             ))?;
@@ -1184,84 +1186,6 @@ fn tick_endpoints(
         TickDirection::Outward => ((0, 0), vector(length)),
         TickDirection::Inward => (vector(-length), (0, 0)),
         TickDirection::Both => (vector(-length / 2.0), vector(length / 2.0)),
-    }
-}
-
-// Plotters has native quarter turns only. This concrete element maintains the
-// existing arbitrary edge-parallel label path; SVG receives vector glyph pixels,
-// not searchable rotated SVG text. Ordinary tick labels remain native Text.
-struct RotatedText<'font> {
-    anchor: (f64, f64),
-    text: String,
-    style: TextStyle<'font>,
-    angle: f64,
-    offset: (i32, i32),
-}
-impl<'font> RotatedText<'font> {
-    fn new(
-        anchor: (f64, f64),
-        text: String,
-        style: TextStyle<'font>,
-        angle: f64,
-        offset: (i32, i32),
-    ) -> Self {
-        Self {
-            anchor,
-            text,
-            style,
-            angle,
-            offset,
-        }
-    }
-}
-impl<'element, 'font> PointCollection<'element, (f64, f64)> for &'element RotatedText<'font> {
-    type Point = &'element (f64, f64);
-    type IntoIter = Once<Self::Point>;
-    fn point_iter(self) -> Self::IntoIter {
-        once(&self.anchor)
-    }
-}
-impl<'font, DB: DrawingBackend> Drawable<DB> for RotatedText<'font> {
-    fn draw<I: Iterator<Item = (i32, i32)>>(
-        &self,
-        mut positions: I,
-        backend: &mut DB,
-        _: (u32, u32),
-    ) -> Result<(), plotters_backend::DrawingErrorKind<DB::ErrorType>> {
-        let Some(anchor) = positions.next() else {
-            return Ok(());
-        };
-        let ((min_x, min_y), (max_x, max_y)) = self
-            .style
-            .font
-            .layout_box(&self.text)
-            .map_err(|error| plotters_backend::DrawingErrorKind::FontError(Box::new(error)))?;
-        let centre_x = f64::from(min_x + max_x) / 2.0;
-        let centre_y = f64::from(min_y + max_y) / 2.0;
-        let (cosine, sine) = (self.angle.cos(), self.angle.sin());
-        let base_color = self.style.color;
-        let result = self.style.font.draw(&self.text, (0, 0), |x, y, alpha| {
-            if alpha == 0.0 {
-                return Ok(());
-            }
-            let x = f64::from(x) - centre_x;
-            let y = f64::from(y) - centre_y;
-            let mut color = base_color;
-            color.alpha *= f64::from(alpha);
-            backend.draw_pixel(
-                (
-                    anchor.0 + self.offset.0 + (x * cosine - y * sine).round() as i32,
-                    anchor.1 + self.offset.1 + (x * sine + y * cosine).round() as i32,
-                ),
-                color,
-            )
-        });
-        match result {
-            Ok(value) => value,
-            Err(error) => Err(plotters_backend::DrawingErrorKind::FontError(Box::new(
-                error,
-            ))),
-        }
     }
 }
 
