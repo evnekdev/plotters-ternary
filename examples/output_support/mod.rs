@@ -7,6 +7,10 @@ use plotters::backend::DrawingBackend;
 use plotters::coord::Shift;
 use plotters::drawing::{DrawingArea, DrawingAreaErrorKind, IntoDrawingArea};
 use plotters::prelude::{BitMapBackend, FontStyle, IntoTextStyle, SVGBackend};
+use plotters_ternary::{
+    capture_rotated_text, capture_svg_rotated_text, draw_prepared_rotated_text,
+    svg_rotated_text_elements,
+};
 
 pub const DEFAULT_BITMAP_SUPERSAMPLING: u32 = 3;
 pub const MAX_BITMAP_SUPERSAMPLING: u32 = 4;
@@ -188,15 +192,17 @@ where
         render_geometry(root)?;
     }
     let mut text_document = String::new();
-    {
+    let (text_result, rotated_text) = capture_svg_rotated_text(|| {
         let root = SVGBackend::with_string(&mut text_document, output_size).into_drawing_area();
-        render_text(root)?;
-    }
+        render_text(root)
+    });
+    text_result?;
 
     let (header, geometry) = svg_parts(&geometry_document)?;
     let (_, text) = svg_parts(&text_document)?;
+    let rotated_text = svg_rotated_text_elements(&rotated_text);
     Ok(format!(
-        "{header}\n<g id=\"ternary-geometry\" shape-rendering=\"geometricPrecision\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n{geometry}</g>\n<g id=\"ternary-text\">\n{text}</g>\n</svg>\n"
+        "{header}\n<g id=\"ternary-geometry\" shape-rendering=\"geometricPrecision\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n{geometry}</g>\n<g id=\"ternary-text\">\n{text}{rotated_text}</g>\n</svg>\n"
     ))
 }
 
@@ -252,10 +258,17 @@ where
         ),
     };
 
+    let (text_result, rotated_text) = capture_rotated_text(|| {
+        let root = BitMapBackend::with_buffer(final_image.as_mut(), options.output_size)
+            .into_drawing_area();
+        render_text(root)
+    });
+    text_result?;
     {
         let root = BitMapBackend::with_buffer(final_image.as_mut(), options.output_size)
             .into_drawing_area();
-        render_text(root)?;
+        draw_prepared_rotated_text(&root, &rotated_text)?;
+        root.present()?;
     }
 
     final_image.save(path)?;

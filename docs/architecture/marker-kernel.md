@@ -48,7 +48,7 @@ let points = TernaryPointSeries::new([TernaryPoint::new(0.2, 0.3, 0.5)])
 ```
 
 `MarkerShape::Triangle` is retained as the historical spelling for
-`TriangleUp`. `Plus` is the orthogonal `+`; `Cross` is the diagonal `?`.
+`TriangleUp`. `Plus` is the orthogonal `+`; `Cross` is the diagonal `×`.
 Fillable shapes are circle/ellipse, square/rectangle/rounded square, diamond,
 the four triangle directions, regular polygons, and stars. `Plus`, `Cross`,
 and `Asterisk` are intentionally stroke-only and reject non-empty fills.
@@ -58,7 +58,7 @@ point stars.
 ## Centre and tessellation contract
 
 Every outline is generated in local floating-point coordinates and normalized
-to a centred `[-1, 1] ? [-1, 1]` bounding box. A `MarkerElement` anchor is
+to a centred `[-1, 1] × [-1, 1]` bounding box. A `MarkerElement` anchor is
 always that visual centre, both in a plot and in a legend. The requested size
 is the backend-pixel half-extent. This prevents circles, triangles, stars, and
 stroke-only symbols from shifting when mixed in a native Plotters legend.
@@ -70,7 +70,7 @@ bitmap supersampling only changes the rasterisation of that geometry.
 ## Fills and partitions
 
 `MarkerPartition::Radial` accepts one to four slices. Angles begin at
-`start_angle_deg`; `0?` points right and positive angles rotate
+`start_angle_deg`; `0°` points right and positive angles rotate
 counter-clockwise in ordinary mathematical space (visually toward the top in
 backend pixel coordinates). `SweepDirection` selects positive or negative
 sweep. Slices follow source-vector order and their positive finite weights are

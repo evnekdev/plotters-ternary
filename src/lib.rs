@@ -6,9 +6,10 @@ pub mod series;
 
 pub use chart::{
     AxisLabelFormat, AxisNamePosition, AxisTextStyle, CartesianChartContext, CartesianPlottingArea,
-    CornerLabelVisibility, CroppedAxisPolicy, EndpointLabelPolicy, TernaryAxis, TernaryAxisConfig,
-    TernaryChart, TernaryChartBuilder, TernaryChartError, TernaryMeshConfig, TickDirection,
-    TickRangeMode, TickSpec, TickStyle,
+    CornerLabelVisibility, CroppedAxisPolicy, EndpointLabelPolicy, PreparedRotatedText,
+    TernaryAxis, TernaryAxisConfig, TernaryChart, TernaryChartBuilder, TernaryChartError,
+    TernaryMeshConfig, TickDirection, TickRangeMode, TickSpec, TickStyle, capture_rotated_text,
+    capture_svg_rotated_text, draw_prepared_rotated_text, svg_rotated_text_elements,
 };
 pub use coord::{
     CartesianSegment, ClippedSegment, Component, EQUILATERAL_TRIANGLE_HEIGHT, Error, Normalization,
