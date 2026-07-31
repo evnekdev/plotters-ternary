@@ -41,6 +41,19 @@ The crate should support:
 - [`0002-rectangular-ternary-viewports.md`](../decisions/0002-rectangular-ternary-viewports.md)
 - [`0003-raw-barycentric-experimental.md`](../decisions/0003-raw-barycentric-experimental.md)
 
+## Numerical-core dependency
+
+Phase 1 extraction establishes the dependency direction:
+
+```text
+ternary-contours
+    -> regular ternary grid and cubic-alpha interpolation
+plotters-ternary
+    -> charting, clipping, Plotters integration, and temporary contour extraction ownership
+```
+
+`ternary-contours` deliberately contains no Plotters dependency. Contour path extraction, adaptive topology, and regularization remain in `plotters-ternary` until Phase 2.
+
 ## Maintenance rules
 
 1. Update these notes when public concepts or ownership boundaries change.

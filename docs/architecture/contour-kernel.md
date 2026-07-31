@@ -1,5 +1,9 @@
 # Milestone 7 regular-grid contour kernel
 
+## Phase 1 numerical-core ownership
+
+`ternary-contours` now owns regular-lattice indexing, scalar-field validation, directed alpha intervals, binary extrapolation, local cubic-alpha fields, analytic local gradients, and shared-edge interval construction. `plotters-ternary` consumes the pinned Phase 1 commit through a Git dependency and retains compatibility wrappers for semantic `TernaryPoint` access. Linear and adaptive contour extraction, path assembly, regularization, projection, viewport clipping, and Plotters rendering remain here pending Phase 2.
+
 ## Scope and public API
 
 Milestone 7 implements line contours over the regular two-dimensional ternary lattice only. For subdivision count `n`, `RegularTernaryScalarField` stores `(n+1)(n+2)/2` finite values at integer coordinates `i+j+k=n`. Canonical public ordering is row-major in `(i,j)`: `i=0..n`; for each `i`, `j=0..n-i`; and `k=n-i-j`. `GridVertexId`, `LatticeCoordinate`, `index_of`, `coordinate_of`, and `composition_at` provide checked conversions.

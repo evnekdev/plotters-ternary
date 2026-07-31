@@ -582,6 +582,7 @@ dependencies = [
  "plotters-backend",
  "proptest",
  "spline1d",
+ "ternary-contours",
 ]
 
 [[package]]
@@ -850,6 +851,14 @@ dependencies = [
  "once_cell",
  "rustix",
  "windows-sys",
+]
+
+[[package]]
+name = "ternary-contours"
+version = "0.1.0"
+source = "git+https://github.com/evnekdev/ternary-contours.git?rev=3038642af7c0af3f64a544eb9b40d30d4b820471#3038642af7c0af3f64a544eb9b40d30d4b820471"
+dependencies = [
+ "spline1d",
 ]
 
 [[package]]
