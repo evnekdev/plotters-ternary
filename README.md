@@ -1,173 +1,158 @@
 # plotters-ternary
 
-`plotters-ternary` adds publication-quality ternary composition diagrams to
-[Plotters](https://crates.io/crates/plotters). It keeps A/B/C compositions,
-logical viewport clipping, regular-grid contours, and scientific drawing
-primitives separate from backend rendering, while preserving ordinary Plotters
-captions, styles, `SeriesAnno`, and legends.
+plotters-ternary adds scientific ternary composition diagrams to
+[Plotters](https://crates.io/crates/plotters). A ternary diagram represents
+three-component compositions (a, b, c) satisfying a + b + c = 1 as a triangle.
+It is useful for phase diagrams, alloy systems, geochemistry, compositional
+chemistry, and any measurement defined on a three-part mixture.
 
-## Capabilities
+The crate provides ternary projection, publication-oriented axes and grids,
+invisible mathematical viewports, lines, points, scientific markers, polygons,
+annotations, regular-grid contours, filled bands, scalar maps, contour labels,
+colour bars, PNG output, and native-vector SVG.
 
-- validated ternary compositions, configurable vertex order, upward/downward geometry;
-- full, cropped, and interior logical viewports with invisible mathematical clipping;
-- publication-oriented A/B/C axes, grids, ticks, labels, and native SVG rotated axis names;
-- exact/smooth lines, scientific markers, polygons, annotations, and normal Plotters legends;
-- regular-grid line contours: piecewise-linear or optional cubic-alpha;
-- PNG output with optional geometry-only supersampling and native vector SVG.
+## Numerical data and rendering are separate
 
-## Installation
+The companion ternary-contours crate computes final semantic contour paths and
+filled-band regions from regular scalar fields. plotters-ternary projects those
+coordinates, clips them only for display, and hands ordinary Plotters elements
+to the selected backend. Numerical results remain independent of output
+dimensions, viewport choice, styles, legends, and PNG supersampling.
 
-```toml
-[dependencies]
-plotters-ternary = "0.1.0"
-plotters = "0.3.7"
-```
+The same chart continues to use ordinary Plotters captions, styles, SeriesAnno,
+legends, and drawing backends.
 
-Enable cubic-alpha contour construction when needed:
+## Build a ternary chart
 
-```toml
-plotters-ternary = { version = "0.1.0", features = ["cubic-alpha"] }
-```
-
-The feature enables cubic contour construction only. `spline1d` remains a
-normal transitive dependency because smooth line series also use it.
-
-## Minimal chart
-
-```rust,no_run
+~~~rust,no_run
 use plotters::prelude::*;
 use plotters_ternary::prelude::*;
 
-let root = BitMapBackend::new("ternary.png", (1000, 800)).into_drawing_area();
-root.fill(&WHITE)?;
-let mut chart = TernaryChartBuilder::on(&root)
-    .caption("Ternary diagram", ("sans-serif", 32))
-    .margin(60)
-    .build()?;
-chart.configure_mesh()
-    .corner_a_name("A")
-    .corner_b_name("B")
-    .corner_c_name("C")
-    .draw()?;
-# Ok::<(), Box<dyn std::error::Error>>(())
-```
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let root = BitMapBackend::new("ternary.png", (1000, 800)).into_drawing_area();
+    root.fill(&WHITE)?;
 
-For a cropped diagram, select a logical viewport; it never becomes a visible
-Cartesian frame:
+    let mut chart = TernaryChartBuilder::on(&root)
+        .caption("Three-component measurements", ("sans-serif", 32))
+        .margin(60)
+        .build()?;
 
-```rust,no_run
-# use plotters_ternary::{TernaryChartBuilder, TernaryViewport};
-# use plotters::prelude::*;
-# let root = BitMapBackend::new("cropped.png", (1000, 800)).into_drawing_area();
-let mut chart = TernaryChartBuilder::on(&root)
-    .viewport(TernaryViewport::new(0.42, 0.90, 0.05, 0.58)?)
-    .build()?;
-# Ok::<(), Box<dyn std::error::Error>>(())
-```
+    chart.configure_mesh()
+        .corner_a_name("A")
+        .corner_b_name("B")
+        .corner_c_name("C")
+        .draw()?;
 
-## Series, markers, axes, and annotations
+    chart.draw_series(TernaryLineSeries::new(
+        [
+            TernaryPoint::new(0.70, 0.20, 0.10),
+            TernaryPoint::new(0.25, 0.50, 0.25),
+        ],
+        BLUE.stroke_width(2),
+    ))?
+    .label("Measured path")
+    .legend(|(x, y)| PathElement::new([(x, y), (x + 20, y)], BLUE.stroke_width(2)));
 
-Use `TernaryLineSeries`, `TernaryPointSeries`, `TernaryPolygon`, and
-`TernaryText` through `chart.draw_series(...)`. The return value is Plotters'
-native annotation, so legends remain ordinary Plotters legends:
+    chart.configure_series_labels().draw()?;
+    root.present()?;
+    Ok(())
+}
+~~~
 
-```rust,no_run
-# use plotters::prelude::*;
-# use plotters_ternary::{TernaryChartBuilder, TernaryLineSeries, TernaryPoint};
-# let root = BitMapBackend::new("series.png", (1000, 800)).into_drawing_area();
-# let mut chart = TernaryChartBuilder::on(&root).build()?;
-chart.draw_series(TernaryLineSeries::new(
-    [TernaryPoint::new(0.7, 0.2, 0.1), TernaryPoint::new(0.2, 0.5, 0.3)],
-    BLUE.stroke_width(2),
-))?
-.label("Measured boundary")
-.legend(|(x, y)| PathElement::new([(x, y), (x + 20, y)], BLUE.stroke_width(2)));
-chart.configure_series_labels().draw()?;
-# Ok::<(), Box<dyn std::error::Error>>(())
-```
+A TernaryViewport can crop a logical part of the triangle without becoming a
+Cartesian frame. Lines, points, polygons, annotations, and contour paths are
+mathematically clipped before Plotters draws them.
 
-See the source examples for [markers and legends](examples/lines_points_legend.rs),
-[custom axes](examples/custom_axes.rs), and
-[phase regions and annotations](examples/regions_annotations.rs).
+## Add scalar data
 
-## Contours
+Start with a RegularTernaryScalarField, then choose the representation that
+matches the scientific question.
 
-The backend-independent `ternary-contours` dependency constructs complete
-semantic A/B/C contour paths. This crate only projects and visually clips those
-final paths for Plotters. Backend, viewport, output-size, style, and
-supersampling choices cannot change the numerical `ContourSet`.
+### Isolines
 
-`ContourInterpolation::Linear` is the exact piecewise-affine baseline on a
-regular ternary grid. Cubic-alpha contours reuse directed one-dimensional
-`spline1d` intervals along every shared grid edge and use adaptive topology
-extraction plus optional level-preserving regularization.
+TernaryContourSeries draws selected scalar values as paths. Linear contours
+are the robust, piecewise-affine baseline. The optional cubic-alpha feature
+adds edge-derived cubic-alpha contours when smoother edge behaviour is useful.
+Use per-level styles, ordinary Plotters legends, or a ContourColorBar for dense
+keys.
 
-```rust,no_run
-# use plotters_ternary::{ContourOptions, ContourSet, RegularTernaryScalarField};
-# let field = RegularTernaryScalarField::from_fn(1, |[a, b, c]| 2.0 * a - 3.0 * b + 5.0 * c)?;
-let contours = ContourSet::compute(&field, &[0.5, 1.0], ContourOptions::linear())?;
-# Ok::<(), Box<dyn std::error::Error>>(())
-```
+### Filled bands
 
-For cubic-alpha use `ContourOptions::cubic_alpha(CubicAlphaOptions { .. })`.
-`Muggianu` is the default symmetric binary projection:
-`xj + xk/2`. `Kohler` preserves the binary ratio: `xj/(xi+xj)`. Both retain
-the required raw `xi*xj` pair prefactor and reproduce the same source spline
-on the binary edge. `RawBarycentric` is explicitly experimental and should not
-be described as Muggianu.
+TernaryContourBandSeries draws discrete intervals between ordered scalar
+breaks. Their geometry is exact for the piecewise-linear field. Bands can be
+disconnected and contain transparent holes that reveal the layer below. They
+are useful with a small number of scientifically meaningful intervals.
+Cubic-alpha filled bands are intentionally unavailable.
 
-Contour rendering can use one style, an ordered palette, an exact-level style
-callback, or a normalized continuous colour map. `ContourLegendPolicy`
-registers selected levels through ordinary Plotters annotations and legends;
-`ContourColorBar` provides horizontal or vertical continuous keys for dense
-levels. `ContourLabelConfig` supports deterministic tangent, curved, repeated,
-and manual labels. Label placement is a final chart-space calculation and never
-changes the numerical contour coordinates.
+### Scalar maps
 
-```rust,ignore
-chart.draw_series(
-    TernaryContourSeries::new(&contours)
-        .style_by_level(|level| level_style(level))
-        .legend_policy(ContourLegendPolicy::EveryNth(2))
-        .level_formatter(|level| format!("{level:.0} Â°C")),
-)?;
-chart.draw_contour_labels(
-    &contours,
-    &ContourLabelConfig::new()
-        .formatter(|level| format!("{level:.0} Â°C")),
-)?;
-```
+TernaryScalarMapSeries covers the domain with colour. It evaluates the
+piecewise-linear field exactly, then approximates a smooth-looking gradient by
+flat-coloured microtriangles. More resolution reduces faceting but increases
+SVG primitive count and file size. It is not a rasterised SVG or a claim of
+continuous backend colour interpolation.
 
-Portable PNG labels use the final-resolution antialiased rotated-text renderer.
-SVG output uses searchable native transformed `<text>` elements. Curved labels
-use per-character Plotters metrics where full glyph shaping is unavailable; see
-[the contour-rendering architecture note](docs/architecture/contour-rendering.md).
+| Visual goal | API |
+| --- | --- |
+| Points or paths | TernaryPointSeries / TernaryLineSeries |
+| Selected scalar levels | TernaryContourSeries |
+| Discrete scalar intervals | TernaryContourBandSeries |
+| Continuous-looking colour field | TernaryScalarMapSeries |
+| Labels following contours | ContourLabelConfig |
+| Dense numerical key | ContourColorBar |
+
+## Contour labels and layer order
+
+Contour labels are rendering-time placement decisions: they never change
+numerical contour coordinates. Tangent mode rotates one label to the local path
+direction. Curved mode positions characters along arc length. Repeated and
+manual placements are available, and placement checks endpoint clearance,
+curvature, viewport clearance, and collisions. Curved labels use per-character
+layout, not full text shaping.
+
+A useful layer order is:
+
+~~~text
+scalar map or filled bands
+    -> mesh, if desired
+    -> isolines
+    -> contour labels
+    -> annotations
+    -> colour bars and legends
+~~~
+
+For publication output, SVG retains vector paths and searchable text. PNG
+examples use optional geometry-only supersampling; it is an output-quality
+technique, not numerical refinement.
 
 ## Gallery
 
-| Full chart | Axes and markers | Contours |
+### Basic charts, axes, and markers
+
+| Full chart | Axes | Scientific markers |
 | --- | --- | --- |
-| ![Full triangle](examples/output/png/full_triangle.png) | ![Custom axes](examples/output/png/custom_axes.png) | ![Cubic-alpha contours](examples/output/png/cubic_alpha_contours.png) |
+| ![Full triangle](examples/output/png/full_triangle.png) | ![Custom axes](examples/output/png/custom_axes.png) | ![Custom markers](examples/output/png/custom_markers.png) |
+
+### Contours and labels
+
 | Coloured contours | Tangent labels | Curved labels |
-| ![Contour colour bar](examples/output/png/contour_color_bar.png) | ![Tangent contour labels](examples/output/png/contour_labels.png) | ![Curved contour labels](examples/output/png/curved_contour_labels.png) |
+| --- | --- | --- |
+| ![Contour colour bar](examples/output/png/contour_color_bar.png) | ![Tangent labels](examples/output/png/contour_labels.png) | ![Curved labels](examples/output/png/curved_contour_labels.png) |
 
-More references: [cropped axes](examples/output/png/cropped_axes.png),
-[markers](examples/output/png/custom_markers.png),
-[regions](examples/output/png/regions_annotations.png), and
-[cropped contours](examples/output/png/cropped_contours.png). SVG counterparts
-live beside every PNG under `examples/output/svg/`.
+### Filled bands and scalar maps
 
-## Features and limits
+| Filled bands | Scalar map | Transparent hole over a map |
+| --- | --- | --- |
+| ![Filled bands](examples/output/png/filled_contour_bands.png) | ![Scalar map](examples/output/png/continuous_scalar_map.png) | ![Layered band hole](examples/output/png/layered_band_hole.png) |
 
-- `default`: geometry, Plotters charting, all standard series, linear contours.
-- `cubic-alpha`: cubic-alpha contour field construction and adaptive contouring.
+SVG counterparts live under examples/output/svg/.
 
-The crate provides linear filled contour bands and flat-colour
-piecewise-linear scalar maps. It does not provide cubic-alpha filled contours,
-irregular or scattered-data triangulation, Kuhn simplices, N-component grids,
-or C1 cubic field continuity. SVG is the preferred publication-quality output. PNG
-supersampling is an example/output helper, not a permanent chart API.
+## Features
 
+- Default: charts, geometry, viewports, standard series, linear contours,
+  filled bands, scalar maps, labels, legends, and SVG/PNG support.
+- cubic-alpha: cubic-alpha contour construction and adaptive topology.
+  spline1d also supports the stable smooth-line series API.
 
 ## Foreground triangle frame
 
@@ -201,22 +186,17 @@ keeps the frame and data as vector geometry. Markers retain their existing
 centre-clipping policy. In the recommended workflow they are data geometry, so
 the foreground frame masks their inner edge.
 
-## Architecture and contribution
+## Limits and trade-offs
 
-Architecture notes are under [docs/architecture](docs/architecture/README.md).
-The editable contour knowledge base is under
-[docs/knowledge-base](docs/knowledge-base/README.md). Contributions are
-welcome; see [CONTRIBUTING.md](CONTRIBUTING.md). The crate is dual licensed
+- No cubic-alpha isobands.
+- No irregular or scattered-data triangulation.
+- No N-component grids.
+- Scalar-map SVG size grows with microtriangle resolution.
+- Curved labels use per-character placement rather than full text shaping.
+- PNG supersampling affects rendered geometry only, not coordinates or data.
+
+More detailed material is available in
+[the architecture notes](docs/architecture/README.md) and
+[the numerical knowledge base](docs/knowledge-base/README.md). Contributions
+are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md). The crate is dual licensed
 under [MIT](LICENSE-MIT) or [Apache-2.0](LICENSE-APACHE).
-
-## Linear filled bands and scalar maps
-
-ContourBandSet computes deterministic linear isoband regions from finite,
-strictly increasing breaks. Scalar ownership is half-open while adjacent
-polygons may share only zero-area threshold curves. TernaryContourBandSeries
-fills the core's non-overlapping fragments, so ContourRegion holes are
-transparent cut-outs that reveal layers below. TernaryScalarMapSeries evaluates
-the exact piecewise-linear field at microtriangle centroids and flat-fills each
-microtriangle; it is an approximation of continuous colour shading. Both retain
-SVG vector geometry, and map resolution trades SVG size for visible faceting.
-Cubic-alpha isobands are explicitly not supported yet.

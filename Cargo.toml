@@ -3,7 +3,7 @@ name = "plotters-ternary"
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.89"
-description = "Publication-quality ternary diagrams, geometry, clipping, series, and regular-grid line contours for Plotters"
+description = "Publication-quality ternary diagrams, contours, filled bands, and scalar maps for Plotters"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/evnekdev/plotters-ternary"
 homepage = "https://github.com/evnekdev/plotters-ternary"
@@ -15,7 +15,9 @@ exclude = [
     ".github/**",
     "kb-audit-temp/**",
     "proptest-regressions/**",
-    "ternary_cubic_contour_knowledge_base.zip",
+    "*.zip",
+    "target/**",
+    ".codex/**",
 ]
 
 [features]
