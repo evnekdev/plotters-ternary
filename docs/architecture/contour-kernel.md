@@ -25,11 +25,12 @@ backend, output dimensions, viewport, style, or supersampling cannot change a
 
 ## Scope and public API
 
-Milestone 7 implements line contours over the regular two-dimensional ternary lattice only. For subdivision count `n`, `RegularTernaryScalarField` stores `(n+1)(n+2)/2` finite values at integer coordinates `i+j+k=n`. Canonical public ordering is row-major in `(i,j)`: `i=0..n`; for each `i`, `j=0..n-i`; and `k=n-i-j`. `GridVertexId`, `LatticeCoordinate`, `index_of`, `coordinate_of`, and `composition_at` provide checked conversions. Core contour paths use `TernaryCoordinate`; grid composition access returns `[f64; 3]`.
+Milestone 7 implements line contours over the regular two-dimensional ternary lattice only. For subdivision count `n`, `RegularTernaryGrid` lazily enumerates canonical vertices and `RegularTernaryScalarField` stores `(n+1)(n+2)/2` finite values at integer coordinates `i+j+k=n`. Canonical public ordering is row-major in `(i,j)`: `i=0..n`; for each `i`, `j=0..n-i`; and `k=n-i-j`. `GridVertexId`, `LatticeCoordinate`, `index_of`, `coordinate_of`, and `composition_at` provide checked conversions. Core contour paths use `TernaryCoordinate`; grid composition access returns `[f64; 3]`.
 
 The public contour surface is:
 
 ```rust
+RegularTernaryGrid
 RegularTernaryScalarField
 ContourInterpolation::{Linear, CubicAlpha}
 ContourOptions

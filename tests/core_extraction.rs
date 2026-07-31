@@ -1,4 +1,7 @@
-use plotters_ternary::{GridVertexId, LatticeCoordinate, RegularTernaryScalarField};
+use plotters_ternary::{
+    GridEvaluationError, GridVertexId, LatticeCoordinate, RegularTernaryGrid,
+    RegularTernaryScalarField,
+};
 use ternary_contours::{RegularTernaryScalarField as CoreField, interpolation::AlphaInterval};
 
 #[test]
@@ -27,6 +30,37 @@ fn compatibility_field_delegates_indexing_values_and_compositions_to_the_core() 
             .vertex_id(LatticeCoordinate { i: 1, j: 1, k: 0 })
             .unwrap(),
         GridVertexId(4)
+    );
+}
+
+#[test]
+fn compatibility_grid_and_evaluation_error_are_direct_core_types() {
+    fn core_accepts_grid(value: &ternary_contours::RegularTernaryGrid) -> usize {
+        value.vertex_count()
+    }
+
+    let grid = RegularTernaryGrid::new(3).unwrap();
+    assert_eq!(core_accepts_grid(&grid), 10);
+    assert_eq!(
+        grid.indexed_compositions().next(),
+        Some((GridVertexId(0), [0.0, 0.0, 1.0]))
+    );
+
+    let error = RegularTernaryScalarField::try_from_fn(2, |composition| {
+        if composition == [0.0, 0.5, 0.5] {
+            Err("missing")
+        } else {
+            Ok(composition[0])
+        }
+    })
+    .unwrap_err();
+    assert_eq!(
+        error,
+        GridEvaluationError::Evaluation {
+            index: GridVertexId(1),
+            composition: [0.0, 0.5, 0.5],
+            source: "missing",
+        }
     );
 }
 
