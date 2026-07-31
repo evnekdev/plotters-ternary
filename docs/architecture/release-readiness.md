@@ -54,3 +54,12 @@ No filled contours, contour labels, irregular/scattered data, arbitrary meshes,
 Kuhn simplices, N-component grids, or C1 guarantees are claimed. Cubic topology
 is a bounded adaptive polyline approximation and diagnostics must be reviewed
 when maximum-depth hits are nonzero.
+## Phase 2 extraction publication blocker
+
+During two-repository development, `ternary-contours` is intentionally a local
+path dependency. `cargo package --list` remains useful, but full
+`plotters-ternary` package verification cannot resolve that unpublished crate
+from crates.io. Publish and verify `ternary-contours` first, then replace the
+path dependency with the released version before restoring full package
+verification in CI. Neither crate is published or tagged by the extraction
+work.

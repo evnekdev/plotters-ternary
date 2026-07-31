@@ -249,7 +249,12 @@ where
                 .as_ref()
                 .map_or(uniform_style, |provider| provider(level.value));
             for path in &level.paths {
-                let mut source = path.points.clone();
+                let mut source = path
+                    .points
+                    .iter()
+                    .copied()
+                    .map(|point| TernaryPoint::from(point.as_array()))
+                    .collect::<Vec<_>>();
                 if path.closed && !source.is_empty() {
                     source.push(source[0]);
                 }

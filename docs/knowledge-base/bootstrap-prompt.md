@@ -1,4 +1,4 @@
-﻿# Bootstrap prompt
+# Bootstrap prompt
 
 When reviewing or extending the contour kernel, keep these invariants intact:
 

@@ -1,4 +1,4 @@
-﻿# ADR 0003: Keep RawBarycentric experimental
+# ADR 0003: Keep RawBarycentric experimental
 
 - Status: accepted
 - Date: 2026-07-31

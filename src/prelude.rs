@@ -1,4 +1,4 @@
-﻿//! Common stable imports for ordinary ternary chart and contour workflows.
+//! Common stable imports for ordinary ternary chart and contour workflows.
 //!
 //! Import with `use plotters_ternary::prelude::*;`. Plotters drawing styles,
 //! colours, backends, and elements remain intentionally imported from Plotters.
