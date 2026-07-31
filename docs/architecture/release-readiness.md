@@ -3,8 +3,10 @@
 ## Scope
 
 This audit stabilizes the 0.1.0 API and release process; it deliberately adds
-no rendering or numerical feature. The verified numerical scope remains regular
-ternary-grid line contours only.
+no rendering or numerical feature. The verified numerical scope is regular
+ternary-grid line contours plus piecewise-linear isoband geometry. Plotters
+rendering includes those bands, scalar maps, labels, and colour bars, but does
+not alter final numerical contour coordinates.
 
 ## Contour audit result
 
@@ -38,22 +40,24 @@ default Muggianu policy or Kohler.
 `0.1.0` has MSRV Rust 1.89, uses edition 2024, and is dual licensed as
 `MIT OR Apache-2.0`. `cubic-alpha` enables cubic contour computation. It does
 not remove `spline1d` when disabled because smooth series already depend on it.
-The generated example-output directory and legacy ZIP bundle are intentionally
-excluded from the crate package; editable knowledge-base Markdown sources stay
-in `docs/knowledge-base/`.
+Generated example-output artefacts and legacy ZIP bundles are intentionally
+excluded from the crate package; they remain committed for GitHub visual review.
+Editable knowledge-base Markdown sources stay in `docs/knowledge-base/`.
 
 ## CI
 
 GitHub Actions checks formatting, clippy, default/all/no-default tests, rustdoc,
-and `cargo package` on stable Linux; all-feature tests run on Linux, Windows,
-and macOS; an MSRV 1.89 job runs `cargo check --all-targets` and `cargo test`.
+and `cargo package --list` on stable Linux; all-feature tests run on Linux,
+Windows, and macOS; an MSRV 1.89 job runs `cargo check --all-targets` and
+`cargo test`.
 
 ## Known release limits
 
-No filled contours, contour labels, irregular/scattered data, arbitrary meshes,
-Kuhn simplices, N-component grids, or C1 guarantees are claimed. Cubic topology
-is a bounded adaptive polyline approximation and diagnostics must be reviewed
-when maximum-depth hits are nonzero.
+Piecewise-linear filled bands, scalar maps, and contour labels are available.
+Cubic-alpha filled bands, irregular/scattered data, arbitrary meshes, Kuhn
+simplices, N-component grids, and C1 guarantees are not. Cubic topology is a
+bounded adaptive polyline approximation and diagnostics must be reviewed when
+maximum-depth hits are nonzero.
 ## Phase 2 extraction publication blocker
 
 During two-repository development, `ternary-contours` is intentionally a local

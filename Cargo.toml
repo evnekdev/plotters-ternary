@@ -15,6 +15,7 @@ exclude = [
     ".github/**",
     "kb-audit-temp/**",
     "proptest-regressions/**",
+    "examples/output/**",
     "*.zip",
     "target/**",
     ".codex/**",
