@@ -9,9 +9,13 @@ const KOHLER_DENOMINATOR_GUARD: f64 = 64.0 * f64::EPSILON;
 /// Every policy retains the raw multicomponent prefactor `xi*xj`; only the
 /// directed interval parameter changes.
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BinaryExtrapolation {
-    /// Extend the directed edge parameter as the destination barycentric coordinate `xj`.
-    /// Canonical grid-edge direction is part of this model in the ternary interior.
+    /// Experimental, non-recommended direct extension `t=xj`.
+    ///
+    /// This is neither linear interpolation nor conventional Muggianu. Its
+    /// ternary-interior value depends on the canonical edge direction; use
+    /// [`Self::Muggianu`] or [`Self::Kohler`] for stable applications.
     RawBarycentric,
     /// Assign half the remaining component to each member: `t=xj+xk/2`.
     #[default]

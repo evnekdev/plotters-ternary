@@ -104,10 +104,10 @@ where
                 .endpoint_label_policy(EndpointLabelPolicy::AutoAvoidDuplicates);
         })
         .axis_b(|axis| {
-            axis.axis_name("B axis (C\u{2013}A edge)")
+            axis.axis_name("B axis")
                 .axis_name_style(name_style.clone())
-                .axis_name_offset(scaled(36, scale))
-                .major_ticks(TickSpec::Values(vec![0.0, 0.2, 0.4, 0.6, 0.8, 1.0]))
+                .axis_name_offset(scaled(64, scale))
+                .major_ticks(TickSpec::Values(vec![0.4, 0.8]))
                 .minor_ticks(TickSpec::Step(0.1))
                 .tick_range_mode(TickRangeMode::VisibleRange)
                 .draw_major_grid(true)
@@ -120,6 +120,7 @@ where
                 .major_tick_length(10)
                 .minor_tick_length(5)
                 .tick_label_style(tick_style.clone())
+                .tick_label_offset(scaled(12, scale))
                 .label_formatter(|v| format!("B={v:.1}"))
                 .endpoint_label_policy(EndpointLabelPolicy::AutoAvoidDuplicates);
         })

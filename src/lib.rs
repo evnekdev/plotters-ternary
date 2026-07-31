@@ -1,9 +1,27 @@
-//! Ternary composition geometry and Cartesian-backed Plotters charts.
+//! Publication-quality ternary diagrams built on Plotters.
+//!
+//! The crate combines a backend-independent ternary geometry and clipping kernel
+//! with a Cartesian-backed Plotters chart. It supports full and rectangularly
+//! cropped ternary views, configurable axes, native Plotters legends, scientific
+//! markers, polygons, composition-anchored text, and regular-grid line contours.
+//!
+//! Start with [`prelude`] for common stable types, then see the README and the
+//! examples for complete PNG/SVG rendering programs. Cubic-alpha contour
+//! construction requires the [`cubic-alpha`](https://docs.rs/plotters-ternary/latest/plotters_ternary/#cargo-features) feature.
+//!
+//! ## Guarantees and limits
+//!
+//! Ternary coordinates always retain semantic A/B/C order. Viewport clipping is
+//! mathematical and the viewport frame is invisible. Cubic contour fields share
+//! exact one-dimensional edge intervals and are C0 across regular-grid edges; C1
+//! continuity, filled contours, irregular triangulation, and N-component grids
+//! are not provided in 0.1.0.
 
 pub mod chart;
 pub mod contour;
 pub mod coord;
 pub mod interpolation;
+pub mod prelude;
 pub mod series;
 
 pub use chart::{

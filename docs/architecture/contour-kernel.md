@@ -69,7 +69,7 @@ Muggianu:       tij = xj + xk/2
 Kohler:         tij = xj/(xi+xj)
 ```
 
-RawBarycentric extends the directed destination coordinate directly and is orientation-sensitive in the ternary interior. Canonical grid-edge direction therefore defines that model deterministically. It is not described as conventional Muggianu.
+RawBarycentric extends the directed destination coordinate directly and is orientation-sensitive in the ternary interior. Canonical grid-edge direction therefore defines that model deterministically. It is not described as conventional Muggianu and is retained only as an experimental, non-recommended comparison mode; see ADR 0003.
 
 Muggianu symmetrically assigns half the remaining component fraction to each member of the binary pair. Kohler preserves their binary ratio by normalizing within `xi+xj`. Kohler returns exactly zero, with its finite limiting derivative, at the third vertex instead of evaluating `0/0`. Neither policy substitutes normalized `Xi*Xj` for the required raw `xi*xj` prefactor.
 

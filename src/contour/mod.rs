@@ -17,12 +17,17 @@ pub use options::{
 pub use paths::ContourPath;
 pub use regular_grid::{GridVertexId, LatticeCoordinate, RegularTernaryScalarField};
 
+/// Contours produced for one requested finite scalar level.
 #[derive(Clone, Debug, PartialEq)]
 pub struct ContourLevel {
     pub value: f64,
     pub paths: Vec<ContourPath>,
 }
 
+/// Backend-independent line contours and optional cubic diagnostics.
+///
+/// Compute this value before drawing. Paths retain semantic A/B/C compositions and
+/// can be rendered by [`crate::TernaryContourSeries`].
 #[derive(Clone, Debug, PartialEq)]
 pub struct ContourSet {
     pub levels: Vec<ContourLevel>,
@@ -31,6 +36,10 @@ pub struct ContourSet {
 
 impl ContourSet {
     /// Compute deterministic contour paths before chart projection or viewport clipping.
+    ///
+    /// Levels must be finite and distinct within the configured value tolerance.
+    /// Linear interpolation is always available; cubic-alpha requests return
+    /// [`ContourError::CubicFeatureUnavailable`] unless the `cubic-alpha` feature is enabled.
     pub fn compute(
         field: &RegularTernaryScalarField,
         levels: &[f64],
@@ -107,6 +116,7 @@ impl ContourSet {
         }
     }
 
+    /// Return cubic construction diagnostics, or `None` for linear contours.
     pub fn diagnostics(&self) -> Option<&CubicContourDiagnostics> {
         self.diagnostics.as_ref()
     }

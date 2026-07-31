@@ -1,1 +1,3 @@
-/target
+﻿target/
+kb-audit-temp/
+*.zip

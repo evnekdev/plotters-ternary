@@ -33,11 +33,13 @@ The crate should support:
 - [`axis-kernel.md`](axis-kernel.md): implemented publication mesh, ticks, and axis labels.
 - [`region-annotation-kernel.md`](region-annotation-kernel.md): implemented phase polygons and text annotations.
 - [`contour-kernel.md`](contour-kernel.md): regular-grid linear and cubic-alpha contour interpolation.
+- [`release-readiness.md`](release-readiness.md): 0.1.0 API, package, and numerical-audit record.
 
 ## Decision records
 
 - [`0001-cartesian-backed-chart.md`](../decisions/0001-cartesian-backed-chart.md)
 - [`0002-rectangular-ternary-viewports.md`](../decisions/0002-rectangular-ternary-viewports.md)
+- [`0003-raw-barycentric-experimental.md`](../decisions/0003-raw-barycentric-experimental.md)
 
 ## Maintenance rules
 
