@@ -10,6 +10,10 @@ use crate::contour::ContourSet;
 type LevelStyleProvider<'a> = Box<dyn Fn(f64) -> ShapeStyle + 'a>;
 type ContourSeriesParts<'a> = (&'a ContourSet, ShapeStyle, Option<LevelStyleProvider<'a>>);
 
+/// Plotters adapter for a precomputed [`ContourSet`].
+///
+/// It projects semantic contour paths, applies the chart viewport clipper, and
+/// returns native Plotters annotations through [`crate::TernaryChart::draw_series`].
 pub struct TernaryContourSeries<'a> {
     contours: &'a ContourSet,
     uniform_style: ShapeStyle,
@@ -17,6 +21,7 @@ pub struct TernaryContourSeries<'a> {
 }
 
 impl<'a> TernaryContourSeries<'a> {
+    /// Create a contour series with a black two-pixel default stroke.
     pub fn new(contours: &'a ContourSet) -> Self {
         Self {
             contours,
@@ -24,10 +29,12 @@ impl<'a> TernaryContourSeries<'a> {
             style_provider: None,
         }
     }
+    /// Use one Plotters-native stroke style for every level.
     pub fn style<S: Into<ShapeStyle>>(mut self, style: S) -> Self {
         self.uniform_style = style.into();
         self
     }
+    /// Select an owned style from each scalar level at draw time.
     pub fn style_for_level<F>(mut self, provider: F) -> Self
     where
         F: Fn(f64) -> ShapeStyle + 'a,

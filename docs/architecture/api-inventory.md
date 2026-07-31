@@ -365,7 +365,7 @@ Milestone 6 implements backend-neutral `prepare_polygon` and public
 Open and explicitly closed simple loops are accepted. Fewer than three distinct
 vertices, zero area, invalid source compositions, and self intersections are
 reported through `PolygonError`; simple concave subjects are supported.
-Sutherland?Hodgman clipping occurs against the logical rectangular viewport
+Sutherland–Hodgman clipping occurs against the logical rectangular viewport
 before Plotters receives the final vertices.
 
 `TernaryText` has an owned ternary anchor, UTF-8 text, owned `AxisTextStyle`,
@@ -381,14 +381,14 @@ Milestone 7 implements regular two-dimensional ternary grids only:
 ```rust
 pub struct RegularTernaryScalarField { /* n and canonical ordered values */ }
 pub enum ContourInterpolation { Linear, CubicAlpha(CubicAlphaOptions) }
-pub enum BinaryExtrapolation { RawBarycentric, Muggianu, Kohler }
+pub enum BinaryExtrapolation { RawBarycentric /* experimental */, Muggianu, Kohler }
 pub struct ContourSet { pub levels: Vec<ContourLevel>, /* diagnostics */ }
 pub struct ContourLevel { pub value: f64, pub paths: Vec<ContourPath> }
 pub struct ContourPath { pub points: Vec<TernaryPoint>, pub closed: bool }
 pub struct TernaryContourSeries<'a> { /* native Plotters adapter */ }
 ```
 
-`RegularTernaryScalarField` uses integer triples `i+j+k=n` in row-major `(i,j)` ordering and generates its elementary connectivity internally. Linear contours use deterministic marching triangles. Cubic-alpha contours use `spline1d` edge intervals, shared canonical edge direction, explicit RawBarycentric/Muggianu/Kohler interior extrapolation, adaptive barycentric microtriangles, and optional arc-length redistribution plus analytic-gradient level projection. See [contour-kernel.md](contour-kernel.md). Arbitrary triangulations, irregular data, Kuhn simplices, filled contours, and N-component grids are not part of this API.
+`RegularTernaryScalarField` uses integer triples `i+j+k=n` in row-major `(i,j)` ordering and generates its elementary connectivity internally. Linear contours use deterministic marching triangles. Cubic-alpha contours use `spline1d` edge intervals, shared canonical edge direction, Muggianu/Kohler interior extrapolation plus experimental RawBarycentric comparison, adaptive barycentric microtriangles, and optional arc-length redistribution plus analytic-gradient level projection. See [contour-kernel.md](contour-kernel.md). Arbitrary triangulations, irregular data, Kuhn simplices, filled contours, and N-component grids are not part of this API.
 
 ## Optional mathematical text
 

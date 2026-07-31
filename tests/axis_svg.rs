@@ -28,7 +28,7 @@ fn sloping_axis_names_are_searchable_native_svg_text() {
                 "C \u{2192} lower-right component",
             ],
         ),
-        (&cropped, ["B axis (C\u{2013}A edge)", "C axis (manual)"]),
+        (&cropped, ["B axis", "C axis (manual)"]),
     ] {
         let text_group = svg.find("<g id=\"ternary-text\">").unwrap();
         let geometry_group = &svg[..text_group];

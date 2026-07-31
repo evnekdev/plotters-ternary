@@ -381,7 +381,7 @@ examples/output/svg/cropped_regions.svg
 ### Implemented first release
 
 Milestone 6 implements simple convex and concave `TernaryPolygon` loops with
-strict self-intersection rejection, Sutherland?Hodgman viewport clipping,
+strict self-intersection rejection, Sutherland–Hodgman viewport clipping,
 independent fill/border styles, and native Plotters annotations/legends.
 `TernaryText` supports owned Unicode content, composition anchors, final-pixel
 offsets, portable alignment, `Anchor`/`None` clipping, and native quarter turns.

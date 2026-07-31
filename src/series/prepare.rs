@@ -62,7 +62,7 @@ where
 /// Project a point series and apply centre-based or unrestricted marker policy.
 ///
 /// This public convenience projection discards source identity. Internally,
-/// [`prepare_points_with_source`] retains it for per-point marker styles.
+/// The crate internal preparation path retains source identity for per-point marker styles.
 pub fn prepare_points<I, P>(
     geometry: TernaryGeometry,
     viewport: TernaryViewport,

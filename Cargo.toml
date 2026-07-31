@@ -2,9 +2,26 @@
 name = "plotters-ternary"
 version = "0.1.0"
 edition = "2024"
+rust-version = "1.89"
+description = "Publication-quality ternary diagrams, geometry, clipping, series, and regular-grid line contours for Plotters"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/evnekdev/plotters-ternary"
+homepage = "https://github.com/evnekdev/plotters-ternary"
+documentation = "https://docs.rs/plotters-ternary"
+readme = "README.md"
+keywords = ["ternary", "plotting", "scientific", "contours", "plotters"]
+categories = ["visualization", "science", "mathematics", "rendering"]
+exclude = [
+    ".github/**",
+    "kb-audit-temp/**",
+    "proptest-regressions/**",
+    "ternary_cubic_contour_knowledge_base.zip",
+]
 
 [features]
 default = []
+# Enables cubic-alpha contour construction. `spline1d` remains a normal
+# dependency because the stable smooth-series API also uses it.
 cubic-alpha = []
 
 [dependencies]
@@ -18,5 +35,5 @@ plotters-backend = "0.3.7"
 spline1d = { version = "0.1.0", default-features = false, features = ["alloc"] }
 
 [dev-dependencies]
-image = { version = "0.25.8", default-features = false, features = ["png"] }
+image = { version = "=0.25.8", default-features = false, features = ["png"] }
 proptest = "1.6"

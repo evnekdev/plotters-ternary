@@ -16,17 +16,17 @@
 <polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="632,695 636,698 "/>
 <polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="366,155 368,150 "/>
 <polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="455,309 459,306 "/>
+<polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="499,386 504,385 "/>
 <polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="543,463 548,463 "/>
 <polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="632,618 637,620 "/>
+<polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="677,695 681,698 "/>
 <polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="321,695 324,704 "/>
 <polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="410,695 416,703 "/>
 <polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="499,695 506,702 "/>
 <polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="588,695 596,701 "/>
 <polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="677,695 686,700 "/>
 <polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="410,232 417,224 "/>
-<polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="499,386 509,384 "/>
 <polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="588,540 598,543 "/>
-<polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="677,695 686,700 "/>
 </g>
 <g id="ternary-text">
 
@@ -45,19 +45,16 @@ Cropped ternary axes: true-edge fragments only
 <text x="594" y="700" dy="0.76em" text-anchor="start" font-family="sans-serif" font-size="15.32258064516129" opacity="1" fill="#192332">
 90%
 </text>
-<text x="415" y="226" dy="-0.5ex" text-anchor="start" font-family="sans-serif" font-size="15.32258064516129" opacity="1" fill="#192332">
+<text x="418" y="223" dy="-0.5ex" text-anchor="start" font-family="sans-serif" font-size="15.32258064516129" opacity="1" fill="#192332">
 B=0.4
 </text>
-<text x="507" y="384" dy="-0.5ex" text-anchor="start" font-family="sans-serif" font-size="15.32258064516129" opacity="1" fill="#192332">
-B=0.6
-</text>
-<text x="596" y="542" dy="0.76em" text-anchor="start" font-family="sans-serif" font-size="15.32258064516129" opacity="1" fill="#192332">
+<text x="600" y="543" dy="0.76em" text-anchor="start" font-family="sans-serif" font-size="15.32258064516129" opacity="1" fill="#192332">
 B=0.8
 </text>
 <text x="700" y="708" dy="0.76em" text-anchor="start" font-family="sans-serif" font-size="22.580645161290324" opacity="1" fill="#192332" font-weight="bold">
 C
 </text>
-<text x="486" y="291" text-anchor="middle" dominant-baseline="middle" transform="rotate(60.039782 486 291)" font-family="sans-serif" font-size="26" fill="#192332" fill-opacity="1.000000" font-weight="bold">B axis (C–A edge)</text>
+<text x="510" y="277" text-anchor="middle" dominant-baseline="middle" transform="rotate(60.039782 510 277)" font-family="sans-serif" font-size="26" fill="#192332" fill-opacity="1.000000" font-weight="bold">B axis</text>
 <text x="578" y="310" text-anchor="middle" dominant-baseline="middle" transform="rotate(-60.095521 578 310)" font-family="sans-serif" font-size="26" fill="#192332" fill-opacity="1.000000" font-weight="bold">C axis (manual)</text>
 </g>
 </svg>
