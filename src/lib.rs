@@ -51,7 +51,7 @@ pub use series::{
 pub use contour::{
     AdaptiveContourOptions, ContourError, ContourInterpolation, ContourLevel, ContourOptions,
     ContourPath, ContourRegularization, ContourSet, CubicAlphaMethod, CubicAlphaOptions,
-    CubicBoundaryPolicy, CubicContourDiagnostics, FieldError, GridVertexId, LatticeCoordinate,
-    RegularTernaryScalarField, TernaryCoordinate,
+    CubicBoundaryPolicy, CubicContourDiagnostics, FieldError, GridEvaluationError, GridVertexId,
+    LatticeCoordinate, RegularTernaryGrid, RegularTernaryScalarField, TernaryCoordinate,
 };
 pub use interpolation::BinaryExtrapolation;

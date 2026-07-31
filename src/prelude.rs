@@ -6,7 +6,7 @@
 pub use crate::{
     AxisLabelFormat, BinaryExtrapolation, Component, ContourInterpolation, ContourOptions,
     ContourSet, CubicAlphaMethod, CubicAlphaOptions, MarkerClipMode, MarkerShape, MarkerStyle,
-    Normalization, RegularTernaryScalarField, TernaryChartBuilder, TernaryContourSeries,
-    TernaryGeometry, TernaryLineSeries, TernaryPoint, TernaryPointSeries, TernaryPolygon,
-    TernaryText, TernaryViewport, Tolerance,
+    Normalization, RegularTernaryGrid, RegularTernaryScalarField, TernaryChartBuilder,
+    TernaryContourSeries, TernaryGeometry, TernaryLineSeries, TernaryPoint, TernaryPointSeries,
+    TernaryPolygon, TernaryText, TernaryViewport, Tolerance,
 };

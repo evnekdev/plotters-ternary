@@ -104,8 +104,7 @@ extraction plus optional level-preserving regularization.
 
 ```rust,no_run
 # use plotters_ternary::{ContourOptions, ContourSet, RegularTernaryScalarField};
-# let values = vec![0.0, 1.0, 2.0];
-# let field = RegularTernaryScalarField::new(1, values)?;
+# let field = RegularTernaryScalarField::from_fn(1, |[a, b, c]| 2.0 * a - 3.0 * b + 5.0 * c)?;
 let contours = ContourSet::compute(&field, &[0.5, 1.0], ContourOptions::linear())?;
 # Ok::<(), Box<dyn std::error::Error>>(())
 ```
