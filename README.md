@@ -37,12 +37,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .margin(60)
         .build()?;
 
-    chart.configure_mesh()
+    let mesh = chart.configure_mesh()
         .corner_a_name("A")
         .corner_b_name("B")
         .corner_c_name("C")
-        .draw()?;
+        .build();
 
+    mesh.draw_background(&mut chart)?;
     chart.draw_series(TernaryLineSeries::new(
         [
             TernaryPoint::new(0.70, 0.20, 0.10),
@@ -53,6 +54,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     .label("Measured path")
     .legend(|(x, y)| PathElement::new([(x, y), (x + 20, y)], BLUE.stroke_width(2)));
 
+    mesh.draw_foreground(&mut chart)?;
+    mesh.draw_text(&mut chart)?;
     chart.configure_series_labels().draw()?;
     root.present()?;
     Ok(())

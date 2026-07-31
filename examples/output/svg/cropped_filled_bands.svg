@@ -12,8 +12,6 @@
 <polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="634,167 302,741 "/>
 <polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="756,379 547,741 "/>
 <polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="830,676 791,741 "/>
-<polyline fill="none" opacity="1" stroke="#000000" stroke-width="2" points="830,506 591,93 "/>
-<polyline fill="none" opacity="1" stroke="#000000" stroke-width="2" points="187,93 169,125 "/>
 <polygon opacity="0.88" fill="#2B71B4" points="437,576 433,576 433,577 "/>
 <polygon opacity="0.88" fill="#2B71B4" points="433,577 433,576 432,577 "/>
 <polygon opacity="0.88" fill="#2B71B4" points="432,577 433,576 423,576 "/>
@@ -261,6 +259,8 @@
 <polyline fill="none" opacity="0.64" stroke="#000000" stroke-width="2" points="255,741 250,740 229,727 187,698 169,681 "/>
 <polyline fill="none" opacity="0.64" stroke="#000000" stroke-width="2" points="169,142 177,133 191,122 232,93 "/>
 <polyline fill="none" opacity="0.64" stroke="#000000" stroke-width="2" points="718,741 734,727 764,695 799,651 814,630 830,603 "/>
+<polygon opacity="1" fill="#000000" points="831,505 592,92 590,94 829,507 "/>
+<polygon opacity="1" fill="#000000" points="186,93 168,125 170,125 188,93 "/>
 </g>
 <g id="ternary-text">
 
