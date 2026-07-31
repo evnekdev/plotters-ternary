@@ -4,10 +4,11 @@
 //! colours, backends, and elements remain intentionally imported from Plotters.
 
 pub use crate::{
-    AxisLabelFormat, BinaryExtrapolation, Component, ContourColorBar, ContourInterpolation,
-    ContourLabelConfig, ContourLegendPolicy, ContourOptions, ContourSet, ContourStylePolicy,
-    CubicAlphaMethod, CubicAlphaOptions, MarkerClipMode, MarkerShape, MarkerStyle, Normalization,
-    RegularTernaryGrid, RegularTernaryScalarField, TernaryChartBuilder, TernaryContourSeries,
-    TernaryGeometry, TernaryLineSeries, TernaryPoint, TernaryPointSeries, TernaryPolygon,
-    TernaryText, TernaryViewport, Tolerance,
+    AxisLabelFormat, BinaryExtrapolation, Component, ContourBandOptions, ContourBandSet,
+    ContourBandStylePolicy, ContourColorBar, ContourInterpolation, ContourLabelConfig,
+    ContourLegendPolicy, ContourOptions, ContourSet, ContourStylePolicy, CubicAlphaMethod,
+    CubicAlphaOptions, MarkerClipMode, MarkerShape, MarkerStyle, Normalization, RegularTernaryGrid,
+    RegularTernaryScalarField, ScalarMapResolution, TernaryChartBuilder, TernaryContourBandSeries,
+    TernaryContourSeries, TernaryGeometry, TernaryLineSeries, TernaryPoint, TernaryPointSeries,
+    TernaryPolygon, TernaryScalarMapSeries, TernaryText, TernaryViewport, Tolerance,
 };

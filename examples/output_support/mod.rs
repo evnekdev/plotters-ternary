@@ -7,7 +7,7 @@ use plotters::backend::DrawingBackend;
 use plotters::coord::Shift;
 use plotters::drawing::{DrawingArea, DrawingAreaErrorKind, IntoDrawingArea};
 use plotters::prelude::{BitMapBackend, FontStyle, IntoTextStyle, SVGBackend};
-use plotters_ternary::{
+use plotters_ternary::chart::{
     capture_rotated_text, capture_svg_rotated_text, draw_prepared_rotated_text,
     svg_rotated_text_elements,
 };

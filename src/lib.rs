@@ -29,11 +29,9 @@ pub use chart::{
     AxisLabelFormat, AxisNamePosition, AxisTextStyle, CartesianChartContext, CartesianPlottingArea,
     ContourColorBar, ContourColorBarOrientation, ContourColorBarPosition, ContourDisplayError,
     ContourLabelAnchor, ContourLabelConfig, ContourLabelMode, ContourLabelPlacement,
-    ContourLabelStyle, CornerLabelVisibility, CroppedAxisPolicy, EndpointLabelPolicy,
-    PreparedRotatedText, TernaryAxis, TernaryAxisConfig, TernaryChart, TernaryChartBuilder,
-    TernaryChartError, TernaryMesh, TernaryMeshConfig, TickDirection, TickRangeMode, TickSpec,
-    TickStyle, capture_rotated_text, capture_svg_rotated_text, draw_prepared_rotated_text,
-    svg_rotated_text_elements,
+    ContourLabelStyle, CornerLabelVisibility, CroppedAxisPolicy, EndpointLabelPolicy, TernaryAxis,
+    TernaryAxisConfig, TernaryChart, TernaryChartBuilder, TernaryChartError, TernaryMesh, TernaryMeshConfig,
+    TickDirection, TickRangeMode, TickSpec, TickStyle,
 };
 pub use coord::{
     CartesianSegment, ClippedSegment, Component, EQUILATERAL_TRIANGLE_HEIGHT, Error, Normalization,

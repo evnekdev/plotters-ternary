@@ -11,9 +11,11 @@ First release of `plotters-ternary`.
 - Lines, smooth series, scientific markers, polygons, and composition-anchored text.
 - Regular-grid piecewise-linear contours and optional cubic-alpha contours using Akima, MAKIMA, PCHIP, and Steffen edge intervals.
 - Muggianu and Kohler binary extrapolation policies; RawBarycentric is experimental only.
-- PNG geometry supersampling helper and vector SVG output.
+- Per-level contour styling, discrete legends, continuous colour bars, and tangent, curved, repeated, and manually placed contour labels.
+- Piecewise-linear filled contour bands with transparent holes, stepped colour bars, and continuous scalar-map rendering.
+- Geometry-only PNG supersampling and vector SVG output.
 
-Known limitations: no filled contours or contour labels; no irregular/scattered
-triangulation, Kuhn simplices, or N-component fields; cubic-alpha fields are C0
-rather than C1 across grid edges; adaptive cubic topology is bounded and
+Known limitations: cubic-alpha filled bands are not available; no irregular/scattered
+triangulation, Kuhn simplices, or N-component fields are provided. Cubic-alpha fields
+are C0 rather than C1 across grid edges, and adaptive cubic topology is bounded and
 reports maximum-depth diagnostics.
