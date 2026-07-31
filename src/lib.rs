@@ -31,8 +31,8 @@ pub use chart::{
     ContourLabelAnchor, ContourLabelConfig, ContourLabelMode, ContourLabelPlacement,
     ContourLabelStyle, CornerLabelVisibility, CroppedAxisPolicy, EndpointLabelPolicy,
     PreparedRotatedText, TernaryAxis, TernaryAxisConfig, TernaryChart, TernaryChartBuilder,
-    TernaryChartError, TernaryMeshConfig, TickDirection, TickRangeMode, TickSpec, TickStyle,
-    capture_rotated_text, capture_svg_rotated_text, draw_prepared_rotated_text,
+    TernaryChartError, TernaryMesh, TernaryMeshConfig, TickDirection, TickRangeMode, TickSpec,
+    TickStyle, capture_rotated_text, capture_svg_rotated_text, draw_prepared_rotated_text,
     svg_rotated_text_elements,
 };
 pub use coord::{

@@ -15,8 +15,8 @@ pub use contour_display::{
 pub use error::TernaryChartError;
 pub use mesh::{
     AxisLabelFormat, AxisNamePosition, AxisTextStyle, CornerLabelVisibility, CroppedAxisPolicy,
-    EndpointLabelPolicy, TernaryAxis, TernaryAxisConfig, TernaryMeshConfig, TickDirection,
-    TickRangeMode, TickSpec, TickStyle,
+    EndpointLabelPolicy, TernaryAxis, TernaryAxisConfig, TernaryMesh, TernaryMeshConfig,
+    TickDirection, TickRangeMode, TickSpec, TickStyle,
 };
 
 pub(crate) use rotated_text::RotatedText;

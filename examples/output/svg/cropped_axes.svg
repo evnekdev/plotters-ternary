@@ -8,8 +8,8 @@
 <polyline fill="none" opacity="1" stroke="#AABED7" stroke-width="1" points="304,232 410,232 "/>
 <polyline fill="none" opacity="1" stroke="#AABED7" stroke-width="1" points="304,155 366,155 "/>
 <polyline fill="none" opacity="1" stroke="#BEB4DC" stroke-width="1" points="304,664 321,695 "/>
-<polyline fill="none" opacity="1" stroke="#192332" stroke-width="3" points="304,695 677,695 "/>
-<polyline fill="none" opacity="1" stroke="#192332" stroke-width="3" points="677,695 343,115 "/>
+<polygon opacity="1" fill="#192332" points="304,697 677,697 677,694 304,694 "/>
+<polygon opacity="1" fill="#192332" points="678,694 344,114 342,116 676,696 "/>
 <polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="366,695 368,699 "/>
 <polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="455,695 458,699 "/>
 <polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="543,695 547,698 "/>

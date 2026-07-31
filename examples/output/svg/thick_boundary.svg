@@ -1,0 +1,47 @@
+<svg width="1000" height="800" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+<g id="ternary-geometry" shape-rendering="geometricPrecision" stroke-linecap="round" stroke-linejoin="round">
+
+<rect x="0" y="0" width="1000" height="800" opacity="1" fill="#FFFFFF" stroke="none"/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="210,606 788,606 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="282,481 716,481 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="354,356 644,356 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="427,231 571,231 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="427,231 716,731 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="354,356 571,731 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="282,481 427,731 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="210,606 282,731 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="571,231 282,731 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="644,356 427,731 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="716,481 571,731 "/>
+<polyline fill="none" opacity="1" stroke="#D2D8E0" stroke-width="1" points="788,606 716,731 "/>
+<polyline fill="none" opacity="1" stroke="#CD2D37" stroke-width="12" points="499,105 499,731 138,731 499,105 "/>
+<polyline fill="none" opacity="1" stroke="#146EB4" stroke-width="6" points="486,731 465,721 448,713 403,690 347,662 340,658 335,656 278,627 221,599 216,596 "/>
+<polyline fill="none" opacity="1" stroke="#146EB4" stroke-width="6" points="753,731 712,711 678,694 650,679 615,662 587,648 565,637 525,617 477,592 463,585 452,580 401,554 338,523 276,492 "/>
+<polyline fill="none" opacity="1" stroke="#146EB4" stroke-width="6" points="795,618 772,606 744,592 710,575 682,561 648,544 606,523 585,512 568,504 523,481 468,453 461,450 455,447 399,418 342,390 336,387 "/>
+<polygon opacity="1" fill="#EE9119" points="391,720 402,731 391,742 380,731 "/>
+<polygon opacity="1" fill="#EE9119" points="607,720 618,731 607,742 596,731 "/>
+<polygon opacity="1" fill="#141E2C" points="112,746 887,746 835,716 164,716 "/>
+<polygon opacity="1" fill="#141E2C" points="887,746 499,75 499,135 835,716 "/>
+<polygon opacity="1" fill="#141E2C" points="499,75 112,746 164,716 499,135 "/>
+</g>
+<g id="ternary-text">
+
+<text x="500" y="5" dy="0.76em" text-anchor="middle" font-family="sans-serif" font-size="27.419354838709676" opacity="1" fill="#000000" font-weight="bold">
+Joined foreground triangle frame
+</text>
+<text x="499" y="755" dy="0.5ex" text-anchor="middle" font-family="sans-serif" font-size="20.967741935483872" opacity="1" fill="#000000" font-weight="bold">
+A
+</text>
+<text x="499" y="89" dy="-0.5ex" text-anchor="middle" font-family="sans-serif" font-size="22.580645161290324" opacity="1" fill="#000000" font-weight="bold">
+A
+</text>
+<text x="124" y="739" dy="0.76em" text-anchor="end" font-family="sans-serif" font-size="22.580645161290324" opacity="1" fill="#000000" font-weight="bold">
+B
+</text>
+<text x="875" y="739" dy="0.76em" text-anchor="start" font-family="sans-serif" font-size="22.580645161290324" opacity="1" fill="#000000" font-weight="bold">
+C
+</text>
+<text x="701" y="406" text-anchor="middle" dominant-baseline="middle" transform="rotate(59.960289 701 406)" font-family="sans-serif" font-size="26" fill="#000000" fill-opacity="1.000000" font-weight="bold">B</text>
+<text x="297" y="406" text-anchor="middle" dominant-baseline="middle" transform="rotate(-60.028926 297 406)" font-family="sans-serif" font-size="26" fill="#000000" fill-opacity="1.000000" font-weight="bold">C</text>
+</g>
+</svg>

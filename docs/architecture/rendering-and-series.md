@@ -207,3 +207,30 @@ returns native `&mut SeriesAnno`, and `configure_series_labels` forwards native
 Axis ticks are prepared from clipped original triangle edges, then rendered in
 the geometry phase. Numeric labels are a separate text phase; the rectangular
 viewport is not a drawable axis frame. See [axis-kernel.md](axis-kernel.md).
+
+
+## Triangle frame compositing
+
+The physical simplex boundary is a foreground visual frame. Its width is
+centred on the mathematical triangle edge, so the numerical domain and all
+projection/clipping semantics remain unchanged. Data series, contour paths,
+filled bands, and scalar-map microtriangles are clipped to that mathematical
+centreline before rendering. A frame drawn afterward masks the inner half of a
+thick boundary instead of shrinking or otherwise changing numerical data.
+
+`TernaryMeshConfig::build` creates an owned `TernaryMesh` snapshot. Publication
+rendering should use `draw_background`, draw data through `TernaryChart`, then
+use `draw_foreground` and `draw_text`. Background contains minor/major grids;
+foreground contains the physical boundary and ticks; text contains tick labels,
+axis names, and corner names. The legacy `configure_mesh().draw()` remains a
+convenience for figures with no later data.
+
+A complete triangle is rendered as three filled, shared-miter boundary strips
+rather than three independent stroked two-point paths. This makes all genuine
+triangle vertices sharp without depending on backend round-cap or round-join
+defaults. The miter is limited to four half-widths. Cropped views retain only
+visible physical edge fragments, with butt-ended viewport cuts and no invented
+rectangular frame. The PNG geometry pass uses `grid -> data -> frame/ticks` at
+its supersampled scale; text is still rendered once at final resolution. SVG
+emits the data paths before the filled boundary polygons and remains vector
+only.

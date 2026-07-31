@@ -29,9 +29,9 @@
 <polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="727,530 629,699 "/>
 <polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="759,587 694,699 "/>
 <polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="792,643 759,699 "/>
-<polyline fill="none" opacity="1" stroke="#232D3C" stroke-width="3" points="174,699 825,699 "/>
-<polyline fill="none" opacity="1" stroke="#232D3C" stroke-width="3" points="825,699 499,135 "/>
-<polyline fill="none" opacity="1" stroke="#232D3C" stroke-width="3" points="499,135 174,699 "/>
+<polygon opacity="1" fill="#232D3C" points="171,701 828,701 822,698 177,698 "/>
+<polygon opacity="1" fill="#232D3C" points="828,701 499,132 499,138 822,698 "/>
+<polygon opacity="1" fill="#232D3C" points="499,132 171,701 177,698 499,138 "/>
 </g>
 <g id="ternary-text">
 

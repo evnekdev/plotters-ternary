@@ -220,10 +220,11 @@ where
         ))
         .axis_label_offset(scaled(34, scale))
         .corner_label_offset(scaled(24, scale));
+    let mesh = mesh.build();
     if pass.draws_geometry() {
-        mesh.draw_geometry_scaled(scale)?;
+        mesh.draw_background_scaled(&mut chart, scale)?;
     } else {
-        mesh.draw_text()?;
+        mesh.draw_text(&mut chart)?;
     }
 
     let liquidus_style = stroke_style(RGBColor(0, 95, 170), 4, pass, scale);
@@ -300,6 +301,9 @@ where
         .label("Calibration composition")
         .legend(move |coordinate| cross_legend_symbol(coordinate, scale, 7, calibration_style));
 
+    if pass.draws_geometry() {
+        mesh.draw_foreground_scaled(&mut chart, scale)?;
+    }
     draw_legend(&mut chart, SeriesLabelPosition::UpperRight, pass, scale)?;
     drop(chart);
     root.present()?;
@@ -341,10 +345,11 @@ where
         .major_grid_style(RGBColor(210, 216, 224).stroke_width(1))
         .hide_axis_names()
         .hide_corner_names();
+    let mesh = mesh.build();
     if pass.draws_geometry() {
-        mesh.draw_geometry_scaled(scale)?;
+        mesh.draw_background_scaled(&mut chart, scale)?;
     } else {
-        mesh.draw_text()?;
+        mesh.draw_text(&mut chart)?;
     }
 
     let crossing_style = stroke_style(RGBColor(210, 55, 50), 5, pass, scale);
@@ -393,6 +398,9 @@ where
         .label("Centre-clipped markers")
         .legend(move |coordinate| circle_legend_symbol(coordinate, scale, 6, marker_style));
 
+    if pass.draws_geometry() {
+        mesh.draw_foreground_scaled(&mut chart, scale)?;
+    }
     draw_legend(&mut chart, SeriesLabelPosition::UpperLeft, pass, scale)?;
     drop(chart);
     root.present()?;

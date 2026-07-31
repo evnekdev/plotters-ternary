@@ -130,7 +130,12 @@ where
     let mut chart = builder
         .margin(scaled(if viewport.is_some() { 78 } else { 68 }, scale))
         .build()?;
-    draw_mesh(&mut chart, pass, scale, viewport.is_some())?;
+    let mesh = draw_mesh(&mut chart, pass, scale, viewport.is_some())?;
+    if pass.geometry() {
+        mesh.draw_background_scaled(&mut chart, scale)?;
+    } else {
+        mesh.draw_text(&mut chart)?;
+    }
     let field = sample_field(9)?;
     match example {
         ContourExample::Linear => draw_linear(&mut chart, &field, pass, scale)?,
@@ -138,6 +143,9 @@ where
         ContourExample::Cropped => draw_cropped(&mut chart, &field, pass, scale)?,
     };
     draw_samples(&mut chart, &field, pass, scale)?;
+    if pass.geometry() {
+        mesh.draw_foreground_scaled(&mut chart, scale)?;
+    }
     draw_legend(&mut chart, pass, scale, example)?;
     drop(chart);
     root.present()?;
@@ -149,7 +157,7 @@ fn draw_mesh<'a, DB: DrawingBackend + 'a>(
     pass: Pass,
     scale: u32,
     cropped: bool,
-) -> Result<(), plotters_ternary::TernaryChartError<DB::ErrorType>> {
+) -> Result<plotters_ternary::TernaryMesh, plotters_ternary::TernaryChartError<DB::ErrorType>> {
     let navy = RGBColor(25, 35, 50);
     let name = AxisTextStyle::sans_serif(25, FontStyle::Bold, navy.to_rgba());
     let ticks = AxisTextStyle::sans_serif(17, FontStyle::Normal, navy.to_rgba());
@@ -208,12 +216,8 @@ fn draw_mesh<'a, DB: DrawingBackend + 'a>(
                 .tick_label_style(ticks)
                 .endpoint_label_policy(EndpointLabelPolicy::AutoAvoidDuplicates);
         });
-    if pass.geometry() {
-        mesh.draw_geometry_scaled(scale)?;
-    } else {
-        mesh.draw_text()?;
-    }
-    Ok(())
+    let _ = pass;
+    Ok(mesh.build())
 }
 
 fn draw_linear<'a, DB: DrawingBackend + 'a>(

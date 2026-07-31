@@ -122,13 +122,21 @@ where
     let mut chart = builder
         .margin(scaled(if example.cropped() { 82 } else { 68 }, scale))
         .build()?;
-    draw_mesh(&mut chart, pass, scale, example.cropped())?;
+    let mesh = draw_mesh(&mut chart, pass, scale, example.cropped())?;
+    if pass == Pass::Geometry {
+        mesh.draw_background_scaled(&mut chart, scale)?;
+    } else {
+        mesh.draw_text(&mut chart)?;
+    }
     let contours = contours()?;
     draw_contours(&mut chart, &contours, example, pass, scale)?;
     if pass == Pass::Text {
         draw_labels(&chart, &contours, example)?;
     }
     draw_color_bar(&chart, example, pass, scale)?;
+    if pass == Pass::Geometry {
+        mesh.draw_foreground_scaled(&mut chart, scale)?;
+    }
     if matches!(example, AdvancedContourExample::LevelLegend) {
         draw_legend(&mut chart, pass, scale)?;
     }
@@ -268,7 +276,7 @@ fn draw_mesh<'a, DB: DrawingBackend + 'a>(
     pass: Pass,
     scale: u32,
     cropped: bool,
-) -> Result<(), plotters_ternary::TernaryChartError<DB::ErrorType>> {
+) -> Result<plotters_ternary::TernaryMesh, plotters_ternary::TernaryChartError<DB::ErrorType>> {
     let navy = RGBColor(28, 38, 52);
     let name = AxisTextStyle::sans_serif(24, FontStyle::Bold, navy.to_rgba());
     let mesh = chart
@@ -306,11 +314,8 @@ fn draw_mesh<'a, DB: DrawingBackend + 'a>(
                 .endpoint_label_policy(EndpointLabelPolicy::InteriorOnly);
         });
     let _ = cropped;
-    if pass == Pass::Geometry {
-        mesh.draw_geometry_scaled(scale)
-    } else {
-        mesh.draw_text()
-    }
+    let _ = (pass, cropped);
+    Ok(mesh.build())
 }
 fn draw_legend<'a, DB: DrawingBackend + 'a>(
     chart: &mut TernaryChart<'a, DB>,

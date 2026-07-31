@@ -168,6 +168,38 @@ irregular or scattered-data triangulation, Kuhn simplices, N-component grids,
 or C1 cubic field continuity. SVG is the preferred publication-quality output. PNG
 supersampling is an example/output helper, not a permanent chart API.
 
+
+## Foreground triangle frame
+
+The ternary simplex edge is the mathematical centreline of the visual frame.
+A boundary width is centred on that edge: half lies inside the simplex and half
+lies outside it. Lines, contours, polygon outlines, bands, and scalar-map
+microtriangles are still clipped to the mathematical domain; a foreground frame
+then masks their inner edge in the final rendering.
+
+For publication figures with data, freeze the mesh and draw its phases around
+the series. This preserves Plotters-native annotations and legends while making
+the correct order explicit:
+
+```rust,ignore
+let mesh = chart.configure_mesh()
+    .boundary_style(BLACK.stroke_width(8))
+    .build();
+mesh.draw_background(&mut chart)?; // minor and major grids
+chart.draw_series(my_lines)?;
+chart.draw_series(my_contours)?;
+mesh.draw_foreground(&mut chart)?; // joined physical boundary and ticks
+mesh.draw_text(&mut chart)?;       // labels at final text resolution
+```
+
+A complete triangle frame is emitted as deterministic filled miter-limited
+boundary strips, not as three independently round-capped strokes. In a cropped
+viewport only visible physical simplex-edge fragments are drawn; artificial
+rectangular viewport sides remain invisible and crop cuts use butt ends. The
+PNG geometry pass uses the same order at the supersampled resolution, while SVG
+keeps the frame and data as vector geometry. Markers retain their existing
+centre-clipping policy and may intentionally overlap the frame.
+
 ## Architecture and contribution
 
 Architecture notes are under [docs/architecture](docs/architecture/README.md).

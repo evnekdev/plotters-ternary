@@ -143,10 +143,11 @@ where
                 .label_format(AxisLabelFormat::Decimal { precision: 2 })
                 .endpoint_label_policy(EndpointLabelPolicy::AutoAvoidDuplicates);
         });
+    let mesh = mesh.build();
     if pass.geometry() {
-        mesh.draw_geometry_scaled(scale)?;
+        mesh.draw_background_scaled(&mut chart, scale)?;
     } else {
-        mesh.draw_text()?;
+        mesh.draw_text(&mut chart)?;
     }
     let line = RGBColor(0, 95, 170)
         .mix(if pass.geometry() { 1.0 } else { 0.0 })
@@ -199,6 +200,9 @@ where
             )
             .expect("valid marker")
         });
+    if pass.geometry() {
+        mesh.draw_foreground_scaled(&mut chart, scale)?;
+    }
     draw_legend(&mut chart, pass, scale)?;
     drop(chart);
     root.present()?;

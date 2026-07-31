@@ -1,5 +1,7 @@
 use plotters::prelude::*;
-use plotters_ternary::{TernaryChartBuilder, TernaryGeometry, TernaryViewport};
+use plotters_ternary::{
+    TernaryChartBuilder, TernaryGeometry, TernaryLineSeries, TernaryPoint, TernaryViewport,
+};
 
 fn render(viewport: TernaryViewport, caption: &str) -> String {
     let mut svg = String::new();
@@ -59,4 +61,43 @@ fn interior_svg_has_grid_but_no_boundary_names_or_viewport_frame() {
     assert!(!svg.contains("Axis A"));
     assert!(!svg.contains("Corner A"));
     assert_eq!(svg.matches("<rect").count(), 1);
+}
+
+#[test]
+fn layered_frame_is_filled_joined_geometry_after_clipped_data() {
+    let mut svg = String::new();
+    {
+        let root = SVGBackend::with_string(&mut svg, (600, 480)).into_drawing_area();
+        root.fill(&WHITE).unwrap();
+        let mut chart = TernaryChartBuilder::on(&root).margin(35).build().unwrap();
+        let mesh = chart
+            .configure_mesh()
+            .hide_grid_lines()
+            .hide_axis_names()
+            .hide_corner_names()
+            .boundary_style(RGBColor(1, 2, 3).stroke_width(16))
+            .build();
+        mesh.draw_background(&mut chart).unwrap();
+        chart
+            .draw_series(TernaryLineSeries::new(
+                [
+                    TernaryPoint::new(1.0, 0.0, 0.0),
+                    TernaryPoint::new(0.0, 0.5, 0.5),
+                ],
+                RGBColor(220, 30, 30).stroke_width(10),
+            ))
+            .unwrap();
+        mesh.draw_foreground(&mut chart).unwrap();
+        mesh.draw_text(&mut chart).unwrap();
+        drop(chart);
+        root.present().unwrap();
+    }
+    assert!(!svg.contains("<image"));
+    let line = svg.find("#DC1E1E").expect("data line");
+    let frame = svg.rfind("#010203").expect("frame fill");
+    assert!(line < frame, "the foreground frame must follow data");
+    assert!(
+        !svg[frame..].contains("<polyline"),
+        "frame is filled strips, not a capped polyline"
+    );
 }
