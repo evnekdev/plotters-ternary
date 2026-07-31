@@ -12,8 +12,24 @@ type ScalarMapParts<'a> = (
     Option<(f64, f64)>,
     ScalarMapResolution,
     f64,
+    bool,
     Arc<ScalarColorMap>,
 );
+
+/// Select which band boundaries are stroked after the non-overlapping fills.
+///
+/// OuterRegions draws each assembled exterior and hole boundary once.
+/// Fragments is primarily diagnostic: it can make internal fragment seams
+/// visible and is therefore never the default.
+#[derive(Clone, Copy)]
+pub enum ContourBandBorderMode {
+    /// Do not stroke band boundaries. Use isolines for inter-band boundaries.
+    None,
+    /// Stroke only assembled region and hole boundaries.
+    OuterRegions(ShapeStyle),
+    /// Stroke every clipped elementary-triangle fragment.
+    Fragments(ShapeStyle),
+}
 
 #[derive(Clone)]
 pub enum ContourBandStylePolicy {
@@ -42,7 +58,7 @@ impl ContourBandStylePolicy {
 pub struct TernaryContourBandSeries<'a> {
     bands: &'a ContourBandSet,
     styles: ContourBandStylePolicy,
-    border: Option<ShapeStyle>,
+    border: ContourBandBorderMode,
 }
 
 impl<'a> TernaryContourBandSeries<'a> {
@@ -50,7 +66,7 @@ impl<'a> TernaryContourBandSeries<'a> {
         Self {
             bands,
             styles: ContourBandStylePolicy::Uniform(style.into()),
-            border: None,
+            border: ContourBandBorderMode::None,
         }
     }
     pub fn style_by_band<F>(mut self, callback: F) -> Self
@@ -64,22 +80,47 @@ impl<'a> TernaryContourBandSeries<'a> {
         self.styles = ContourBandStylePolicy::Ordered(styles);
         self
     }
+    /// Stroke each assembled region boundary once, including hole boundaries.
+    ///
+    /// This preserves the legacy method name while avoiding doubled internal
+    /// fragment seams.
     pub fn border_style<S: Into<ShapeStyle>>(mut self, style: S) -> Self {
-        self.border = Some(style.into());
+        self.border = ContourBandBorderMode::OuterRegions(style.into());
         self
     }
+
+    /// Stroke every elementary-triangle band fragment.
+    ///
+    /// This is useful for diagnostics only; ordinary figures should use
+    /// border_style or isolines instead.
+    pub fn fragment_border_style<S: Into<ShapeStyle>>(mut self, style: S) -> Self {
+        self.border = ContourBandBorderMode::Fragments(style.into());
+        self
+    }
+
+    /// Disable all band-border strokes.
+    pub const fn without_border(mut self) -> Self {
+        self.border = ContourBandBorderMode::None;
+        self
+    }
+
     pub(crate) fn into_parts(
         self,
     ) -> (
         &'a ContourBandSet,
         ContourBandStylePolicy,
-        Option<ShapeStyle>,
+        ContourBandBorderMode,
     ) {
         (self.bands, self.styles, self.border)
     }
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+/// Resolution of the flat-colour microtriangle approximation.
+///
+/// Adaptive currently means a deterministic uniform refinement selected by its
+/// maximum depth; it does not inspect colours per triangle. This keeps output
+/// bounded and backend-independent until a true adaptive policy is introduced.
 pub enum ScalarMapResolution {
     Fixed { subdivisions_per_edge: usize },
     Adaptive { max_depth: u8 },
@@ -87,7 +128,7 @@ pub enum ScalarMapResolution {
 impl Default for ScalarMapResolution {
     fn default() -> Self {
         Self::Fixed {
-            subdivisions_per_edge: 6,
+            subdivisions_per_edge: 4,
         }
     }
 }
@@ -115,6 +156,7 @@ pub struct TernaryScalarMapSeries<'a> {
     range: Option<(f64, f64)>,
     resolution: ScalarMapResolution,
     opacity: f64,
+    reversed: bool,
     color_map: Arc<ScalarColorMap>,
 }
 impl<'a> TernaryScalarMapSeries<'a> {
@@ -124,6 +166,7 @@ impl<'a> TernaryScalarMapSeries<'a> {
             range: None,
             resolution: ScalarMapResolution::default(),
             opacity: 1.0,
+            reversed: false,
             color_map: Arc::new(default_color_map),
         }
     }
@@ -139,6 +182,12 @@ impl<'a> TernaryScalarMapSeries<'a> {
         self.opacity = opacity;
         self
     }
+    /// Reverse the normalised colour-map coordinate without changing field data.
+    pub const fn reversed(mut self) -> Self {
+        self.reversed = !self.reversed;
+        self
+    }
+
     pub fn color_map<F>(mut self, color_map: F) -> Self
     where
         F: Fn(f64) -> RGBAColor + Send + Sync + 'static,
@@ -152,10 +201,16 @@ impl<'a> TernaryScalarMapSeries<'a> {
             self.range,
             self.resolution,
             self.opacity,
+            self.reversed,
             self.color_map,
         )
     }
 }
+/// Number of flat microtriangles emitted for one elementary field triangle.
+pub(crate) const fn microtriangle_count(intervals: usize) -> usize {
+    intervals * intervals
+}
+
 pub(crate) fn default_color_map(value: f64) -> RGBAColor {
     let value = value.clamp(0.0, 1.0);
     RGBAColor(
@@ -173,16 +228,19 @@ mod tests {
 
     #[test]
     fn ordered_band_styles_cycle_and_empty_collections_are_rejected() {
-        let band = ContourBand {
-            lower: Some(1.0),
-            upper: Some(2.0),
-            regions: Vec::new(),
-        };
+        let field = RegularTernaryScalarField::new(1, vec![0.0, 1.0, 2.0]).unwrap();
+        let bands = ContourBandSet::compute(
+            &field,
+            &[1.0],
+            ternary_contours::ContourBandOptions::linear(),
+        )
+        .unwrap();
+        let band = &bands.bands[0];
         let styles = ContourBandStylePolicy::Ordered(vec![BLACK.filled(), RED.filled()]);
-        assert_eq!(styles.style_for(0, &band).unwrap(), BLACK.filled());
-        assert_eq!(styles.style_for(3, &band).unwrap(), RED.filled());
+        assert_eq!(styles.style_for(0, band).unwrap(), BLACK.filled());
+        assert_eq!(styles.style_for(3, band).unwrap(), RED.filled());
         assert!(matches!(
-            ContourBandStylePolicy::Ordered(Vec::new()).style_for(0, &band),
+            ContourBandStylePolicy::Ordered(Vec::new()).style_for(0, band),
             Err(SeriesError::EmptyContourBandStyleCollection)
         ));
     }
@@ -210,5 +268,13 @@ mod tests {
             .intervals()
             .is_err()
         );
+        assert_eq!(microtriangle_count(4), 16);
+    }
+
+    #[test]
+    fn reverse_map_toggles_without_changing_other_options() {
+        let field = RegularTernaryScalarField::new(1, vec![0.0, 1.0, 2.0]).unwrap();
+        let (_, _, _, _, reversed, _) = TernaryScalarMapSeries::new(&field).reversed().into_parts();
+        assert!(reversed);
     }
 }

@@ -6,8 +6,8 @@
 
 pub use ternary_contours::{
     AdaptiveContourOptions, ContourBand, ContourBandOptions, ContourBandSet, ContourError,
-    ContourInterpolation, ContourLevel, ContourOptions, ContourPath, ContourRegion,
-    ContourRegularization, ContourSet, CubicAlphaMethod, CubicAlphaOptions, CubicBoundaryPolicy,
-    CubicContourDiagnostics, FieldError, GridEvaluationError, GridVertexId, LatticeCoordinate,
-    RegularTernaryGrid, RegularTernaryScalarField, TernaryCoordinate,
+    ContourFragment, ContourInterpolation, ContourLevel, ContourOptions, ContourPath,
+    ContourRegion, ContourRegularization, ContourSet, CubicAlphaMethod, CubicAlphaOptions,
+    CubicBoundaryPolicy, CubicContourDiagnostics, FieldError, GridEvaluationError, GridVertexId,
+    LatticeCoordinate, RegularTernaryGrid, RegularTernaryScalarField, TernaryCoordinate,
 };

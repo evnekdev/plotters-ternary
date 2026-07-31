@@ -4,9 +4,10 @@ mod output_support;
 
 use plotters::prelude::*;
 use plotters_ternary::{
-    AxisTextStyle, ContourColorBar, ContourLabelConfig, ContourLabelMode, ContourLabelPlacement,
-    ContourLabelStyle, ContourLegendPolicy, ContourOptions, ContourSet, RegularTernaryScalarField,
-    TernaryChartBuilder, TernaryContourSeries,
+    AxisTextStyle, ContourBandOptions, ContourBandSet, ContourColorBar, ContourLabelConfig,
+    ContourLabelMode, ContourLabelPlacement, ContourLabelStyle, ContourLegendPolicy,
+    ContourOptions, ContourSet, RegularTernaryScalarField, ScalarMapResolution,
+    TernaryChartBuilder, TernaryContourBandSeries, TernaryContourSeries, TernaryScalarMapSeries,
 };
 
 fn field() -> RegularTernaryScalarField {
@@ -234,5 +235,79 @@ fn horizontal_colour_bar_uses_vector_geometry_and_native_text() {
     assert!(svg.contains("ΔG / kJ mol⁻¹"));
     assert!(svg.contains("<rect"));
     assert!(svg.contains("<text"));
+    assert!(!svg.contains("<image"));
+}
+
+#[test]
+fn band_holes_are_fragment_transparent_and_leave_the_core_geometry_unchanged() {
+    let field = RegularTernaryScalarField::from_fn(16, |[a, b, c]| {
+        (a - 1.0 / 3.0).powi(2) + (b - 1.0 / 3.0).powi(2) + (c - 1.0 / 3.0).powi(2)
+    })
+    .unwrap();
+    let mut options = ContourBandOptions::linear();
+    options.include_lower_extreme = false;
+    options.include_upper_extreme = false;
+    let bands = ContourBandSet::compute(&field, &[0.025, 0.10], options).unwrap();
+    assert!(
+        bands.bands[0]
+            .regions
+            .iter()
+            .any(|region| !region.holes.is_empty())
+    );
+    assert!(!bands.bands[0].fragments().is_empty());
+    let before = bands.clone();
+
+    let svg = output_support::render_svg_string(
+        (720, 560),
+        |root| {
+            root.fill(&WHITE)?;
+            let mut chart = TernaryChartBuilder::on(&root).margin(50).build()?;
+            chart.draw_series(
+                TernaryScalarMapSeries::new(&field)
+                    .resolution(ScalarMapResolution::Fixed {
+                        subdivisions_per_edge: 2,
+                    })
+                    .color_map(map),
+            )?;
+            chart.draw_series(TernaryContourBandSeries::new(
+                &bands,
+                RED.mix(0.85).filled(),
+            ))?;
+            drop(chart);
+            root.present()?;
+            Ok(())
+        },
+        |root| {
+            root.present()?;
+            Ok(())
+        },
+    )
+    .unwrap();
+
+    assert_eq!(bands, before);
+    assert!(!svg.contains("<image"));
+    assert!(svg.matches("<polygon").count() > 100);
+}
+
+#[test]
+fn automatic_constant_scalar_map_uses_a_defined_midpoint_colour() {
+    let field = RegularTernaryScalarField::from_fn(2, |_| 7.0).unwrap();
+    let svg = output_support::render_svg_string(
+        (360, 300),
+        |root| {
+            root.fill(&WHITE)?;
+            let mut chart = TernaryChartBuilder::on(&root).margin(30).build()?;
+            chart.draw_series(TernaryScalarMapSeries::new(&field))?;
+            drop(chart);
+            root.present()?;
+            Ok(())
+        },
+        |root| {
+            root.present()?;
+            Ok(())
+        },
+    )
+    .unwrap();
+    assert!(svg.contains("<polygon"));
     assert!(!svg.contains("<image"));
 }

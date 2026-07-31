@@ -129,12 +129,12 @@ chart.draw_series(
     TernaryContourSeries::new(&contours)
         .style_by_level(|level| level_style(level))
         .legend_policy(ContourLegendPolicy::EveryNth(2))
-        .level_formatter(|level| format!("{level:.0} °C")),
+        .level_formatter(|level| format!("{level:.0} Â°C")),
 )?;
 chart.draw_contour_labels(
     &contours,
     &ContourLabelConfig::new()
-        .formatter(|level| format!("{level:.0} °C")),
+        .formatter(|level| format!("{level:.0} Â°C")),
 )?;
 ```
 
@@ -162,9 +162,10 @@ live beside every PNG under `examples/output/svg/`.
 - `default`: geometry, Plotters charting, all standard series, linear contours.
 - `cubic-alpha`: cubic-alpha contour field construction and adaptive contouring.
 
-The crate does not provide filled contours, irregular or
-scattered-data triangulation, Kuhn simplices, N-component grids, or C1 cubic
-field continuity. SVG is the preferred publication-quality output. PNG
+The crate provides linear filled contour bands and flat-colour
+piecewise-linear scalar maps. It does not provide cubic-alpha filled contours,
+irregular or scattered-data triangulation, Kuhn simplices, N-component grids,
+or C1 cubic field continuity. SVG is the preferred publication-quality output. PNG
 supersampling is an example/output helper, not a permanent chart API.
 
 ## Architecture and contribution
@@ -177,9 +178,12 @@ under [MIT](LICENSE-MIT) or [Apache-2.0](LICENSE-APACHE).
 
 ## Linear filled bands and scalar maps
 
-ContourBandSet computes deterministic linear isoband regions.
-TernaryContourBandSeries assigns Plotters styles to immutable regions, while
-TernaryScalarMapSeries renders an exact piecewise-linear field using bounded
-flat-colour microtriangles. Both retain SVG vector geometry; map resolution
-trades SVG size for smoothness. Cubic-alpha isobands are explicitly not
-supported yet.
+ContourBandSet computes deterministic linear isoband regions from finite,
+strictly increasing breaks. Scalar ownership is half-open while adjacent
+polygons may share only zero-area threshold curves. TernaryContourBandSeries
+fills the core's non-overlapping fragments, so ContourRegion holes are
+transparent cut-outs that reveal layers below. TernaryScalarMapSeries evaluates
+the exact piecewise-linear field at microtriangle centroids and flat-fills each
+microtriangle; it is an approximation of continuous colour shading. Both retain
+SVG vector geometry, and map resolution trades SVG size for visible faceting.
+Cubic-alpha isobands are explicitly not supported yet.

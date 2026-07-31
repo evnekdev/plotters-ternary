@@ -7,10 +7,11 @@ use crate::chart::{TernaryChart, TernaryChartError};
 use crate::coord::TernaryPoint;
 
 use super::{
-    AnnotationClipMode, AnnotationError, MarkerElement, MarkerStyle, PointMarkerStyleProvider,
-    PolygonElement, SeriesError, TernaryContourBandSeries, TernaryContourSeries, TernaryLineSeries,
-    TernaryPointSeries, TernaryPolygon, TernaryScalarMapSeries, TernarySmoothSeries, TernaryText,
-    prepare_points_with_source, prepare_polygon, prepare_polyline,
+    AnnotationClipMode, AnnotationError, ContourBandBorderMode, MarkerElement, MarkerStyle,
+    PointMarkerStyleProvider, PolygonElement, SeriesError, TernaryContourBandSeries,
+    TernaryContourSeries, TernaryLineSeries, TernaryPointSeries, TernaryPolygon,
+    TernaryScalarMapSeries, TernarySmoothSeries, TernaryText, prepare_points_with_source,
+    prepare_polygon, prepare_polyline,
     smooth::{SmoothPreparation, prepare_smooth_polyline},
 };
 
@@ -317,14 +318,17 @@ where
     where
         DB: 'series,
     {
-        let (bands, styles, border) = self.into_parts();
+        let (bands, styles, border_mode) = self.into_parts();
         let mut elements = Vec::new();
         for (index, band) in bands.bands.iter().enumerate() {
             let fill = styles.style_for(index, band)?;
-            for region in &band.regions {
+            // Draw non-overlapping simple core fragments rather than an exterior
+            // ring alone. This leaves ContourRegion holes transparent and reveals
+            // whatever was rendered below the band layer.
+            for fragment in band.fragments() {
                 let polygon = prepare_polygon(
-                    region
-                        .exterior
+                    fragment
+                        .vertices()
                         .iter()
                         .copied()
                         .map(|point| TernaryPoint::from(point.as_array())),
@@ -334,6 +338,10 @@ where
                     chart.tolerance,
                 )
                 .map_err(SeriesError::Polygon)?;
+                let fragment_border = match border_mode {
+                    ContourBandBorderMode::Fragments(style) => Some(style),
+                    ContourBandBorderMode::None | ContourBandBorderMode::OuterRegions(_) => None,
+                };
                 elements.push(PolygonElement::new(
                     polygon
                         .vertices()
@@ -341,8 +349,33 @@ where
                         .map(|point| (point.x, point.y))
                         .collect(),
                     Some(fill),
-                    border,
+                    fragment_border,
                 ));
+            }
+            if let ContourBandBorderMode::OuterRegions(style) = border_mode {
+                for region in &band.regions {
+                    for ring in std::iter::once(&region.exterior).chain(region.holes.iter()) {
+                        let polygon = prepare_polygon(
+                            ring.iter()
+                                .copied()
+                                .map(|point| TernaryPoint::from(point.as_array())),
+                            chart.geometry,
+                            chart.viewport,
+                            crate::coord::Normalization::RequireUnitSum,
+                            chart.tolerance,
+                        )
+                        .map_err(SeriesError::Polygon)?;
+                        elements.push(PolygonElement::new(
+                            polygon
+                                .vertices()
+                                .iter()
+                                .map(|point| (point.x, point.y))
+                                .collect(),
+                            None,
+                            Some(style),
+                        ));
+                    }
+                }
             }
         }
         chart.context.draw_series(elements).map_err(Into::into)
@@ -360,18 +393,23 @@ where
     where
         DB: 'series,
     {
-        let (field, requested_range, resolution, opacity, color_map) = self.into_parts();
+        let (field, requested_range, resolution, opacity, reversed, color_map) = self.into_parts();
         let intervals = resolution.intervals()?;
         if !opacity.is_finite() || !(0.0..=1.0).contains(&opacity) {
             return Err(SeriesError::InvalidScalarMapOpacity { opacity }.into());
         }
+        let automatic_range = requested_range.is_none();
         let (minimum, maximum) = requested_range.unwrap_or_else(|| {
             field.values().iter().copied().fold(
                 (f64::INFINITY, f64::NEG_INFINITY),
                 |(minimum, maximum), value| (minimum.min(value), maximum.max(value)),
             )
         });
-        if !minimum.is_finite() || !maximum.is_finite() || maximum <= minimum {
+        if !minimum.is_finite()
+            || !maximum.is_finite()
+            || (maximum < minimum)
+            || (!automatic_range && maximum == minimum)
+        {
             return Err(SeriesError::InvalidContourColorRange {
                 minimum,
                 maximum,
@@ -379,6 +417,7 @@ where
             }
             .into());
         }
+        let constant_range = maximum == minimum;
 
         let mut elements = Vec::new();
         for triangle in field
@@ -414,8 +453,18 @@ where
                     .map_err(SeriesError::ScalarMapField)?,
             ];
             for micro in microtriangles(coordinates, values, intervals) {
+                // For a piecewise-linear field this mean is exactly the value
+                // at the microtriangle centroid. Plotters fills the primitive
+                // flatly; it does not perform Gouraud interpolation.
                 let average = (micro.values[0] + micro.values[1] + micro.values[2]) / 3.0;
-                let normalized = ((average - minimum) / (maximum - minimum)).clamp(0.0, 1.0);
+                let mut normalized = if constant_range {
+                    0.5
+                } else {
+                    ((average - minimum) / (maximum - minimum)).clamp(0.0, 1.0)
+                };
+                if reversed {
+                    normalized = 1.0 - normalized;
+                }
                 let polygon = prepare_polygon(
                     micro.points,
                     chart.geometry,
@@ -451,7 +500,7 @@ fn microtriangles(
     values: [f64; 3],
     intervals: usize,
 ) -> Vec<ScalarMicroTriangle> {
-    let mut result = Vec::with_capacity(intervals * intervals);
+    let mut result = Vec::with_capacity(super::bands::microtriangle_count(intervals));
     let sample = |i: usize, j: usize| {
         let u = i as f64 / intervals as f64;
         let v = j as f64 / intervals as f64;

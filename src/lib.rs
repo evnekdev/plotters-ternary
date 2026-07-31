@@ -15,7 +15,7 @@
 //! Ternary coordinates always retain semantic A/B/C order. Viewport clipping is
 //! mathematical and the viewport frame is invisible. Cubic contour fields share
 //! exact one-dimensional edge intervals and are C0 across regular-grid edges; C1
-//! continuity, filled contours, irregular triangulation, and N-component grids
+//! continuity, cubic-alpha filled contours, irregular triangulation, and N-component grids
 //! are not provided in 0.1.0.
 
 pub mod chart;
@@ -43,22 +43,22 @@ pub use coord::{
     VisibleTriangleEdge, clip_segment, clip_segment_with_parameters,
 };
 pub use series::{
-    AnnotationClipMode, AnnotationError, AnnotationTextStyle, ContourBandStylePolicy,
-    ContourLegendPolicy, ContourStylePolicy, HorizontalAnchor, InvalidPointPolicy, LocalPoint,
-    LocalSegment, MarkerClipMode, MarkerDrawing, MarkerElement, MarkerError, MarkerFill,
-    MarkerFillPolygon, MarkerGeometry, MarkerPartition, MarkerShape, MarkerSlice, MarkerStyle,
-    PointMarkerStyleProvider, PolygonError, PreparedPolygon, ScalarMapResolution, SeriesError,
-    SweepDirection, TernaryContourBandSeries, TernaryContourSeries, TernaryInterpolation,
-    TernaryLineSeries, TernaryPointSeries, TernaryPolygon, TernaryScalarMapSeries, TernarySeries,
-    TernarySmoothSeries, TernaryText, TextAnchor, TextRotation, VerticalAnchor, prepare_points,
-    prepare_polygon, prepare_polyline,
+    AnnotationClipMode, AnnotationError, AnnotationTextStyle, ContourBandBorderMode,
+    ContourBandStylePolicy, ContourLegendPolicy, ContourStylePolicy, HorizontalAnchor,
+    InvalidPointPolicy, LocalPoint, LocalSegment, MarkerClipMode, MarkerDrawing, MarkerElement,
+    MarkerError, MarkerFill, MarkerFillPolygon, MarkerGeometry, MarkerPartition, MarkerShape,
+    MarkerSlice, MarkerStyle, PointMarkerStyleProvider, PolygonError, PreparedPolygon,
+    ScalarMapResolution, SeriesError, SweepDirection, TernaryContourBandSeries,
+    TernaryContourSeries, TernaryInterpolation, TernaryLineSeries, TernaryPointSeries,
+    TernaryPolygon, TernaryScalarMapSeries, TernarySeries, TernarySmoothSeries, TernaryText,
+    TextAnchor, TextRotation, VerticalAnchor, prepare_points, prepare_polygon, prepare_polyline,
 };
 
 pub use contour::{
     AdaptiveContourOptions, ContourBand, ContourBandOptions, ContourBandSet, ContourError,
-    ContourInterpolation, ContourLevel, ContourOptions, ContourPath, ContourRegion,
-    ContourRegularization, ContourSet, CubicAlphaMethod, CubicAlphaOptions, CubicBoundaryPolicy,
-    CubicContourDiagnostics, FieldError, GridEvaluationError, GridVertexId, LatticeCoordinate,
-    RegularTernaryGrid, RegularTernaryScalarField, TernaryCoordinate,
+    ContourFragment, ContourInterpolation, ContourLevel, ContourOptions, ContourPath,
+    ContourRegion, ContourRegularization, ContourSet, CubicAlphaMethod, CubicAlphaOptions,
+    CubicBoundaryPolicy, CubicContourDiagnostics, FieldError, GridEvaluationError, GridVertexId,
+    LatticeCoordinate, RegularTernaryGrid, RegularTernaryScalarField, TernaryCoordinate,
 };
 pub use interpolation::BinaryExtrapolation;

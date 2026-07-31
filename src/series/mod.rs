@@ -11,7 +11,8 @@ mod smooth;
 mod text;
 
 pub use bands::{
-    ContourBandStylePolicy, ScalarMapResolution, TernaryContourBandSeries, TernaryScalarMapSeries,
+    ContourBandBorderMode, ContourBandStylePolicy, ScalarMapResolution, TernaryContourBandSeries,
+    TernaryScalarMapSeries,
 };
 pub use contour::{ContourLegendPolicy, ContourStylePolicy, TernaryContourSeries};
 pub use draw::TernarySeries;

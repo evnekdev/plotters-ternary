@@ -505,7 +505,16 @@ examples/output/{png,svg}/manual_contour_labels.*
 examples/output/{png,svg}/repeated_contour_labels.*
 ```
 
-## Milestone 10 and later: advanced capabilities
+## Milestone 10: linear filled contours and scalar maps
+
+Milestone 10 is implemented for piecewise-linear regular ternary fields.
+ternary-contours owns half-open scalar-band classification, deterministic
+fragment and region assembly, and containment-classified holes. plotters-ternary
+fills the non-overlapping fragments so holes remain transparent, then adds
+optional region borders, scalar maps, isolines, labels, and colour bars as
+separate rendering layers. Cubic-alpha isobands remain deliberately unsupported.
+
+## Later advanced capabilities
 
 These should be implemented only after the core API has real usage experience:
 
@@ -515,7 +524,7 @@ These should be implemented only after the core API has real usage experience:
 - optional LaTeX or Typst renderer;
 - tie-line and phase-field helpers;
 - interpolation adapters;
-- filled contours;
+- cubic-alpha filled contours;
 - reverse-coordinate interaction and hit testing;
 - GUI/backend-specific interaction helpers.
 
