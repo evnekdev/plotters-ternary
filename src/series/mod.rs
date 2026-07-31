@@ -1,3 +1,4 @@
+mod bands;
 mod contour;
 mod draw;
 mod error;
@@ -9,6 +10,9 @@ mod prepare;
 mod smooth;
 mod text;
 
+pub use bands::{
+    ContourBandStylePolicy, ScalarMapResolution, TernaryContourBandSeries, TernaryScalarMapSeries,
+};
 pub use contour::{ContourLegendPolicy, ContourStylePolicy, TernaryContourSeries};
 pub use draw::TernarySeries;
 pub use error::{InvalidPointPolicy, SeriesError};

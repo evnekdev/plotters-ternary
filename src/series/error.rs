@@ -35,6 +35,12 @@ pub enum SeriesError {
     InvalidMarkerSize { size: u32 },
     /// An ordered contour style collection contained no styles.
     EmptyContourStyleCollection,
+    /// An ordered filled-contour style collection contained no styles.
+    EmptyContourBandStyleCollection,
+    /// Scalar-map micro-triangulation was zero or exceeded the guardrail.
+    InvalidScalarMapResolution { value: usize },
+    /// Scalar-map opacity was not a finite value in the inclusive zero-to-one range.
+    InvalidScalarMapOpacity { opacity: f64 },
     /// A continuous contour colour range or stroke width was invalid.
     InvalidContourColorRange {
         minimum: f64,
@@ -45,6 +51,8 @@ pub enum SeriesError {
     InvalidContourLegendStride { stride: usize },
     /// Contour label or colour-bar rendering configuration was invalid.
     ContourDisplay(ContourDisplayError),
+    /// Scalar-map field access failed despite an already validated field.
+    ScalarMapField(ternary_contours::FieldError),
     /// Polygon validation, projection, or clipping preparation failed.
     Polygon(PolygonError),
     /// A ternary text annotation could not be prepared.
@@ -86,6 +94,22 @@ impl fmt::Display for SeriesError {
             Self::InvalidMarkerSize { size } => {
                 write!(formatter, "marker size must be greater than zero: {size}")
             }
+            Self::InvalidScalarMapOpacity { opacity } => {
+                write!(
+                    formatter,
+                    "scalar-map opacity must be finite and in 0..=1: {opacity:?}"
+                )
+            }
+            Self::EmptyContourBandStyleCollection => {
+                write!(
+                    formatter,
+                    "filled contour style collection must not be empty"
+                )
+            }
+            Self::InvalidScalarMapResolution { value } => write!(
+                formatter,
+                "scalar-map subdivisions per edge must be in 1..=64, or adaptive depth in 0..=6; received {value}"
+            ),
             Self::EmptyContourStyleCollection => {
                 write!(formatter, "contour style collection must not be empty")
             }
@@ -102,6 +126,7 @@ impl fmt::Display for SeriesError {
                 "contour legend stride must be greater than zero: {stride}"
             ),
             Self::ContourDisplay(source) => write!(formatter, "contour display error: {source}"),
+            Self::ScalarMapField(source) => write!(formatter, "scalar-map field error: {source}"),
             Self::Polygon(source) => write!(formatter, "ternary polygon error: {source}"),
             Self::Annotation(source) => write!(formatter, "ternary annotation error: {source}"),
             Self::Marker {
@@ -132,10 +157,14 @@ impl std::error::Error for SeriesError {
             | Self::TooManySmoothSamples { .. }
             | Self::InvalidMarkerSize { .. }
             | Self::EmptyContourStyleCollection
+            | Self::EmptyContourBandStyleCollection
+            | Self::InvalidScalarMapResolution { .. }
+            | Self::InvalidScalarMapOpacity { .. }
             | Self::InvalidContourColorRange { .. }
             | Self::InvalidContourLegendStride { .. } => None,
             Self::Marker { source, .. } => Some(source),
             Self::ContourDisplay(source) => Some(source),
+            Self::ScalarMapField(source) => Some(source),
             Self::Polygon(source) => Some(source),
             Self::Annotation(source) => Some(source),
         }

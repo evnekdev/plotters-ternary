@@ -43,20 +43,22 @@ pub use coord::{
     VisibleTriangleEdge, clip_segment, clip_segment_with_parameters,
 };
 pub use series::{
-    AnnotationClipMode, AnnotationError, AnnotationTextStyle, ContourLegendPolicy,
-    ContourStylePolicy, HorizontalAnchor, InvalidPointPolicy, LocalPoint, LocalSegment,
-    MarkerClipMode, MarkerDrawing, MarkerElement, MarkerError, MarkerFill, MarkerFillPolygon,
-    MarkerGeometry, MarkerPartition, MarkerShape, MarkerSlice, MarkerStyle,
-    PointMarkerStyleProvider, PolygonError, PreparedPolygon, SeriesError, SweepDirection,
-    TernaryContourSeries, TernaryInterpolation, TernaryLineSeries, TernaryPointSeries,
-    TernaryPolygon, TernarySeries, TernarySmoothSeries, TernaryText, TextAnchor, TextRotation,
-    VerticalAnchor, prepare_points, prepare_polygon, prepare_polyline,
+    AnnotationClipMode, AnnotationError, AnnotationTextStyle, ContourBandStylePolicy,
+    ContourLegendPolicy, ContourStylePolicy, HorizontalAnchor, InvalidPointPolicy, LocalPoint,
+    LocalSegment, MarkerClipMode, MarkerDrawing, MarkerElement, MarkerError, MarkerFill,
+    MarkerFillPolygon, MarkerGeometry, MarkerPartition, MarkerShape, MarkerSlice, MarkerStyle,
+    PointMarkerStyleProvider, PolygonError, PreparedPolygon, ScalarMapResolution, SeriesError,
+    SweepDirection, TernaryContourBandSeries, TernaryContourSeries, TernaryInterpolation,
+    TernaryLineSeries, TernaryPointSeries, TernaryPolygon, TernaryScalarMapSeries, TernarySeries,
+    TernarySmoothSeries, TernaryText, TextAnchor, TextRotation, VerticalAnchor, prepare_points,
+    prepare_polygon, prepare_polyline,
 };
 
 pub use contour::{
-    AdaptiveContourOptions, ContourError, ContourInterpolation, ContourLevel, ContourOptions,
-    ContourPath, ContourRegularization, ContourSet, CubicAlphaMethod, CubicAlphaOptions,
-    CubicBoundaryPolicy, CubicContourDiagnostics, FieldError, GridEvaluationError, GridVertexId,
-    LatticeCoordinate, RegularTernaryGrid, RegularTernaryScalarField, TernaryCoordinate,
+    AdaptiveContourOptions, ContourBand, ContourBandOptions, ContourBandSet, ContourError,
+    ContourInterpolation, ContourLevel, ContourOptions, ContourPath, ContourRegion,
+    ContourRegularization, ContourSet, CubicAlphaMethod, CubicAlphaOptions, CubicBoundaryPolicy,
+    CubicContourDiagnostics, FieldError, GridEvaluationError, GridVertexId, LatticeCoordinate,
+    RegularTernaryGrid, RegularTernaryScalarField, TernaryCoordinate,
 };
 pub use interpolation::BinaryExtrapolation;

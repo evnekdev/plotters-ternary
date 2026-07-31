@@ -5,8 +5,9 @@
 //! final semantic coordinates into chart space and clips them for rendering.
 
 pub use ternary_contours::{
-    AdaptiveContourOptions, ContourError, ContourInterpolation, ContourLevel, ContourOptions,
-    ContourPath, ContourRegularization, ContourSet, CubicAlphaMethod, CubicAlphaOptions,
-    CubicBoundaryPolicy, CubicContourDiagnostics, FieldError, GridEvaluationError, GridVertexId,
-    LatticeCoordinate, RegularTernaryGrid, RegularTernaryScalarField, TernaryCoordinate,
+    AdaptiveContourOptions, ContourBand, ContourBandOptions, ContourBandSet, ContourError,
+    ContourInterpolation, ContourLevel, ContourOptions, ContourPath, ContourRegion,
+    ContourRegularization, ContourSet, CubicAlphaMethod, CubicAlphaOptions, CubicBoundaryPolicy,
+    CubicContourDiagnostics, FieldError, GridEvaluationError, GridVertexId, LatticeCoordinate,
+    RegularTernaryGrid, RegularTernaryScalarField, TernaryCoordinate,
 };
