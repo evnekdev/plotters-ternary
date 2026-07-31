@@ -198,7 +198,8 @@ viewport only visible physical simplex-edge fragments are drawn; artificial
 rectangular viewport sides remain invisible and crop cuts use butt ends. The
 PNG geometry pass uses the same order at the supersampled resolution, while SVG
 keeps the frame and data as vector geometry. Markers retain their existing
-centre-clipping policy and may intentionally overlap the frame.
+centre-clipping policy. In the recommended workflow they are data geometry, so
+the foreground frame masks their inner edge.
 
 ## Architecture and contribution
 
