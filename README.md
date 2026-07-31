@@ -71,6 +71,11 @@ mathematically clipped before Plotters draws them.
 Start with a RegularTernaryScalarField, then choose the representation that
 matches the scientific question.
 
+For backend-independent point queries, `FieldInterpolation` and
+`InterpolatedTernaryField` are re-exported from `ternary-contours`. They prepare
+linear or cubic-alpha numerical evaluation there; this crate only renders the
+resulting geometry and does not implement a second scalar interpolator.
+
 ### Isolines
 
 TernaryContourSeries draws selected scalar values as paths. Linear contours
