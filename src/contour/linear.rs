@@ -5,7 +5,6 @@ use crate::coord::TernaryPoint;
 use super::{
     ContourError, RegularTernaryScalarField,
     paths::{ContourPath, ContourSegment, join_segments},
-    regular_grid::GridEdgeKey,
 };
 
 pub(crate) fn linear_paths(
@@ -19,10 +18,7 @@ pub(crate) fn linear_paths(
     for triangle in &triangles {
         for (left, right) in [(0, 1), (1, 2), (2, 0)] {
             owners
-                .entry(GridEdgeKey::new(
-                    triangle.vertices[left],
-                    triangle.vertices[right],
-                ))
+                .entry(edge_key(triangle.vertices[left], triangle.vertices[right]))
                 .or_insert(triangle.id);
         }
     }
@@ -46,7 +42,7 @@ pub(crate) fn linear_paths(
             .into_iter()
             .find(|(left, right)| on[*left] && on[*right])
         {
-            let key = GridEdgeKey::new(triangle.vertices[left], triangle.vertices[right]);
+            let key = edge_key(triangle.vertices[left], triangle.vertices[right]);
             if owners[&key] == triangle.id {
                 segments.push(ContourSegment {
                     start: points[left],
@@ -130,6 +126,16 @@ pub(crate) fn march_sampled_triangle(
     }
 }
 
+fn edge_key(
+    left: super::GridVertexId,
+    right: super::GridVertexId,
+) -> (super::GridVertexId, super::GridVertexId) {
+    if left < right {
+        (left, right)
+    } else {
+        (right, left)
+    }
+}
 fn lerp(left: TernaryPoint, right: TernaryPoint, t: f64) -> TernaryPoint {
     let a = left.as_array();
     let b = right.as_array();

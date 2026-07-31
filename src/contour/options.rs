@@ -1,31 +1,8 @@
-﻿use crate::interpolation::BinaryExtrapolation;
+use crate::interpolation::BinaryExtrapolation;
 
 use super::ContourError;
 
-/// Shape-preserving one-dimensional method used to derive cubic-alpha edge intervals.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CubicAlphaMethod {
-    /// Akima's local cubic interpolation.
-    Akima,
-    /// Modified Akima interpolation.
-    Makima,
-    /// Piecewise cubic Hermite interpolation.
-    Pchip,
-    /// Steffen's monotonic cubic interpolation.
-    Steffen,
-}
-
-/// Behaviour when a boundary lattice line has only two samples.
-#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CubicBoundaryPolicy {
-    /// Use a zero-alpha interval and count it in diagnostics.
-    #[default]
-    LinearFallback,
-    /// Reject cubic construction before contour extraction.
-    Error,
-}
+pub use ternary_contours::{CubicAlphaMethod, CubicBoundaryPolicy};
 
 /// Bounds for adaptive cubic topology extraction in barycentric coordinates.
 #[derive(Clone, Copy, Debug, PartialEq)]

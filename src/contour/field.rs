@@ -1,18 +1,12 @@
-#[cfg(feature = "cubic-alpha")]
-use std::collections::BTreeMap;
-
 use crate::coord::TernaryPoint;
 #[cfg(feature = "cubic-alpha")]
-use crate::interpolation::{AlphaInterval, CubicAlphaTriangle, DirectedAlphaInterval};
+use ternary_contours::{
+    field::CubicGridField as CoreCubicGridField, interpolation::CubicAlphaBuildOptions,
+};
 
 use super::{ContourError, RegularTernaryScalarField};
 #[cfg(feature = "cubic-alpha")]
-use super::{
-    CubicAlphaMethod, CubicAlphaOptions, CubicBoundaryPolicy, CubicContourDiagnostics,
-    regular_grid::{GridEdgeKey, GridTriangle, GridVertexId, LatticeCoordinate},
-};
-
-#[derive(Clone, Copy, Debug)]
+use super::{CubicAlphaOptions, CubicContourDiagnostics};
 pub(crate) struct LocatedValue {
     pub value: f64,
     /// Gradient with respect to global semantic `(a,b)`, with `c=1-a-b`.
@@ -122,8 +116,7 @@ fn local_to_global_gradient(local: [f64; 2], vertices: [TernaryPoint; 3]) -> [f6
 #[cfg(feature = "cubic-alpha")]
 pub(crate) struct CubicGridField<'a> {
     field: &'a RegularTernaryScalarField,
-    triangles: Vec<GridTriangle>,
-    models: Vec<CubicAlphaTriangle>,
+    core: CoreCubicGridField<'a>,
     diagnostics: CubicContourDiagnostics,
 }
 
@@ -133,361 +126,54 @@ impl<'a> CubicGridField<'a> {
         field: &'a RegularTernaryScalarField,
         options: CubicAlphaOptions,
     ) -> Result<Self, ContourError> {
-        let mut diagnostics = CubicContourDiagnostics::default();
-        let intervals = build_edge_intervals(field, options, &mut diagnostics)?;
-        let triangles = field.triangles()?;
-        let mut models = Vec::with_capacity(triangles.len());
-        for triangle in &triangles {
-            let [v0, v1, v2] = triangle.vertices;
-            let values = [field.value(v0)?, field.value(v1)?, field.value(v2)?];
-            let pairs = [(0, 1), (1, 2), (0, 2)];
-            let mut directed = Vec::with_capacity(3);
-            for (left, right) in pairs {
-                let key = GridEdgeKey::new(triangle.vertices[left], triangle.vertices[right]);
-                let interval = *intervals
-                    .get(&key)
-                    .ok_or(crate::interpolation::InterpolationError::MissingEdgePair)?;
-                let (start, end) = if key.start == triangle.vertices[left] {
-                    (left, right)
-                } else {
-                    (right, left)
-                };
-                directed.push(DirectedAlphaInterval::new(start, end, interval)?);
-            }
-            models.push(CubicAlphaTriangle::new(
-                values,
-                directed.try_into().expect("three pairs"),
-                options.extrapolation,
-            )?);
-        }
+        let core = CoreCubicGridField::new(
+            field.core(),
+            CubicAlphaBuildOptions {
+                method: options.method,
+                boundary_policy: options.boundary_policy,
+                extrapolation: options.extrapolation,
+            },
+        )?;
+        let diagnostics = CubicContourDiagnostics {
+            cubic_edges: core.diagnostics().cubic_edges,
+            linear_fallback_edges: core.diagnostics().linear_fallback_edges,
+            ..CubicContourDiagnostics::default()
+        };
         Ok(Self {
             field,
-            triangles,
-            models,
+            core,
             diagnostics,
         })
     }
-
     pub fn diagnostics(&self) -> &CubicContourDiagnostics {
         &self.diagnostics
     }
     pub fn diagnostics_mut(&mut self) -> &mut CubicContourDiagnostics {
         &mut self.diagnostics
     }
-    pub fn triangles(&self) -> &[GridTriangle] {
-        &self.triangles
+    pub fn triangles(&self) -> &[super::regular_grid::GridTriangle] {
+        self.core.elementary_triangles()
     }
     pub fn triangle_vertices(&self, index: usize) -> Result<[TernaryPoint; 3], ContourError> {
-        {
-            let [v0, v1, v2] = self.triangles[index].vertices;
-            Ok([
-                self.field.composition(v0)?,
-                self.field.composition(v1)?,
-                self.field.composition(v2)?,
-            ])
-        }
+        let vertices = self.core.triangle_vertices(index)?;
+        Ok(vertices.map(|[a, b, c]| TernaryPoint::new(a, b, c)))
     }
     pub fn value_in_triangle(&self, index: usize, barycentric: [f64; 3]) -> f64 {
-        self.models[index].value(barycentric)
+        self.core
+            .value_in_triangle(index, barycentric)
+            .expect("contour topology supplied a valid triangle")
     }
-
     pub fn locate(&self, point: TernaryPoint) -> Result<LocatedValue, ContourError> {
         locate_with(self.field, point, |triangle, barycentric| {
-            let model = &self.models[triangle.id];
-            Ok((
-                model.value(barycentric),
-                model.gradient_reduced(barycentric[0], barycentric[1]),
-            ))
+            let value = self
+                .core
+                .value_in_triangle(triangle.id, barycentric)
+                .expect("located triangle belongs to core field");
+            let gradient = self
+                .core
+                .gradient_in_triangle(triangle.id, barycentric[0], barycentric[1])
+                .expect("located triangle belongs to core field");
+            Ok((value, gradient))
         })
-    }
-}
-
-#[cfg(feature = "cubic-alpha")]
-fn build_edge_intervals(
-    field: &RegularTernaryScalarField,
-    options: CubicAlphaOptions,
-    diagnostics: &mut CubicContourDiagnostics,
-) -> Result<BTreeMap<GridEdgeKey, AlphaInterval>, ContourError> {
-    let n = field.subdivisions();
-    let mut lines: Vec<Vec<GridVertexId>> = Vec::new();
-    for fixed in 0..=n {
-        lines.push(
-            (0..=n - fixed)
-                .map(|i| {
-                    field.vertex_id(LatticeCoordinate {
-                        i,
-                        j: n - fixed - i,
-                        k: fixed,
-                    })
-                })
-                .collect::<Result<_, _>>()?,
-        );
-        lines.push(
-            (0..=n - fixed)
-                .map(|i| {
-                    field.vertex_id(LatticeCoordinate {
-                        i,
-                        j: fixed,
-                        k: n - fixed - i,
-                    })
-                })
-                .collect::<Result<_, _>>()?,
-        );
-        lines.push(
-            (0..=n - fixed)
-                .map(|j| {
-                    field.vertex_id(LatticeCoordinate {
-                        i: fixed,
-                        j,
-                        k: n - fixed - j,
-                    })
-                })
-                .collect::<Result<_, _>>()?,
-        );
-    }
-    let mut result = BTreeMap::new();
-    for line in lines {
-        if line.len() < 2 {
-            continue;
-        }
-        let values = line
-            .iter()
-            .map(|id| field.value(*id))
-            .collect::<Result<Vec<_>, _>>()?;
-        for interval_index in 0..line.len() - 1 {
-            let mut alpha = if line.len() < 3 {
-                match options.boundary_policy {
-                    CubicBoundaryPolicy::LinearFallback => {
-                        diagnostics.linear_fallback_edges += 1;
-                        AlphaInterval::default()
-                    }
-                    CubicBoundaryPolicy::Error => {
-                        return Err(ContourError::InsufficientStencil {
-                            samples: line.len(),
-                        });
-                    }
-                }
-            } else {
-                diagnostics.cubic_edges += 1;
-                alpha_for_interval(options.method, &values, interval_index)
-            };
-            let key = GridEdgeKey::new(line[interval_index], line[interval_index + 1]);
-            if key.start != line[interval_index] {
-                alpha = alpha.reversed();
-            }
-            result.insert(key, alpha);
-        }
-    }
-    debug_assert_eq!(result.len(), field.edge_count()?);
-    Ok(result)
-}
-
-#[cfg(feature = "cubic-alpha")]
-fn alpha_for_interval(method: CubicAlphaMethod, values: &[f64], index: usize) -> AlphaInterval {
-    use spline1d::{cubic_single_left_alpha, cubic_single_middle_alpha, cubic_single_right_alpha};
-    let kind = method_kind(method);
-    let alpha = if index == 0 {
-        cubic_single_left_alpha(kind, 0.0, values[0], 1.0, values[1], 2.0, values[2])
-    } else if index + 1 == values.len() - 1 {
-        let base = index - 1;
-        cubic_single_right_alpha(
-            kind,
-            base as f64,
-            values[base],
-            index as f64,
-            values[index],
-            (index + 1) as f64,
-            values[index + 1],
-        )
-    } else {
-        cubic_single_middle_alpha(
-            kind,
-            (index - 1) as f64,
-            values[index - 1],
-            index as f64,
-            values[index],
-            (index + 1) as f64,
-            values[index + 1],
-            (index + 2) as f64,
-            values[index + 2],
-        )
-    };
-    AlphaInterval::new(alpha[0], alpha[1])
-}
-
-#[cfg(feature = "cubic-alpha")]
-fn method_kind(method: CubicAlphaMethod) -> spline1d::InterpolationType<f64> {
-    match method {
-        CubicAlphaMethod::Akima => spline1d::InterpolationType::AKIMA,
-        CubicAlphaMethod::Makima => spline1d::InterpolationType::MAKIMA,
-        CubicAlphaMethod::Pchip => spline1d::InterpolationType::PCHIP,
-        CubicAlphaMethod::Steffen => spline1d::InterpolationType::STEFFEN,
-    }
-}
-
-#[cfg(all(test, feature = "cubic-alpha"))]
-mod tests {
-    use super::*;
-    use spline1d::{cubic_single_left, cubic_single_middle, cubic_single_right};
-
-    fn close(a: f64, b: f64) {
-        assert!((a - b).abs() < 1e-9, "{a} != {b}");
-    }
-    fn direct(coeff: [f64; 4], dx: f64) -> f64 {
-        ((coeff[0] * dx + coeff[1]) * dx + coeff[2]) * dx + coeff[3]
-    }
-    fn g(x: f64) -> f64 {
-        0.3 * x.powi(3) - 0.8 * x * x + (0.7 * x).sin() + 2.0
-    }
-
-    #[test]
-    fn every_method_direct_and_alpha_left_middle_right_are_equivalent() {
-        let xs = [-1.7, -0.2, 1.1, 3.4, 5.2];
-        let ys = xs.map(g);
-        for method in [
-            CubicAlphaMethod::Akima,
-            CubicAlphaMethod::Makima,
-            CubicAlphaMethod::Pchip,
-            CubicAlphaMethod::Steffen,
-        ] {
-            let kind = method_kind(method);
-            let cases = [
-                (
-                    cubic_single_left(kind, xs[0], ys[0], xs[1], ys[1], xs[2], ys[2]),
-                    AlphaInterval::new(
-                        {
-                            let a = spline1d::cubic_single_left_alpha(
-                                kind, xs[0], ys[0], xs[1], ys[1], xs[2], ys[2],
-                            );
-                            a[0]
-                        },
-                        {
-                            let a = spline1d::cubic_single_left_alpha(
-                                kind, xs[0], ys[0], xs[1], ys[1], xs[2], ys[2],
-                            );
-                            a[1]
-                        },
-                    ),
-                    xs[0],
-                    xs[1],
-                    ys[0],
-                    ys[1],
-                ),
-                (
-                    cubic_single_middle(
-                        kind, xs[0], ys[0], xs[1], ys[1], xs[2], ys[2], xs[3], ys[3],
-                    ),
-                    AlphaInterval::new(
-                        {
-                            let a = spline1d::cubic_single_middle_alpha(
-                                kind, xs[0], ys[0], xs[1], ys[1], xs[2], ys[2], xs[3], ys[3],
-                            );
-                            a[0]
-                        },
-                        {
-                            let a = spline1d::cubic_single_middle_alpha(
-                                kind, xs[0], ys[0], xs[1], ys[1], xs[2], ys[2], xs[3], ys[3],
-                            );
-                            a[1]
-                        },
-                    ),
-                    xs[1],
-                    xs[2],
-                    ys[1],
-                    ys[2],
-                ),
-                (
-                    cubic_single_right(kind, xs[2], ys[2], xs[3], ys[3], xs[4], ys[4]),
-                    AlphaInterval::new(
-                        {
-                            let a = spline1d::cubic_single_right_alpha(
-                                kind, xs[2], ys[2], xs[3], ys[3], xs[4], ys[4],
-                            );
-                            a[0]
-                        },
-                        {
-                            let a = spline1d::cubic_single_right_alpha(
-                                kind, xs[2], ys[2], xs[3], ys[3], xs[4], ys[4],
-                            );
-                            a[1]
-                        },
-                    ),
-                    xs[3],
-                    xs[4],
-                    ys[3],
-                    ys[4],
-                ),
-            ];
-            for (coeff, alpha, x0, x1, y0, y1) in cases {
-                for t in [0.0, 0.11, 0.37, 0.72, 1.0] {
-                    close(direct(coeff, t * (x1 - x0)), alpha.value(y0, y1, t));
-                }
-            }
-        }
-    }
-
-    #[test]
-    fn every_edge_is_built_once_and_short_boundary_lines_report_fallbacks() {
-        let n = 3;
-        let count = (n + 1) * (n + 2) / 2;
-        let field =
-            RegularTernaryScalarField::new(n, (0..count).map(|i| g(i as f64)).collect()).unwrap();
-        let mut diagnostics = CubicContourDiagnostics::default();
-        let map =
-            build_edge_intervals(&field, CubicAlphaOptions::default(), &mut diagnostics).unwrap();
-        assert_eq!(map.len(), field.edge_count().unwrap());
-        assert_eq!(diagnostics.linear_fallback_edges, 3);
-        assert_eq!(
-            diagnostics.cubic_edges + diagnostics.linear_fallback_edges,
-            map.len()
-        );
-    }
-
-    #[test]
-    fn shared_edges_are_value_continuous() {
-        let n = 4;
-        let mut values = Vec::new();
-        for i in 0..(n + 1) * (n + 2) / 2 {
-            values.push(g(i as f64 * 0.37));
-        }
-        let field = RegularTernaryScalarField::new(n, values).unwrap();
-        let model = CubicGridField::new(&field, CubicAlphaOptions::default()).unwrap();
-        let triangles = model.triangles();
-        for left in 0..triangles.len() {
-            for right in left + 1..triangles.len() {
-                let shared: Vec<_> = triangles[left]
-                    .vertices
-                    .into_iter()
-                    .filter(|id| triangles[right].vertices.contains(id))
-                    .collect();
-                if shared.len() == 2 {
-                    for t in [0.0, 0.2, 0.5, 0.9, 1.0] {
-                        let p0 = field.composition(shared[0]).unwrap().as_array();
-                        let p1 = field.composition(shared[1]).unwrap().as_array();
-                        let point = TernaryPoint::new(
-                            p0[0] * (1.0 - t) + p1[0] * t,
-                            p0[1] * (1.0 - t) + p1[1] * t,
-                            p0[2] * (1.0 - t) + p1[2] * t,
-                        );
-                        let bl = barycentric_in_triangle(
-                            point,
-                            model.triangle_vertices(left).unwrap(),
-                            1e-9,
-                        )
-                        .unwrap();
-                        let br = barycentric_in_triangle(
-                            point,
-                            model.triangle_vertices(right).unwrap(),
-                            1e-9,
-                        )
-                        .unwrap();
-                        close(
-                            model.value_in_triangle(left, bl),
-                            model.value_in_triangle(right, br),
-                        );
-                    }
-                }
-            }
-        }
     }
 }

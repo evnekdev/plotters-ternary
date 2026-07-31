@@ -54,7 +54,4 @@ pub use contour::{
     CubicBoundaryPolicy, CubicContourDiagnostics, GridVertexId, LatticeCoordinate,
     RegularTernaryScalarField,
 };
-pub use interpolation::{
-    AlphaInterval, BinaryExtrapolation, CubicAlphaTriangle, DirectedAlphaInterval,
-    InterpolationError, PairEvaluation, evaluate_pair,
-};
+pub use interpolation::BinaryExtrapolation;

@@ -22,7 +22,7 @@ exclude = [
 default = []
 # Enables cubic-alpha contour construction. `spline1d` remains a normal
 # dependency because the stable smooth-series API also uses it.
-cubic-alpha = []
+cubic-alpha = ["ternary-contours/cubic-alpha"]
 
 [dependencies]
 plotters = { version = "0.3.7", default-features = false, features = [
@@ -32,6 +32,7 @@ plotters = { version = "0.3.7", default-features = false, features = [
     "ttf",
 ] }
 plotters-backend = "0.3.7"
+ternary-contours = { git = "https://github.com/evnekdev/ternary-contours.git", rev = "3038642af7c0af3f64a544eb9b40d30d4b820471", version = "0.1.0" }
 spline1d = { version = "0.1.0", default-features = false, features = ["alloc"] }
 
 [dev-dependencies]

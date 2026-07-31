@@ -81,9 +81,11 @@ fn near_tangent_levels_remain_finite_without_zero_length_paths() {
 #[cfg(feature = "cubic-alpha")]
 mod cubic {
     use super::*;
+    use plotters_ternary::interpolation::{
+        AlphaInterval, CubicAlphaTriangle, DirectedAlphaInterval, evaluate_pair,
+    };
     use plotters_ternary::{
-        AlphaInterval, BinaryExtrapolation, ContourInterpolation, CubicAlphaMethod,
-        CubicAlphaOptions, CubicAlphaTriangle, DirectedAlphaInterval, evaluate_pair,
+        BinaryExtrapolation, ContourInterpolation, CubicAlphaMethod, CubicAlphaOptions,
     };
 
     const INTERVAL: AlphaInterval = AlphaInterval::new(1.7, -0.9);
