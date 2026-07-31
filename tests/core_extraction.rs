@@ -1,6 +1,6 @@
 use plotters_ternary::{
-    GridEvaluationError, GridVertexId, LatticeCoordinate, RegularTernaryGrid,
-    RegularTernaryScalarField,
+    FieldInterpolation, GridEvaluationError, GridVertexId, InterpolatedTernaryField,
+    LatticeCoordinate, PointBoundaryLocation, RegularTernaryGrid, RegularTernaryScalarField,
 };
 use ternary_contours::{RegularTernaryScalarField as CoreField, interpolation::AlphaInterval};
 
@@ -62,6 +62,24 @@ fn compatibility_grid_and_evaluation_error_are_direct_core_types() {
             source: "missing",
         }
     );
+}
+
+#[test]
+fn pointwise_interpolation_types_are_direct_core_reexports() {
+    let field = RegularTernaryScalarField::from_fn(4, |[a, b, c]| 2.0 * a - b + 3.0 * c).unwrap();
+    let grid_location = field.grid().locate([0.25, 0.25, 0.5]).unwrap();
+    assert_eq!(grid_location.boundary, PointBoundaryLocation::Vertex);
+    let evaluator = InterpolatedTernaryField::new(&field, FieldInterpolation::Linear).unwrap();
+    let sample = evaluator.evaluate_at_location(&grid_location).unwrap();
+    assert_eq!(sample.location, grid_location);
+    assert!((sample.value - 1.75).abs() < 1.0e-12);
+    let core: ternary_contours::InterpolatedTernaryField<'_> =
+        ternary_contours::InterpolatedTernaryField::new(
+            &field,
+            ternary_contours::FieldInterpolation::Linear,
+        )
+        .unwrap();
+    assert!((core.value([0.25, 0.25, 0.5]).unwrap() - sample.value).abs() < 1.0e-12);
 }
 
 #[test]
