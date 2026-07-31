@@ -174,3 +174,12 @@ The editable contour knowledge base is under
 [docs/knowledge-base](docs/knowledge-base/README.md). Contributions are
 welcome; see [CONTRIBUTING.md](CONTRIBUTING.md). The crate is dual licensed
 under [MIT](LICENSE-MIT) or [Apache-2.0](LICENSE-APACHE).
+
+## Linear filled bands and scalar maps
+
+ContourBandSet computes deterministic linear isoband regions.
+TernaryContourBandSeries assigns Plotters styles to immutable regions, while
+TernaryScalarMapSeries renders an exact piecewise-linear field using bounded
+flat-colour microtriangles. Both retain SVG vector geometry; map resolution
+trades SVG size for smoothness. Cubic-alpha isobands are explicitly not
+supported yet.
