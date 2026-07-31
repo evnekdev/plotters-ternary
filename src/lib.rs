@@ -30,8 +30,8 @@ pub use chart::{
     ContourColorBar, ContourColorBarOrientation, ContourColorBarPosition, ContourDisplayError,
     ContourLabelAnchor, ContourLabelConfig, ContourLabelMode, ContourLabelPlacement,
     ContourLabelStyle, CornerLabelVisibility, CroppedAxisPolicy, EndpointLabelPolicy, TernaryAxis,
-    TernaryAxisConfig, TernaryChart, TernaryChartBuilder, TernaryChartError, TernaryMesh, TernaryMeshConfig,
-    TickDirection, TickRangeMode, TickSpec, TickStyle,
+    TernaryAxisConfig, TernaryChart, TernaryChartBuilder, TernaryChartError, TernaryMesh,
+    TernaryMeshConfig, TickDirection, TickRangeMode, TickSpec, TickStyle,
 };
 pub use coord::{
     CartesianSegment, ClippedSegment, Component, EQUILATERAL_TRIANGLE_HEIGHT, Error, Normalization,
