@@ -1,3 +1,4 @@
+mod contour;
 mod draw;
 mod error;
 mod line;
@@ -8,6 +9,7 @@ mod prepare;
 mod smooth;
 mod text;
 
+pub use contour::TernaryContourSeries;
 pub use draw::TernarySeries;
 pub use error::{InvalidPointPolicy, SeriesError};
 pub use line::TernaryLineSeries;

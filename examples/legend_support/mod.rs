@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 //! Shared fixed-slot geometry for native Plotters legends in examples.
 
 use crate::output_support::scaled;

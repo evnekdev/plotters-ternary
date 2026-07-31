@@ -1,7 +1,9 @@
 //! Ternary composition geometry and Cartesian-backed Plotters charts.
 
 pub mod chart;
+pub mod contour;
 pub mod coord;
+pub mod interpolation;
 pub mod series;
 
 pub use chart::{
@@ -23,7 +25,18 @@ pub use series::{
     LocalPoint, LocalSegment, MarkerClipMode, MarkerDrawing, MarkerElement, MarkerError,
     MarkerFill, MarkerFillPolygon, MarkerGeometry, MarkerPartition, MarkerShape, MarkerSlice,
     MarkerStyle, PointMarkerStyleProvider, PolygonError, PreparedPolygon, SeriesError,
-    SweepDirection, TernaryInterpolation, TernaryLineSeries, TernaryPointSeries, TernaryPolygon,
-    TernarySeries, TernarySmoothSeries, TernaryText, TextAnchor, TextRotation, VerticalAnchor,
-    prepare_points, prepare_polygon, prepare_polyline,
+    SweepDirection, TernaryContourSeries, TernaryInterpolation, TernaryLineSeries,
+    TernaryPointSeries, TernaryPolygon, TernarySeries, TernarySmoothSeries, TernaryText,
+    TextAnchor, TextRotation, VerticalAnchor, prepare_points, prepare_polygon, prepare_polyline,
+};
+
+pub use contour::{
+    AdaptiveContourOptions, ContourError, ContourInterpolation, ContourLevel, ContourOptions,
+    ContourPath, ContourRegularization, ContourSet, CubicAlphaMethod, CubicAlphaOptions,
+    CubicBoundaryPolicy, CubicContourDiagnostics, GridVertexId, LatticeCoordinate,
+    RegularTernaryScalarField,
+};
+pub use interpolation::{
+    AlphaInterval, BinaryExtrapolation, CubicAlphaTriangle, DirectedAlphaInterval,
+    InterpolationError, PairEvaluation, evaluate_pair,
 };
