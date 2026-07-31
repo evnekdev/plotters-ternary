@@ -1,5 +1,5 @@
 use plotters_ternary::{GridVertexId, LatticeCoordinate, RegularTernaryScalarField};
-use ternary_contours::{AlphaInterval, RegularTernaryScalarField as CoreField};
+use ternary_contours::{RegularTernaryScalarField as CoreField, interpolation::AlphaInterval};
 
 #[test]
 fn compatibility_field_delegates_indexing_values_and_compositions_to_the_core() {
@@ -20,7 +20,7 @@ fn compatibility_field_delegates_indexing_values_and_compositions_to_the_core() 
             core.coordinate_of(index).unwrap()
         );
         let [a, b, c] = core.composition(id).unwrap();
-        assert_eq!(chart.composition(id).unwrap().as_array(), [a, b, c]);
+        assert_eq!(chart.composition(id).unwrap(), [a, b, c]);
     }
     assert_eq!(
         chart
@@ -32,7 +32,7 @@ fn compatibility_field_delegates_indexing_values_and_compositions_to_the_core() 
 
 #[test]
 fn advanced_plotters_reexports_are_the_core_types() {
-    let interval: ternary_contours::AlphaInterval =
+    let interval: ternary_contours::interpolation::AlphaInterval =
         plotters_ternary::interpolation::AlphaInterval::new(2.5, -4.0);
     assert_eq!(interval, AlphaInterval::new(2.5, -4.0));
     assert_eq!(interval.reversed(), AlphaInterval::new(-1.5, 4.0));
@@ -57,4 +57,18 @@ fn plotters_contour_options_select_the_core_muggianu_model() {
         options.extrapolation,
     );
     assert!((pair.parameter - 0.55).abs() < 1.0e-14);
+}
+#[test]
+fn public_contour_types_are_direct_core_reexports() {
+    fn chart_accepts(value: &plotters_ternary::ContourSet) -> &plotters_ternary::ContourSet {
+        value
+    }
+    let field = CoreField::new(1, vec![0.0, 1.0, 2.0]).unwrap();
+    let core = ternary_contours::ContourSet::compute(
+        &field,
+        &[0.5],
+        ternary_contours::ContourOptions::linear(),
+    )
+    .unwrap();
+    assert!(std::ptr::eq(chart_accepts(&core), &core));
 }

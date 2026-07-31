@@ -1,4 +1,4 @@
-﻿# Formula reference
+# Formula reference
 
 For a directed interval, with `t = 0` at the first endpoint and `t = 1` at the
 second:

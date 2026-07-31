@@ -1,4 +1,4 @@
-﻿# Regularization and level projection
+# Regularization and level projection
 
 Optional regularization redistributes a provisional path at approximately equal
 chord-length spacing in the canonical equilateral plane, then projects each

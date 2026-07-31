@@ -1,4 +1,4 @@
-﻿# Contour construction
+# Contour construction
 
 Linear contours are conventional piecewise-affine marching triangles with
 explicit handling for level vertices, coincident edges, and fully level

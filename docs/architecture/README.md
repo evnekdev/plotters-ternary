@@ -43,16 +43,20 @@ The crate should support:
 
 ## Numerical-core dependency
 
-Phase 1 extraction establishes the dependency direction:
+Phase 2 extraction establishes the dependency direction:
 
 ```text
 ternary-contours
-    -> regular ternary grid and cubic-alpha interpolation
+    -> regular grid, interpolation, contour topology, paths,
+       regularization, and level projection
 plotters-ternary
-    -> charting, clipping, Plotters integration, and temporary contour extraction ownership
+    -> chart projection, visual viewport clipping, Plotters styling,
+       native legends, and backend rendering
 ```
 
-`ternary-contours` deliberately contains no Plotters dependency. Contour path extraction, adaptive topology, and regularization remain in `plotters-ternary` until Phase 2.
+`ternary-contours` deliberately contains no Plotters dependency. Numerical
+contours are complete before rendering; backend, dimensions, viewport, style,
+and supersampling choices cannot change the stored contour coordinates.
 
 ## Maintenance rules
 

@@ -9,7 +9,7 @@ fn linear_field(n: usize) -> RegularTernaryScalarField {
     let blank = RegularTernaryScalarField::new(n, vec![0.0; count]).unwrap();
     let values = (0..count)
         .map(|index| {
-            let [a, b, c] = blank.composition_at(index).unwrap().as_array();
+            let [a, b, c] = blank.composition_at(index).unwrap();
             2.0 * a - 3.0 * b + 5.0 * c
         })
         .collect();
@@ -52,7 +52,7 @@ fn contour_series_returns_native_annotation_and_uses_level_styles() {
 }
 
 #[test]
-fn complete_paths_are_unchanged_by_rectangular_render_clipping() {
+fn complete_paths_are_unchanged_by_viewport_backend_and_render_settings() {
     let field = linear_field(8);
     let contours = ContourSet::compute(&field, &[0.5], ContourOptions::linear()).unwrap();
     let before = contours.clone();
@@ -74,6 +74,18 @@ fn complete_paths_are_unchanged_by_rectangular_render_clipping() {
     assert_eq!(contours, before);
     assert!(svg.contains("#FF0000"));
     assert!(svg.contains("<polyline"));
+
+    let mut bitmap = vec![255_u8; 520 * 420 * 3];
+    {
+        let root = BitMapBackend::with_buffer(&mut bitmap, (520, 420)).into_drawing_area();
+        let mut chart = TernaryChartBuilder::on(&root).margin(20).build().unwrap();
+        chart
+            .draw_series(TernaryContourSeries::new(&contours).style(BLUE.stroke_width(1)))
+            .unwrap();
+        drop(chart);
+        root.present().unwrap();
+    }
+    assert_eq!(contours, before);
 }
 
 #[test]
@@ -151,7 +163,7 @@ fn extrapolation_policy_is_independently_selected_for_contour_construction() {
     let blank = RegularTernaryScalarField::new(n, vec![0.0; count]).unwrap();
     let values = (0..count)
         .map(|index| {
-            let [a, b, c] = blank.composition_at(index).unwrap().as_array();
+            let [a, b, c] = blank.composition_at(index).unwrap();
             a.powi(3) - 0.7 * b.powi(2) + 0.4 * c + 0.9 * a * b
         })
         .collect();

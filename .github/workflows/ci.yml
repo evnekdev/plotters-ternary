@@ -11,17 +11,29 @@ jobs:
   stable:
     name: stable release checks
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: plotters-ternary
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: plotters-ternary
+      - uses: actions/checkout@v4
+        with:
+          repository: evnekdev/ternary-contours
+          path: ternary-contours
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: plotters-ternary
       - run: cargo fmt --check
       - run: cargo clippy --all-targets --all-features -- -D warnings
       - run: cargo test
       - run: cargo test --all-features
       - run: cargo test --no-default-features
       - run: cargo doc --all-features --no-deps
-      - run: cargo package
+      # Full package verification resumes after ternary-contours is on crates.io.
+      - run: cargo package --list
 
   portable:
     name: stable ${{ matrix.os }}
@@ -30,18 +42,40 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: plotters-ternary
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: plotters-ternary
+      - uses: actions/checkout@v4
+        with:
+          repository: evnekdev/ternary-contours
+          path: ternary-contours
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: plotters-ternary
       - run: cargo test --all-features
 
   msrv:
     name: MSRV 1.89
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: plotters-ternary
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: plotters-ternary
+      - uses: actions/checkout@v4
+        with:
+          repository: evnekdev/ternary-contours
+          path: ternary-contours
       - uses: dtolnay/rust-toolchain@1.89.0
       - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: plotters-ternary
       - run: cargo check --all-targets
       - run: cargo test
