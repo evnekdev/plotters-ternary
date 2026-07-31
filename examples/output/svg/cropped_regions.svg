@@ -3,15 +3,15 @@
 
 <rect x="0" y="0" width="1000" height="800" opacity="1" fill="#FFFFFF" stroke="none"/>
 <polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="215,525 329,723 "/>
-<polyline fill="none" opacity="1" stroke="#192332" stroke-width="3" points="784,525 545,111 "/>
-<polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="570,155 575,149 "/>
-<polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="641,278 648,274 "/>
-<polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="712,401 720,399 "/>
-<polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="784,525 792,526 "/>
 <polygon opacity="0.23" fill="#5A91D2" points="784,723 784,525 545,111 215,111 215,723 "/>
 <polyline fill="none" opacity="1" stroke="#1E5596" stroke-width="2" points="784,723 784,525 545,111 215,111 215,723 784,723 "/>
 <polygon opacity="0.36" fill="#E1694B" points="215,111 429,111 542,155 542,549 215,617 "/>
 <polyline fill="none" opacity="1" stroke="#963023" stroke-width="3" points="215,111 429,111 542,155 542,549 215,617 215,111 "/>
+<polygon opacity="1" fill="#192332" points="785,524 546,110 544,112 783,526 "/>
+<polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="570,155 575,149 "/>
+<polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="641,278 648,274 "/>
+<polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="712,401 720,399 "/>
+<polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="784,525 792,526 "/>
 </g>
 <g id="ternary-text">
 

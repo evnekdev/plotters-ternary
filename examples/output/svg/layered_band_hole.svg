@@ -14,9 +14,6 @@
 <polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="649,353 424,741 "/>
 <polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="724,482 574,741 "/>
 <polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="799,612 724,741 "/>
-<polyline fill="none" opacity="1" stroke="#000000" stroke-width="2" points="125,741 874,741 "/>
-<polyline fill="none" opacity="1" stroke="#000000" stroke-width="2" points="874,741 499,93 "/>
-<polyline fill="none" opacity="1" stroke="#000000" stroke-width="2" points="499,93 125,741 "/>
 <polygon opacity="1" fill="#E04E3E" points="874,741 869,733 864,741 "/>
 <polygon opacity="1" fill="#E05D3E" points="869,733 859,733 864,741 "/>
 <polygon opacity="1" fill="#E0653E" points="864,741 859,733 855,741 "/>
@@ -6419,6 +6416,9 @@
 <polygon opacity="1" fill="#E04E3E" points="504,102 499,93 494,102 "/>
 <polyline fill="none" opacity="0.64" stroke="#000000" stroke-width="2" points="501,608 497,608 468,601 449,590 440,584 437,579 421,552 419,547 418,536 418,515 426,486 428,482 449,461 468,450 478,446 483,444 515,444 520,446 530,450 549,461 570,482 572,486 580,515 580,536 579,547 577,552 561,579 558,584 549,590 530,601 501,608 "/>
 <polyline fill="none" opacity="0.64" stroke="#000000" stroke-width="2" points="490,692 508,692 529,689 542,686 570,677 573,675 575,674 600,657 616,644 625,635 642,612 645,606 657,579 660,567 664,547 666,517 666,515 665,511 660,482 656,470 647,450 639,435 626,417 617,408 595,389 592,386 590,385 563,372 544,365 531,362 503,359 495,359 467,362 454,365 435,372 408,385 406,386 403,389 381,408 372,417 359,435 351,450 342,470 338,482 333,511 332,515 332,517 334,547 338,567 341,579 353,606 356,612 373,635 382,644 398,657 423,674 425,675 428,677 456,686 469,689 490,692 "/>
+<polygon opacity="1" fill="#000000" points="123,742 876,742 872,740 127,740 "/>
+<polygon opacity="1" fill="#000000" points="876,742 499,91 499,95 872,740 "/>
+<polygon opacity="1" fill="#000000" points="499,91 123,742 127,740 499,95 "/>
 </g>
 <g id="ternary-text">
 

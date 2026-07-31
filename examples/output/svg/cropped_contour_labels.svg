@@ -11,7 +11,6 @@
 <polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="559,190 255,717 "/>
 <polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="679,398 494,717 "/>
 <polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="775,647 734,717 "/>
-<polyline fill="none" opacity="1" stroke="#1C2634" stroke-width="3" points="775,564 517,117 "/>
 <polyline fill="none" opacity="1" stroke="#1C2634" stroke-width="2" points="308,498 288,496 261,490 251,486 241,479 224,466 "/>
 <polyline fill="none" opacity="1" stroke="#1C2634" stroke-width="2" points="224,279 224,278 248,257 253,253 259,250 288,239 311,234 327,233 353,236 375,243 388,248 400,257 418,272 434,294 440,307 447,331 451,363 451,368 450,372 441,405 434,419 419,442 411,452 387,473 382,477 377,479 348,492 331,496 308,498 "/>
 <polyline fill="none" opacity="1" stroke="#1C2634" stroke-width="2" points="304,564 292,564 259,560 253,558 239,554 224,547 "/>
@@ -21,6 +20,7 @@
 <polyline fill="none" opacity="1" stroke="#1C2634" stroke-width="2" points="224,617 253,624 257,625 294,628 298,628 "/>
 <polyline fill="none" opacity="1" stroke="#1C2634" stroke-width="2" points="224,688 250,693 260,694 294,695 302,695 335,693 347,691 374,685 397,679 410,674 433,665 445,660 453,656 477,642 498,628 508,621 523,608 536,596 542,591 563,568 575,554 587,536 600,517 609,500 619,479 628,458 633,442 642,409 643,405 644,398 648,368 649,346 "/>
 <polyline fill="none" opacity="1" stroke="#1C2634" stroke-width="2" points="481,717 509,702 511,701 513,700 542,680 561,665 571,656 593,636 599,630 601,628 624,600 632,591 648,568 657,554 670,531 677,517 689,490 693,479 705,444 "/>
+<polygon opacity="1" fill="#1C2634" points="776,563 518,116 516,118 774,565 "/>
 </g>
 <g id="ternary-text">
 

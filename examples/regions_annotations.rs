@@ -127,10 +127,11 @@ where
                 .tick_label_style(tick_text)
                 .endpoint_label_policy(EndpointLabelPolicy::AutoAvoidDuplicates);
         });
+    let mesh = mesh.build();
     if pass.geometry() {
-        mesh.draw_geometry_scaled(scale)?;
+        mesh.draw_background_scaled(&mut chart, scale)?;
     } else {
-        mesh.draw_text()?;
+        mesh.draw_text(&mut chart)?;
     }
 
     let alpha_fill = RGBColor(226, 93, 92)
@@ -239,6 +240,9 @@ where
                 .offset((0, 10))
                 .clip_mode(AnnotationClipMode::Anchor),
         )?;
+    }
+    if pass.geometry() {
+        mesh.draw_foreground_scaled(&mut chart, scale)?;
     }
     draw_legend(&mut chart, pass, scale)?;
     drop(chart);

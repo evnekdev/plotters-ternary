@@ -109,12 +109,13 @@ where
     };
     let mut chart = builder.margin(scaled(58, scale)).build()?;
 
+    let mesh = chart
+        .configure_mesh()
+        .boundary_style(BLACK.stroke_width(scaled(2, scale)))
+        .major_step(0.2)
+        .build();
     if geometry_pass {
-        chart
-            .configure_mesh()
-            .boundary_style(BLACK.stroke_width(scaled(2, scale)))
-            .major_step(0.2)
-            .draw_geometry_scaled(scale)?;
+        mesh.draw_background_scaled(&mut chart, scale)?;
         let field = field_for(example)?;
         let breaks = if matches!(example, Example::HoleBands | Example::LayeredHole) {
             vec![0.025, 0.10]
@@ -170,8 +171,9 @@ where
             let bar = stepped_color_bar(&breaks)?;
             chart.draw_contour_color_bar_geometry(&bar, scale)?;
         }
+        mesh.draw_foreground_scaled(&mut chart, scale)?;
     } else {
-        chart.configure_mesh().draw_text()?;
+        mesh.draw_text(&mut chart)?;
         if matches!(example, Example::Stepped) {
             let breaks = vec![0.05, 0.11, 0.19, 0.29];
             let bar = stepped_color_bar(&breaks)?;

@@ -21,8 +21,8 @@
 <polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="561,466 417,716 "/>
 <polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="609,549 513,716 "/>
 <polyline fill="none" opacity="1" stroke="#A6B1BE" stroke-width="1" points="657,632 609,716 "/>
-<polyline fill="none" opacity="1" stroke="#232D3C" stroke-width="3" points="274,716 705,716 "/>
-<polyline fill="none" opacity="1" stroke="#232D3C" stroke-width="3" points="705,716 345,90 "/>
+<polygon opacity="1" fill="#232D3C" points="274,718 705,718 705,715 274,715 "/>
+<polygon opacity="1" fill="#232D3C" points="706,715 346,89 344,91 704,717 "/>
 </g>
 <g id="ternary-text">
 

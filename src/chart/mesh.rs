@@ -1,8 +1,10 @@
 use std::sync::Arc;
 
 use plotters::backend::DrawingBackend;
-use plotters::element::{EmptyElement, PathElement, Text};
+use plotters::element::{Drawable, EmptyElement, PathElement, PointCollection, Text};
 use plotters::style::text_anchor::{HPos, Pos, VPos};
+use plotters_backend::{BackendCoord, DrawingErrorKind};
+
 use plotters::style::{
     BLACK, Color, FontStyle, IntoFont, IntoTextStyle, RGBAColor, RGBColor, ShapeStyle, TextStyle,
 };
@@ -553,21 +555,71 @@ impl<'chart, 'series, DB: DrawingBackend> TernaryMeshConfig<'chart, 'series, DB>
         self
     }
 
-    /// Draw every mesh phase at native resolution.
+    /// Freeze this configuration for layered drawing.
+    ///
+    /// The returned mesh is independent of the chart borrow. It can therefore
+    /// draw grid geometry, release the chart for data series, then draw the
+    /// foreground simplex frame and final-resolution text.
+    pub fn build(self) -> TernaryMesh {
+        self.split().1
+    }
+
+    /// Draw every mesh phase immediately for backwards compatibility.
+    ///
+    /// Prefer [`TernaryMesh::draw_background`], data series,
+    /// [`TernaryMesh::draw_foreground`], and [`TernaryMesh::draw_text`] when
+    /// data must remain behind a thick triangle frame.
     pub fn draw(self) -> Result<(), TernaryChartError<DB::ErrorType>> {
-        self.draw_phase(MeshPhase::All, 1)
+        let (chart, mesh) = self.split();
+        mesh.draw_background(chart)?;
+        mesh.draw_foreground(chart)?;
+        mesh.draw_text(chart)
     }
-    /// Draw only vector/geometry primitives at native resolution.
+    /// Draw all geometry immediately at native resolution.
     pub fn draw_geometry(self) -> Result<(), TernaryChartError<DB::ErrorType>> {
-        self.draw_phase(MeshPhase::Geometry, 1)
+        let (chart, mesh) = self.split();
+        mesh.draw_background(chart)?;
+        mesh.draw_foreground(chart)
     }
-    /// Draw only geometry with final-layout pixel values scaled for PNG supersampling.
+    /// Draw all geometry immediately with final-layout dimensions scaled for PNG supersampling.
     pub fn draw_geometry_scaled(self, scale: u32) -> Result<(), TernaryChartError<DB::ErrorType>> {
-        self.draw_phase(MeshPhase::Geometry, scale.max(1))
+        let (chart, mesh) = self.split();
+        mesh.draw_background_scaled(chart, scale)?;
+        mesh.draw_foreground_scaled(chart, scale)
     }
     /// Draw only final-resolution text. This emits no line, grid, or boundary geometry.
     pub fn draw_text(self) -> Result<(), TernaryChartError<DB::ErrorType>> {
-        self.draw_phase(MeshPhase::Text, 1)
+        let (chart, mesh) = self.split();
+        mesh.draw_text(chart)
+    }
+
+    fn split(self) -> (&'chart mut TernaryChart<'series, DB>, TernaryMesh) {
+        let Self {
+            chart,
+            axes,
+            boundary_style,
+            corner_names,
+            corner_label_style,
+            corner_label_offset,
+            corner_visibility,
+            draw_corner_names,
+            draw_grid,
+            draw_boundary,
+        } = self;
+        (
+            chart,
+            TernaryMesh {
+                axes,
+                boundary_style,
+                corner_names,
+                corner_label_style,
+                corner_label_offset,
+                corner_visibility,
+                draw_corner_names,
+                draw_grid,
+                draw_boundary,
+            },
+        )
     }
 
     fn draw_phase(
@@ -576,20 +628,23 @@ impl<'chart, 'series, DB: DrawingBackend> TernaryMeshConfig<'chart, 'series, DB>
         scale: u32,
     ) -> Result<(), TernaryChartError<DB::ErrorType>> {
         let prepared = prepare_axes(self.chart, &self.axes)?;
-        if phase.geometry() {
-            self.draw_geometry_phase(&prepared, scale)?;
+        if phase.background() {
+            self.draw_background_phase(&prepared, scale)?;
+        }
+        if phase.foreground() {
+            self.draw_foreground_phase(&prepared, scale)?;
         }
         if phase.text() {
             self.draw_text_phase(&prepared)?;
         }
         Ok(())
     }
-    fn draw_geometry_phase(
+    fn draw_background_phase(
         &self,
         prepared: &[PreparedAxis; 3],
         scale: u32,
     ) -> Result<(), TernaryChartError<DB::ErrorType>> {
-        // Stable drawing order: minor grid -> major grid -> boundary -> ticks.
+        // Background geometry is intentionally drawn before data series.
         if self.draw_grid {
             for axis in prepared {
                 let config = &self.axes[axis.axis.index()];
@@ -604,21 +659,17 @@ impl<'chart, 'series, DB: DrawingBackend> TernaryMeshConfig<'chart, 'series, DB>
                 }
             }
         }
+        Ok(())
+    }
+
+    fn draw_foreground_phase(
+        &self,
+        prepared: &[PreparedAxis; 3],
+        scale: u32,
+    ) -> Result<(), TernaryChartError<DB::ErrorType>> {
+        // Foreground geometry masks data that reaches the mathematical edge.
         if self.draw_boundary {
-            for visible in self
-                .chart
-                .geometry
-                .visible_edges(self.chart.viewport, self.chart.tolerance)?
-            {
-                let segment = visible.segment;
-                self.chart.plotting_area().draw(&PathElement::new(
-                    [
-                        (segment.start.x, segment.start.y),
-                        (segment.end.x, segment.end.y),
-                    ],
-                    scaled_style(self.boundary_style, scale),
-                ))?;
-            }
+            self.draw_boundary(scale)?;
         }
         for axis in prepared {
             let config = &self.axes[axis.axis.index()];
@@ -630,6 +681,57 @@ impl<'chart, 'series, DB: DrawingBackend> TernaryMeshConfig<'chart, 'series, DB>
             let config = &self.axes[axis.axis.index()];
             if config.visible && config.ticks {
                 self.draw_ticks(axis, &axis.major, config.major_tick, scale)?;
+            }
+        }
+        Ok(())
+    }
+
+    fn draw_boundary(&self, scale: u32) -> Result<(), TernaryChartError<DB::ErrorType>> {
+        let visible = self
+            .chart
+            .geometry
+            .visible_edges(self.chart.viewport, self.chart.tolerance)?;
+        let width = self
+            .boundary_style
+            .stroke_width
+            .saturating_mul(scale)
+            .max(1);
+        let complete = visible.len() == 3
+            && visible.iter().all(|edge| {
+                self.chart.tolerance.is_near_zero(edge.parameter_start)
+                    && self.chart.tolerance.is_close(edge.parameter_end, 1.0)
+            });
+        if complete {
+            let left_right = self
+                .chart
+                .geometry
+                .triangle_edge(crate::TriangleEdge::LeftRight);
+            let right_apex = self
+                .chart
+                .geometry
+                .triangle_edge(crate::TriangleEdge::RightApex);
+            let vertices = vec![
+                (left_right.start.x, left_right.start.y),
+                (left_right.end.x, left_right.end.y),
+                (right_apex.end.x, right_apex.end.y),
+            ];
+            self.chart.plotting_area().draw(&BoundaryElement::closed(
+                vertices,
+                self.boundary_style,
+                width,
+            ))?;
+        } else {
+            for edge in visible {
+                let segment = edge.segment;
+                // Viewport cuts are butt-ended strips, never rounded protrusions.
+                self.chart.plotting_area().draw(&BoundaryElement::open(
+                    vec![
+                        (segment.start.x, segment.start.y),
+                        (segment.end.x, segment.end.y),
+                    ],
+                    self.boundary_style,
+                    width,
+                ))?;
             }
         }
         Ok(())
@@ -806,16 +908,100 @@ impl<'chart, 'series, DB: DrawingBackend> TernaryMeshConfig<'chart, 'series, DB>
 
 #[derive(Clone, Copy)]
 enum MeshPhase {
-    All,
-    Geometry,
+    Background,
+    Foreground,
     Text,
 }
 impl MeshPhase {
-    const fn geometry(self) -> bool {
-        matches!(self, Self::All | Self::Geometry)
+    const fn background(self) -> bool {
+        matches!(self, Self::Background)
+    }
+    const fn foreground(self) -> bool {
+        matches!(self, Self::Foreground)
     }
     const fn text(self) -> bool {
-        matches!(self, Self::All | Self::Text)
+        matches!(self, Self::Text)
+    }
+}
+
+/// An owned mesh configuration for explicit chart-layer compositing.
+///
+/// It contains styles and policies only. It never owns numerical series data,
+/// so drawing it with different Plotters backends or viewports cannot mutate or
+/// reconstruct a contour path.
+pub struct TernaryMesh {
+    axes: [TernaryAxisConfig; 3],
+    boundary_style: ShapeStyle,
+    corner_names: [Option<String>; 3],
+    corner_label_style: AxisTextStyle,
+    corner_label_offset: u32,
+    corner_visibility: CornerLabelVisibility,
+    draw_corner_names: bool,
+    draw_grid: bool,
+    draw_boundary: bool,
+}
+
+impl TernaryMesh {
+    fn bind<'chart, 'series, DB: DrawingBackend>(
+        &self,
+        chart: &'chart mut TernaryChart<'series, DB>,
+    ) -> TernaryMeshConfig<'chart, 'series, DB> {
+        TernaryMeshConfig {
+            chart,
+            axes: self.axes.clone(),
+            boundary_style: self.boundary_style,
+            corner_names: self.corner_names.clone(),
+            corner_label_style: self.corner_label_style.clone(),
+            corner_label_offset: self.corner_label_offset,
+            corner_visibility: self.corner_visibility,
+            draw_corner_names: self.draw_corner_names,
+            draw_grid: self.draw_grid,
+            draw_boundary: self.draw_boundary,
+        }
+    }
+
+    /// Draw minor and major grid geometry beneath data at native resolution.
+    pub fn draw_background<DB: DrawingBackend>(
+        &self,
+        chart: &mut TernaryChart<'_, DB>,
+    ) -> Result<(), TernaryChartError<DB::ErrorType>> {
+        self.bind(chart).draw_phase(MeshPhase::Background, 1)
+    }
+
+    /// Draw minor and major grid geometry beneath data with supersampled pixel styles.
+    pub fn draw_background_scaled<DB: DrawingBackend>(
+        &self,
+        chart: &mut TernaryChart<'_, DB>,
+        scale: u32,
+    ) -> Result<(), TernaryChartError<DB::ErrorType>> {
+        self.bind(chart)
+            .draw_phase(MeshPhase::Background, scale.max(1))
+    }
+
+    /// Draw the physical simplex frame and ticks above data at native resolution.
+    pub fn draw_foreground<DB: DrawingBackend>(
+        &self,
+        chart: &mut TernaryChart<'_, DB>,
+    ) -> Result<(), TernaryChartError<DB::ErrorType>> {
+        self.bind(chart).draw_phase(MeshPhase::Foreground, 1)
+    }
+
+    /// Draw the physical simplex frame and ticks above data with supersampled pixel styles.
+    pub fn draw_foreground_scaled<DB: DrawingBackend>(
+        &self,
+        chart: &mut TernaryChart<'_, DB>,
+        scale: u32,
+    ) -> Result<(), TernaryChartError<DB::ErrorType>> {
+        self.bind(chart)
+            .draw_phase(MeshPhase::Foreground, scale.max(1))
+    }
+
+    /// Draw tick labels, axis names, and corner names at final resolution.
+    pub fn draw_text<DB: DrawingBackend>(
+        &self,
+        chart: &mut TernaryChart<'_, DB>,
+    ) -> Result<(), TernaryChartError<DB::ErrorType>> {
+        self.bind(chart).draw_phase(MeshPhase::Text, 1)
     }
 }
 #[derive(Clone, Copy)]
@@ -1002,6 +1188,171 @@ fn snap_endpoint(value: f64, tolerance: Tolerance) -> f64 {
 fn is_endpoint(value: f64, tolerance: Tolerance) -> bool {
     tolerance.is_close(value, 0.0) || tolerance.is_close(value, 1.0)
 }
+/// A filled, miter-limited strip around one physical simplex boundary path.
+///
+/// Unlike three independent stroked paths, each segment shares computed offset
+/// vertices with its neighbours. The mathematical edge is the centreline: one
+/// half of the visual frame lies inside the simplex and masks data drawn first.
+struct BoundaryElement<Coord> {
+    vertices: Vec<Coord>,
+    style: ShapeStyle,
+    width: u32,
+    closed: bool,
+}
+
+impl<Coord> BoundaryElement<Coord> {
+    fn closed(vertices: Vec<Coord>, style: ShapeStyle, width: u32) -> Self {
+        Self {
+            vertices,
+            style,
+            width,
+            closed: true,
+        }
+    }
+
+    fn open(vertices: Vec<Coord>, style: ShapeStyle, width: u32) -> Self {
+        Self {
+            vertices,
+            style,
+            width,
+            closed: false,
+        }
+    }
+}
+
+impl<'a, Coord> PointCollection<'a, Coord> for &'a BoundaryElement<Coord> {
+    type Point = &'a Coord;
+    type IntoIter = std::slice::Iter<'a, Coord>;
+
+    fn point_iter(self) -> Self::IntoIter {
+        self.vertices.iter()
+    }
+}
+
+impl<Coord, DB: DrawingBackend> Drawable<DB> for BoundaryElement<Coord> {
+    fn draw<I: Iterator<Item = BackendCoord>>(
+        &self,
+        points: I,
+        backend: &mut DB,
+        _: (u32, u32),
+    ) -> Result<(), DrawingErrorKind<DB::ErrorType>> {
+        let vertices: Vec<_> = points.collect();
+        let fill = ShapeStyle::from(self.style.color).filled();
+        for quad in boundary_quads(&vertices, self.width, self.closed) {
+            backend.fill_polygon(quad, &fill)?;
+        }
+        Ok(())
+    }
+}
+
+/// Compute non-overlapping frame quads with shared miter vertices.
+///
+/// The miter is limited to four half-widths. A cropped fragment has butt caps;
+/// a complete triangle is closed and therefore has no cap geometry.
+fn boundary_quads(vertices: &[BackendCoord], width: u32, closed: bool) -> Vec<[BackendCoord; 4]> {
+    let minimum = if closed { 3 } else { 2 };
+    if vertices.len() < minimum || width == 0 {
+        return Vec::new();
+    }
+    let half = f64::from(width) / 2.0;
+    let count = vertices.len();
+    let segment_count = if closed { count } else { count - 1 };
+    let directions: Vec<_> = (0..segment_count)
+        .map(|index| {
+            let a = point_f64(vertices[index]);
+            let b = point_f64(vertices[(index + 1) % count]);
+            unit(subtract_point(b, a))
+        })
+        .collect();
+    if directions.iter().any(|direction| direction.is_none()) {
+        return Vec::new();
+    }
+    let directions: Vec<_> = directions.into_iter().flatten().collect();
+    let mut left = Vec::with_capacity(count);
+    let mut right = Vec::with_capacity(count);
+    for index in 0..count {
+        let point = point_f64(vertices[index]);
+        let (previous, next) = if closed {
+            (
+                directions[(index + segment_count - 1) % segment_count],
+                directions[index],
+            )
+        } else if index == 0 {
+            (directions[0], directions[0])
+        } else if index + 1 == count {
+            (directions[segment_count - 1], directions[segment_count - 1])
+        } else {
+            (directions[index - 1], directions[index])
+        };
+        left.push(offset_join(point, previous, next, half));
+        right.push(offset_join(point, negate(previous), negate(next), half));
+    }
+    (0..segment_count)
+        .map(|index| {
+            let next = (index + 1) % count;
+            [
+                round_point(left[index]),
+                round_point(left[next]),
+                round_point(right[next]),
+                round_point(right[index]),
+            ]
+        })
+        .collect()
+}
+
+type FloatPoint = (f64, f64);
+
+fn point_f64((x, y): BackendCoord) -> FloatPoint {
+    (f64::from(x), f64::from(y))
+}
+fn subtract_point((x, y): FloatPoint, (u, v): FloatPoint) -> FloatPoint {
+    (x - u, y - v)
+}
+fn negate((x, y): FloatPoint) -> FloatPoint {
+    (-x, -y)
+}
+fn cross_point((x, y): FloatPoint, (u, v): FloatPoint) -> f64 {
+    x * v - y * u
+}
+fn unit((x, y): FloatPoint) -> Option<FloatPoint> {
+    let length = (x * x + y * y).sqrt();
+    (length > f64::EPSILON).then_some((x / length, y / length))
+}
+fn normal((x, y): FloatPoint) -> FloatPoint {
+    (-y, x)
+}
+fn round_point((x, y): FloatPoint) -> BackendCoord {
+    (x.round() as i32, y.round() as i32)
+}
+
+fn offset_join(point: FloatPoint, previous: FloatPoint, next: FloatPoint, half: f64) -> FloatPoint {
+    let a = normal(previous);
+    let b = normal(next);
+    let start = (point.0 + a.0 * half, point.1 + a.1 * half);
+    let end = (point.0 + b.0 * half, point.1 + b.1 * half);
+    let denominator = cross_point(previous, next);
+    if denominator.abs() <= 1.0e-9 {
+        return start;
+    }
+    let delta = subtract_point(end, start);
+    let distance = cross_point(delta, next) / denominator;
+    let candidate = (
+        start.0 + previous.0 * distance,
+        start.1 + previous.1 * distance,
+    );
+    let offset = subtract_point(candidate, point);
+    let length = (offset.0 * offset.0 + offset.1 * offset.1).sqrt();
+    let maximum = half * 4.0;
+    if length > maximum && length > 0.0 {
+        (
+            point.0 + offset.0 * maximum / length,
+            point.1 + offset.1 * maximum / length,
+        )
+    } else {
+        candidate
+    }
+}
+
 fn scaled_style(style: ShapeStyle, scale: u32) -> ShapeStyle {
     style.stroke_width(style.stroke_width.saturating_mul(scale))
 }
@@ -1228,6 +1579,36 @@ mod tests {
             ));
         }
     }
+    #[test]
+    fn boundary_ring_uses_shared_miter_vertices_for_all_supported_widths() {
+        let triangle = [(20, 140), (180, 140), (100, 1)];
+        for width in [1, 3, 8, 16, 30] {
+            let quads = boundary_quads(&triangle, width, true);
+            assert_eq!(quads.len(), 3, "width {width}");
+            for index in 0..3 {
+                let next = (index + 1) % 3;
+                assert_eq!(
+                    quads[index][1], quads[next][0],
+                    "left join at {index}, width {width}"
+                );
+                assert_eq!(
+                    quads[index][2], quads[next][3],
+                    "right join at {index}, width {width}"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn cropped_boundary_strips_have_butt_caps() {
+        let quads = boundary_quads(&[(20, 100), (180, 100)], 16, false);
+        assert_eq!(quads.len(), 1);
+        assert_eq!(quads[0][0].0, 20);
+        assert_eq!(quads[0][3].0, 20);
+        assert_eq!(quads[0][1].0, 180);
+        assert_eq!(quads[0][2].0, 180);
+    }
+
     #[test]
     fn formatting_preserves_percent_and_unicode() {
         assert_eq!(

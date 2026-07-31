@@ -129,10 +129,11 @@ where
                 .tick_label_style(ticks)
                 .endpoint_label_policy(EndpointLabelPolicy::AutoAvoidDuplicates);
         });
+    let mesh = mesh.build();
     if pass.geometry() {
-        mesh.draw_geometry_scaled(scale)?;
+        mesh.draw_background_scaled(&mut chart, scale)?;
     } else {
-        mesh.draw_text()?;
+        mesh.draw_text(&mut chart)?;
     }
 
     if pass.geometry() {
@@ -175,6 +176,9 @@ where
                 .offset((12, -8))
                 .clip_mode(AnnotationClipMode::None),
         )?;
+    }
+    if pass.geometry() {
+        mesh.draw_foreground_scaled(&mut chart, scale)?;
     }
     drop(chart);
     root.present()?;

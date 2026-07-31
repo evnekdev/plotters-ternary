@@ -109,10 +109,11 @@ where
         ))
         .axis_label_offset(scaled(35, scale))
         .corner_label_offset(scaled(25, scale));
+    let mesh = mesh.build();
     if pass.geometry() {
-        mesh.draw_geometry_scaled(scale)?;
+        mesh.draw_background_scaled(&mut chart, scale)?;
     } else {
-        mesh.draw_text()?;
+        mesh.draw_text(&mut chart)?;
     }
 
     let marker_styles = gallery_styles()?;
@@ -210,6 +211,9 @@ where
         .label("Empty contour markers")
         .legend(legend_marker(pass, scale, empty_style));
 
+    if pass.geometry() {
+        mesh.draw_foreground_scaled(&mut chart, scale)?;
+    }
     draw_legend(&mut chart, pass, scale)?;
     drop(chart);
     root.present()?;
