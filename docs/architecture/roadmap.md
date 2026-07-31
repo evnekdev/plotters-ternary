@@ -388,53 +388,45 @@ offsets, portable alignment, `Anchor`/`None` clipping, and native quarter turns.
 Bounds clipping, callouts, general arbitrary-angle annotations, holes, and
 filled contours remain explicitly deferred.
 
-## Milestone 7: Line contours
+## Milestone 7: Regular-grid line contours
 
 ### Objective
 
-Add backend-independent isoline calculation and ternary contour rendering.
+Add backend-independent isolines on a regular two-dimensional ternary lattice, with linear and modular cubic-alpha interpolation.
 
-### Implementation
+### Implemented scope
 
-- triangular scalar-field representation;
-- regular and irregular triangular meshes;
-- marching-triangle isolines;
-- deterministic degeneracy rules;
-- segment path joining;
-- `ContourSet` and `ContourLevel`;
-- `TernaryContourSeries`;
-- level styling;
-- optional basic contour labels if robust placement is available.
+- canonical `i+j+k=n` scalar-field ordering and checked conversions;
+- internally generated upward/downward elementary triangles and unique directed edges;
+- deterministic linear marching triangles and path joining;
+- `spline1d` Akima, MAKIMA, PCHIP, and Steffen single-interval alpha coefficients;
+- RawBarycentric, conventional symmetric Muggianu, and Kohler binary extrapolation policies;
+- analytic local and global reduced gradients;
+- bounded adaptive barycentric topology extraction with diagnostics;
+- optional arc-length redistribution and implicit-level projection;
+- `ContourSet`, `ContourLevel`, `ContourPath`, and native-legend `TernaryContourSeries`;
+- complete-path construction before existing rectangular viewport clipping.
 
-### Examples
+Irregular triangulation, Delaunay, arbitrary meshes, Kuhn simplices, N-component grids, filled contours, and surfaces are explicitly excluded.
 
-- analytic scalar function sampled on a regular ternary grid;
-- several contour levels;
-- contours crossing a cropped viewport;
-- contours combined with markers and a legend.
-
-### Required reference artefacts
+### Reference artefacts
 
 ```text
-examples/output/png/contours_full.png
-examples/output/svg/contours_full.svg
-examples/output/png/contours_cropped.png
-examples/output/svg/contours_cropped.svg
+examples/output/png/linear_contours.png
+examples/output/svg/linear_contours.svg
+examples/output/png/cubic_alpha_contours.png
+examples/output/svg/cubic_alpha_contours.svg
+examples/output/png/cropped_contours.png
+examples/output/svg/cropped_contours.svg
 ```
-
-### Tests
-
-- individual triangle intersection cases;
-- exact-level vertex and edge degeneracies;
-- path joining;
-- regular and irregular mesh cases;
-- contour computation without Plotters;
-- viewport clipping of contour paths.
 
 ### Exit criteria
 
-- Isoline construction can be used independently of rendering.
-- Full and cropped contour figures are generated in PNG and SVG.
+- Numerical interpolation and topology remain independent of Plotters.
+- Alpha convention and reversal are proven behaviorally against `spline1d`.
+- All three extrapolation policies are explicit and tested.
+- Full and cropped PNG/SVG examples preserve native legends and vector geometry.
+- Limitations and diagnostics are documented in [contour-kernel.md](contour-kernel.md).
 
 ## Milestone 8: Release-quality API and documentation
 

@@ -7,8 +7,8 @@ use crate::coord::TernaryPoint;
 
 use super::{
     AnnotationClipMode, AnnotationError, MarkerElement, MarkerStyle, PointMarkerStyleProvider,
-    PolygonElement, SeriesError, TernaryLineSeries, TernaryPointSeries, TernaryPolygon,
-    TernarySmoothSeries, TernaryText, prepare_points_with_source, prepare_polygon,
+    PolygonElement, SeriesError, TernaryContourSeries, TernaryLineSeries, TernaryPointSeries,
+    TernaryPolygon, TernarySmoothSeries, TernaryText, prepare_points_with_source, prepare_polygon,
     prepare_polyline,
     smooth::{SmoothPreparation, prepare_smooth_polyline},
 };
@@ -227,6 +227,50 @@ where
             let coordinates: Vec<_> = path.into_iter().map(|point| (point.x, point.y)).collect();
             PathElement::new(coordinates, style)
         });
+        chart.context.draw_series(elements).map_err(Into::into)
+    }
+}
+
+impl<'contour, DB> TernarySeries<DB> for TernaryContourSeries<'contour>
+where
+    DB: DrawingBackend,
+{
+    fn draw<'chart, 'series>(
+        self,
+        chart: &'chart mut TernaryChart<'series, DB>,
+    ) -> Result<&'chart mut SeriesAnno<'series, DB>, TernaryChartError<DB::ErrorType>>
+    where
+        DB: 'series,
+    {
+        let (contours, uniform_style, style_provider) = self.into_parts();
+        let mut elements = Vec::new();
+        for level in &contours.levels {
+            let style = style_provider
+                .as_ref()
+                .map_or(uniform_style, |provider| provider(level.value));
+            for path in &level.paths {
+                let mut source = path.points.clone();
+                if path.closed && !source.is_empty() {
+                    source.push(source[0]);
+                }
+                let visible = prepare_polyline(
+                    chart.geometry,
+                    chart.viewport,
+                    source,
+                    crate::coord::Normalization::RequireUnitSum,
+                    chart.tolerance,
+                    super::InvalidPointPolicy::Error,
+                )?;
+                elements.extend(visible.into_iter().map(|path| {
+                    PathElement::new(
+                        path.into_iter()
+                            .map(|point| (point.x, point.y))
+                            .collect::<Vec<_>>(),
+                        style,
+                    )
+                }));
+            }
+        }
         chart.context.draw_series(elements).map_err(Into::into)
     }
 }

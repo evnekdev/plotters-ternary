@@ -32,6 +32,7 @@ The crate should support:
 - [`bitmap-quality.md`](bitmap-quality.md): temporary optional supersampling for example PNGs.
 - [`axis-kernel.md`](axis-kernel.md): implemented publication mesh, ticks, and axis labels.
 - [`region-annotation-kernel.md`](region-annotation-kernel.md): implemented phase polygons and text annotations.
+- [`contour-kernel.md`](contour-kernel.md): regular-grid linear and cubic-alpha contour interpolation.
 
 ## Decision records
 

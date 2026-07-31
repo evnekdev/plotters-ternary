@@ -3,6 +3,10 @@ name = "plotters-ternary"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+default = []
+cubic-alpha = []
+
 [dependencies]
 plotters = { version = "0.3.7", default-features = false, features = [
     "bitmap_backend",

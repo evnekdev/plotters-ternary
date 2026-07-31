@@ -376,19 +376,19 @@ arbitrary-angle annotations are deliberately not claimed yet.
 
 ## Contours
 
+Milestone 7 implements regular two-dimensional ternary grids only:
+
 ```rust
-pub struct TernaryScalarField { /* samples and triangulation */ }
-pub struct TernaryTriangulation { /* vertices and cells */ }
-pub struct ContourSet {
-    pub levels: Vec<ContourLevel>,
-}
-pub struct ContourLevel {
-    pub value: f64,
-    pub paths: Vec<Vec<TernaryPoint>>,
-}
+pub struct RegularTernaryScalarField { /* n and canonical ordered values */ }
+pub enum ContourInterpolation { Linear, CubicAlpha(CubicAlphaOptions) }
+pub enum BinaryExtrapolation { RawBarycentric, Muggianu, Kohler }
+pub struct ContourSet { pub levels: Vec<ContourLevel>, /* diagnostics */ }
+pub struct ContourLevel { pub value: f64, pub paths: Vec<ContourPath> }
+pub struct ContourPath { pub points: Vec<TernaryPoint>, pub closed: bool }
+pub struct TernaryContourSeries<'a> { /* native Plotters adapter */ }
 ```
 
-Contour generation should use marching triangles and remain independent of Plotters. Rendering accepts either internally generated or externally supplied contour paths.
+`RegularTernaryScalarField` uses integer triples `i+j+k=n` in row-major `(i,j)` ordering and generates its elementary connectivity internally. Linear contours use deterministic marching triangles. Cubic-alpha contours use `spline1d` edge intervals, shared canonical edge direction, explicit RawBarycentric/Muggianu/Kohler interior extrapolation, adaptive barycentric microtriangles, and optional arc-length redistribution plus analytic-gradient level projection. See [contour-kernel.md](contour-kernel.md). Arbitrary triangulations, irregular data, Kuhn simplices, filled contours, and N-component grids are not part of this API.
 
 ## Optional mathematical text
 
