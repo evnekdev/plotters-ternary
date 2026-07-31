@@ -33,6 +33,7 @@ The crate should support:
 - [`axis-kernel.md`](axis-kernel.md): implemented publication mesh, ticks, and axis labels.
 - [`region-annotation-kernel.md`](region-annotation-kernel.md): implemented phase polygons and text annotations.
 - [`contour-kernel.md`](contour-kernel.md): regular-grid linear and cubic-alpha contour interpolation.
+- [contour-rendering.md](contour-rendering.md): per-level styles, legends, colour bars and portable contour labels.
 - [`release-readiness.md`](release-readiness.md): 0.1.0 API, package, and numerical-audit record.
 
 ## Decision records

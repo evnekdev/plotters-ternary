@@ -116,11 +116,40 @@ the required raw `xi*xj` pair prefactor and reproduce the same source spline
 on the binary edge. `RawBarycentric` is explicitly experimental and should not
 be described as Muggianu.
 
+Contour rendering can use one style, an ordered palette, an exact-level style
+callback, or a normalized continuous colour map. `ContourLegendPolicy`
+registers selected levels through ordinary Plotters annotations and legends;
+`ContourColorBar` provides horizontal or vertical continuous keys for dense
+levels. `ContourLabelConfig` supports deterministic tangent, curved, repeated,
+and manual labels. Label placement is a final chart-space calculation and never
+changes the numerical contour coordinates.
+
+```rust,ignore
+chart.draw_series(
+    TernaryContourSeries::new(&contours)
+        .style_by_level(|level| level_style(level))
+        .legend_policy(ContourLegendPolicy::EveryNth(2))
+        .level_formatter(|level| format!("{level:.0} °C")),
+)?;
+chart.draw_contour_labels(
+    &contours,
+    &ContourLabelConfig::new()
+        .formatter(|level| format!("{level:.0} °C")),
+)?;
+```
+
+Portable PNG labels use the final-resolution antialiased rotated-text renderer.
+SVG output uses searchable native transformed `<text>` elements. Curved labels
+use per-character Plotters metrics where full glyph shaping is unavailable; see
+[the contour-rendering architecture note](docs/architecture/contour-rendering.md).
+
 ## Gallery
 
 | Full chart | Axes and markers | Contours |
 | --- | --- | --- |
 | ![Full triangle](examples/output/png/full_triangle.png) | ![Custom axes](examples/output/png/custom_axes.png) | ![Cubic-alpha contours](examples/output/png/cubic_alpha_contours.png) |
+| Coloured contours | Tangent labels | Curved labels |
+| ![Contour colour bar](examples/output/png/contour_color_bar.png) | ![Tangent contour labels](examples/output/png/contour_labels.png) | ![Curved contour labels](examples/output/png/curved_contour_labels.png) |
 
 More references: [cropped axes](examples/output/png/cropped_axes.png),
 [markers](examples/output/png/custom_markers.png),
@@ -133,7 +162,7 @@ live beside every PNG under `examples/output/svg/`.
 - `default`: geometry, Plotters charting, all standard series, linear contours.
 - `cubic-alpha`: cubic-alpha contour field construction and adaptive contouring.
 
-The crate does not provide filled contours, contour labels, irregular or
+The crate does not provide filled contours, irregular or
 scattered-data triangulation, Kuhn simplices, N-component grids, or C1 cubic
 field continuity. SVG is the preferred publication-quality output. PNG
 supersampling is an example/output helper, not a permanent chart API.

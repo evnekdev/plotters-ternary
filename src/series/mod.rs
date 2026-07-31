@@ -9,7 +9,7 @@ mod prepare;
 mod smooth;
 mod text;
 
-pub use contour::TernaryContourSeries;
+pub use contour::{ContourLegendPolicy, ContourStylePolicy, TernaryContourSeries};
 pub use draw::TernarySeries;
 pub use error::{InvalidPointPolicy, SeriesError};
 pub use line::TernaryLineSeries;

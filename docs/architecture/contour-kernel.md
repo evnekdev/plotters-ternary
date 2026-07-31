@@ -131,9 +131,9 @@ The step is capped, backtracked until the residual decreases, validated in the s
 
 ## Rendering adapter
 
-`TernaryContourSeries::new(&contours)` supports one `ShapeStyle` or a level-style provider. It closes closed paths explicitly, then reuses `prepare_polyline` for semantic projection, mathematical viewport clipping, and visible-subpath splitting. Complete logical paths are computed before clipping. `TernaryChart::draw_series` returns Plotters' native `SeriesAnno`, so normal labels and legends remain intact.
+`TernaryContourSeries::new(&contours)` supports uniform, ordered, callback and continuous level styles. It closes closed paths explicitly for display, then reuses `prepare_polyline` for semantic projection, mathematical viewport clipping, and visible-subpath splitting. Complete logical paths are computed before clipping. Automatic level legends register ordinary Plotters `SeriesAnno` entries; there is no ternary-specific legend renderer.
 
-PNG contour geometry participates in the existing geometry-only supersampling pass. Text remains final-resolution. SVG contours are ordinary vector polylines in the `ternary-geometry` group with no raster image; captions, axes, and legends remain native text.
+`ContourLabelConfig` and `ContourColorBar` are chart-space rendering objects, not numerical contour options. Label placement may project paths and inspect visible pixel-space arc length, tangents, curvature and collisions, but it never changes the stored `ContourPath`. PNG contour geometry participates in the existing geometry-only supersampling pass while labels and colour-bar text remain final-resolution. SVG contours are vector polylines and labels are searchable native transformed text in `ternary-text`, with no raster image. See [contour-rendering.md](contour-rendering.md).
 
 ## Examples and diagnostics
 
@@ -154,5 +154,5 @@ The coarse comparison shows linear, Akima+Muggianu, and regularized Steffen+Kohl
 - A completely flat level triangle is an ambiguous two-dimensional level set and returns an error.
 - C0 edge continuity is guaranteed; C1 continuity is not.
 - RawBarycentric depends on canonical direction in the ternary interior.
-- Exact cubic edge-root acceleration and contour labels are deferred.
+- Exact cubic edge-root acceleration remains deferred; contour labels are a rendering-only Milestone 9 facility.
 - Irregular triangulation, Kuhn simplices, filled contours, and N-component interpolation are outside this milestone.

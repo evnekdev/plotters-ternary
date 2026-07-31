@@ -1,6 +1,6 @@
 use std::fmt;
 
-use crate::coord;
+use crate::{ContourDisplayError, coord};
 
 use super::{AnnotationError, MarkerError, PolygonError};
 
@@ -33,6 +33,18 @@ pub enum SeriesError {
     TooManySmoothSamples { requested: usize, maximum: usize },
     /// Marker size zero has no useful rendering semantics.
     InvalidMarkerSize { size: u32 },
+    /// An ordered contour style collection contained no styles.
+    EmptyContourStyleCollection,
+    /// A continuous contour colour range or stroke width was invalid.
+    InvalidContourColorRange {
+        minimum: f64,
+        maximum: f64,
+        stroke_width: u32,
+    },
+    /// An automatic contour legend stride was zero.
+    InvalidContourLegendStride { stride: usize },
+    /// Contour label or colour-bar rendering configuration was invalid.
+    ContourDisplay(ContourDisplayError),
     /// Polygon validation, projection, or clipping preparation failed.
     Polygon(PolygonError),
     /// A ternary text annotation could not be prepared.
@@ -74,6 +86,22 @@ impl fmt::Display for SeriesError {
             Self::InvalidMarkerSize { size } => {
                 write!(formatter, "marker size must be greater than zero: {size}")
             }
+            Self::EmptyContourStyleCollection => {
+                write!(formatter, "contour style collection must not be empty")
+            }
+            Self::InvalidContourColorRange {
+                minimum,
+                maximum,
+                stroke_width,
+            } => write!(
+                formatter,
+                "contour colour range must be finite and increasing with nonzero stroke width: {minimum:?}..{maximum:?}, width {stroke_width}"
+            ),
+            Self::InvalidContourLegendStride { stride } => write!(
+                formatter,
+                "contour legend stride must be greater than zero: {stride}"
+            ),
+            Self::ContourDisplay(source) => write!(formatter, "contour display error: {source}"),
             Self::Polygon(source) => write!(formatter, "ternary polygon error: {source}"),
             Self::Annotation(source) => write!(formatter, "ternary annotation error: {source}"),
             Self::Marker {
@@ -102,8 +130,12 @@ impl std::error::Error for SeriesError {
             Self::SmoothInterpolationFailed { .. }
             | Self::InvalidSmoothSampling { .. }
             | Self::TooManySmoothSamples { .. }
-            | Self::InvalidMarkerSize { .. } => None,
+            | Self::InvalidMarkerSize { .. }
+            | Self::EmptyContourStyleCollection
+            | Self::InvalidContourColorRange { .. }
+            | Self::InvalidContourLegendStride { .. } => None,
             Self::Marker { source, .. } => Some(source),
+            Self::ContourDisplay(source) => Some(source),
             Self::Polygon(source) => Some(source),
             Self::Annotation(source) => Some(source),
         }

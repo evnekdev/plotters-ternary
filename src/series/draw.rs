@@ -242,40 +242,65 @@ where
     where
         DB: 'series,
     {
-        let (contours, uniform_style, style_provider) = self.into_parts();
-        let mut elements = Vec::new();
-        for level in &contours.levels {
-            let style = style_provider
-                .as_ref()
-                .map_or(uniform_style, |provider| provider(level.value));
-            for path in &level.paths {
-                let mut source = path
-                    .points
-                    .iter()
-                    .copied()
-                    .map(|point| TernaryPoint::from(point.as_array()))
-                    .collect::<Vec<_>>();
-                if path.closed && !source.is_empty() {
-                    source.push(source[0]);
-                }
-                let visible = prepare_polyline(
-                    chart.geometry,
-                    chart.viewport,
-                    source,
-                    crate::coord::Normalization::RequireUnitSum,
-                    chart.tolerance,
-                    super::InvalidPointPolicy::Error,
-                )?;
-                elements.extend(visible.into_iter().map(|path| {
-                    PathElement::new(
-                        path.into_iter()
-                            .map(|point| (point.x, point.y))
-                            .collect::<Vec<_>>(),
-                        style,
-                    )
-                }));
+        let parts = self.into_parts();
+        if matches!(parts.legend, super::ContourLegendPolicy::None) {
+            let mut elements = Vec::new();
+            for (index, level) in parts.contours.levels.iter().enumerate() {
+                let style = parts.styles.style_for(index, level.value)?;
+                elements.extend(contour_level_elements(chart, level, style)?);
+            }
+            return chart.context.draw_series(elements).map_err(Into::into);
+        }
+
+        for (index, level) in parts.contours.levels.iter().enumerate() {
+            let style = parts.styles.style_for(index, level.value)?;
+            let elements = contour_level_elements(chart, level, style)?;
+            let annotation = chart.context.draw_series(elements)?;
+            if parts.legend.selected(index, level.value)? {
+                annotation
+                    .label((parts.formatter)(level.value))
+                    .legend(move |(x, y)| PathElement::new([(x, y), (x + 24, y)], style));
             }
         }
-        chart.context.draw_series(elements).map_err(Into::into)
+        chart
+            .context
+            .draw_series(std::iter::empty::<PathElement<(f64, f64)>>())
+            .map_err(Into::into)
     }
+}
+
+fn contour_level_elements<DB: DrawingBackend>(
+    chart: &TernaryChart<'_, DB>,
+    level: &crate::ContourLevel,
+    style: plotters::style::ShapeStyle,
+) -> Result<Vec<PathElement<(f64, f64)>>, SeriesError> {
+    let mut elements = Vec::new();
+    for path in &level.paths {
+        let mut source = path
+            .points
+            .iter()
+            .copied()
+            .map(|point| TernaryPoint::from(point.as_array()))
+            .collect::<Vec<_>>();
+        if path.closed && !source.is_empty() {
+            source.push(source[0]);
+        }
+        let visible = prepare_polyline(
+            chart.geometry,
+            chart.viewport,
+            source,
+            crate::coord::Normalization::RequireUnitSum,
+            chart.tolerance,
+            super::InvalidPointPolicy::Error,
+        )?;
+        elements.extend(visible.into_iter().map(|path| {
+            PathElement::new(
+                path.into_iter()
+                    .map(|point| (point.x, point.y))
+                    .collect::<Vec<_>>(),
+                style,
+            )
+        }));
+    }
+    Ok(elements)
 }
