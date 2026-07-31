@@ -1,4 +1,4 @@
-﻿# N-dimensional extension roadmap
+# N-dimensional extension roadmap
 
 The 0.1.0 crate deliberately specializes in the symmetric regular triangular
 ternary lattice. A future independent numerical crate may generalize directed

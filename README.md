@@ -1,4 +1,4 @@
-﻿# plotters-ternary
+# plotters-ternary
 
 `plotters-ternary` adds publication-quality ternary composition diagrams to
 [Plotters](https://crates.io/crates/plotters). It keeps A/B/C compositions,
@@ -91,6 +91,11 @@ See the source examples for [markers and legends](examples/lines_points_legend.r
 [phase regions and annotations](examples/regions_annotations.rs).
 
 ## Contours
+
+The backend-independent `ternary-contours` dependency constructs complete
+semantic A/B/C contour paths. This crate only projects and visually clips those
+final paths for Plotters. Backend, viewport, output-size, style, and
+supersampling choices cannot change the numerical `ContourSet`.
 
 `ContourInterpolation::Linear` is the exact piecewise-affine baseline on a
 regular ternary grid. Cubic-alpha contours reuse directed one-dimensional

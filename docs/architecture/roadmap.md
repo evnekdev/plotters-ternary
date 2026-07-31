@@ -390,6 +390,12 @@ filled contours remain explicitly deferred.
 
 ## Milestone 7: Regular-grid line contours
 
+Phase 2 extraction moved the complete backend-independent Milestone 7 pipeline
+to `ternary-contours`. `plotters-ternary` directly re-exports the primary core
+API and retains only projection, visual clipping, Plotters elements, legends,
+and backend rendering. The local path dependency is intentional until both
+crates complete publication compatibility review.
+
 ### Objective
 
 Add backend-independent isolines on a regular two-dimensional ternary lattice, with linear and modular cubic-alpha interpolation.
