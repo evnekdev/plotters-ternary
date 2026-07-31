@@ -1,0 +1,37 @@
+<svg width="1000" height="800" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+<g id="ternary-geometry" shape-rendering="geometricPrecision" stroke-linecap="round" stroke-linejoin="round">
+
+<rect x="0" y="0" width="1000" height="800" opacity="1" fill="#FFFFFF" stroke="none"/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="169,591 830,591 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="169,379 756,379 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="169,167 634,167 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="346,93 721,741 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="169,210 476,741 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="169,633 231,741 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="432,93 169,549 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="634,167 302,741 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="756,379 547,741 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="830,676 791,741 "/>
+<polyline fill="none" opacity="1" stroke="#000000" stroke-width="2" points="830,506 591,93 "/>
+<polyline fill="none" opacity="1" stroke="#000000" stroke-width="2" points="187,93 169,125 "/>
+<polygon opacity="0.88" fill="#2B71B4" points="432,577 433,577 437,576 505,549 559,509 565,503 567,500 586,462 603,424 603,417 599,349 586,311 558,273 533,251 498,236 460,226 406,228 364,240 335,255 313,273 281,313 262,349 250,412 250,424 252,435 279,500 291,518 329,548 353,563 423,576 "/>
+<polygon opacity="0.88" fill="#38A484" points="404,677 464,672 485,667 526,651 556,637 583,618 616,590 629,576 666,525 679,500 702,436 705,424 706,404 706,349 691,279 689,273 646,206 637,198 586,160 526,132 516,129 458,122 434,120 431,120 419,122 353,136 332,144 285,169 247,198 226,218 183,273 177,285 169,310 169,512 185,549 204,576 237,612 292,651 299,655 305,658 375,675 "/>
+<polygon opacity="0.88" fill="#F4B53F" points="553,741 585,727 602,718 620,706 663,672 684,651 717,613 743,576 762,540 779,500 795,447 782,424 739,349 695,273 651,198 607,122 591,93 232,93 191,122 177,133 169,142 169,681 187,698 229,727 250,740 255,741 "/>
+<polygon opacity="0.88" fill="#D24E46" points="718,741 734,727 764,695 799,651 814,630 830,603 830,506 826,500 795,447 779,500 762,540 743,576 717,613 684,651 663,672 620,706 602,718 585,727 553,741 255,741 250,740 229,727 187,698 169,681 169,741 "/>
+<polygon opacity="0.88" fill="#D24E46" points="169,125 169,142 177,133 191,122 232,93 187,93 170,122 "/>
+<polygon opacity="0.88" fill="#7C4199" points="830,741 830,603 814,630 799,651 764,695 734,727 718,741 "/>
+<polyline fill="none" opacity="0.64" stroke="#000000" stroke-width="2" points="432,577 433,577 437,576 505,549 559,509 565,503 567,500 586,462 603,424 603,417 599,349 586,311 558,273 533,251 498,236 460,226 406,228 364,240 335,255 313,273 281,313 262,349 250,412 250,424 252,435 279,500 291,518 329,548 353,563 423,576 432,577 "/>
+<polyline fill="none" opacity="0.64" stroke="#000000" stroke-width="2" points="404,677 375,675 305,658 299,655 292,651 237,612 204,576 185,549 169,512 "/>
+<polyline fill="none" opacity="0.64" stroke="#000000" stroke-width="2" points="169,310 177,285 183,273 226,218 247,198 285,169 332,144 353,136 419,122 431,120 434,120 458,122 516,129 526,132 586,160 637,198 646,206 689,273 691,279 706,349 706,404 705,424 702,436 679,500 666,525 629,576 616,590 583,618 556,637 526,651 485,667 464,672 404,677 "/>
+<polyline fill="none" opacity="0.64" stroke="#000000" stroke-width="2" points="795,447 779,500 762,540 743,576 717,613 684,651 663,672 620,706 602,718 585,727 553,741 "/>
+<polyline fill="none" opacity="0.64" stroke="#000000" stroke-width="2" points="255,741 250,740 229,727 187,698 169,681 "/>
+<polyline fill="none" opacity="0.64" stroke="#000000" stroke-width="2" points="169,142 177,133 191,122 232,93 "/>
+<polyline fill="none" opacity="0.64" stroke="#000000" stroke-width="2" points="718,741 734,727 764,695 799,651 814,630 830,603 "/>
+</g>
+<g id="ternary-text">
+
+<text x="500" y="5" dy="0.76em" text-anchor="middle" font-family="sans-serif" font-size="25.806451612903228" opacity="1" fill="#000000" font-weight="bold">
+Filled bands in an invisible cropped viewport
+</text>
+</g>
+</svg>
