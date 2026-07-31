@@ -1,12 +1,31 @@
 # Milestone 7 regular-grid contour kernel
 
-## Phase 1 numerical-core ownership
+## Phase 2 numerical-core ownership
 
-`ternary-contours` now owns regular-lattice indexing, scalar-field validation, directed alpha intervals, binary extrapolation, local cubic-alpha fields, analytic local gradients, and shared-edge interval construction. `plotters-ternary` consumes the pinned Phase 1 commit through a Git dependency and retains compatibility wrappers for semantic `TernaryPoint` access. Linear and adaptive contour extraction, path assembly, regularization, projection, viewport clipping, and Plotters rendering remain here pending Phase 2.
+`ternary-contours` owns the complete backend-independent numerical pipeline:
+regular-lattice indexing, scalar-field validation, directed alpha intervals,
+binary extrapolation, local field values and gradients, linear marching
+triangles, adaptive cubic topology, deterministic global path assembly,
+arc-length regularization, and implicit-level projection.
+
+During two-repository development, `plotters-ternary` uses the local path
+`../ternary-contours` and directly re-exports the primary numerical API. It no
+longer contains a second contour implementation or a semantic-point facade.
+`ContourPath` stores core-owned `TernaryCoordinate` values in A/B/C order. The
+direct grid re-export deliberately removes the former Phase 1 facade:
+`composition` and `composition_at` now return `[f64; 3]`, and field construction
+returns the re-exported `FieldError`. Contour computation continues to return
+`ContourError`.
+
+`plotters-ternary` owns only the rendering boundary: conversion to its chart
+coordinate type, visual viewport clipping, Plotters `ShapeStyle` and element
+construction, native `SeriesAnno`, legends, and backend output. Changing the
+backend, output dimensions, viewport, style, or supersampling cannot change a
+`ContourSet`; viewport clipping may only split visible rendered subpaths.
 
 ## Scope and public API
 
-Milestone 7 implements line contours over the regular two-dimensional ternary lattice only. For subdivision count `n`, `RegularTernaryScalarField` stores `(n+1)(n+2)/2` finite values at integer coordinates `i+j+k=n`. Canonical public ordering is row-major in `(i,j)`: `i=0..n`; for each `i`, `j=0..n-i`; and `k=n-i-j`. `GridVertexId`, `LatticeCoordinate`, `index_of`, `coordinate_of`, and `composition_at` provide checked conversions.
+Milestone 7 implements line contours over the regular two-dimensional ternary lattice only. For subdivision count `n`, `RegularTernaryScalarField` stores `(n+1)(n+2)/2` finite values at integer coordinates `i+j+k=n`. Canonical public ordering is row-major in `(i,j)`: `i=0..n`; for each `i`, `j=0..n-i`; and `k=n-i-j`. `GridVertexId`, `LatticeCoordinate`, `index_of`, `coordinate_of`, and `composition_at` provide checked conversions. Core contour paths use `TernaryCoordinate`; grid composition access returns `[f64; 3]`.
 
 The public contour surface is:
 

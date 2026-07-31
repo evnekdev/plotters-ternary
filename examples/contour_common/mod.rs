@@ -405,7 +405,7 @@ fn sample_field(
     let blank = RegularTernaryScalarField::new(subdivisions, vec![0.0; count])?;
     let values = (0..count)
         .map(|index| {
-            let [a, b, c] = blank.composition_at(index).expect("grid index").as_array();
+            let [a, b, c] = blank.composition_at(index).expect("grid index");
             (a - 0.36).powi(2)
                 + 0.85 * (b - 0.31).powi(2)
                 + 1.15 * (c - 0.33).powi(2)
@@ -413,7 +413,7 @@ fn sample_field(
                 + 0.025 * (3.0 * a * b * c).sin()
         })
         .collect();
-    RegularTernaryScalarField::new(subdivisions, values)
+    Ok(RegularTernaryScalarField::new(subdivisions, values)?)
 }
 fn cubic_set(
     field: &RegularTernaryScalarField,

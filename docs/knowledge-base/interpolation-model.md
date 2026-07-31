@@ -1,4 +1,4 @@
-﻿# Interpolation model
+# Interpolation model
 
 `RegularTernaryScalarField` stores finite values at lattice coordinates
 `i + j + k = n`, ordered row-major by `(i, j)`. It provides checked index,
