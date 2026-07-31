@@ -127,6 +127,8 @@ Milestone 7 implements backend-independent contours over `RegularTernaryScalarFi
 
 `TernaryContourSeries` is the narrow rendering adapter. It consumes complete semantic composition paths, uses the existing line preparation pipeline for projection and mathematical viewport clipping, submits owned `PathElement` values, and returns native Plotters `SeriesAnno`. PNG geometry supersampling and SVG vector grouping therefore apply unchanged. See [contour-kernel.md](contour-kernel.md).
 
+Milestone 9 adds rendering-only `ContourStylePolicy`, `ContourLegendPolicy`, `ContourColorBar`, and `ContourLabelConfig`. Automatic and curved label placement runs after chart projection and temporary display clipping because font metrics, curvature and clearance are pixel-space concerns. It never mutates, resamples, reconnects, or projects the numerical `ContourSet`. Tangent labels use one rotated text command; curved labels place measured characters independently along projected arc length. Collision envelopes are deterministic and local to contour labels. PNG labels remain in the final-resolution text pass; SVG capture emits native transformed text. See [contour-rendering.md](contour-rendering.md).
+
 Irregular triangulations and filled contours remain future work and are not represented by provisional public connectivity types.
 
 ## Legend behaviour

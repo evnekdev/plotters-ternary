@@ -473,7 +473,39 @@ Use the generated PNG images in the README gallery and link SVG versions for ins
 - public API has no known milestone-blocking lifetime or ownership issues;
 - first release scope is explicitly declared.
 
-## Milestone 9 and later: advanced capabilities
+## Milestone 9: Advanced contour styling and labels
+
+### Objective
+
+Add publication-oriented contour styling and chart-space labels without changing the final numerical geometry supplied by `ternary-contours`.
+
+### Implemented scope
+
+- uniform, ordered, callback and continuous per-level `ShapeStyle` policies;
+- native Plotters legend entries for all, selected or every nth contour level;
+- horizontal and vertical continuous colour bars with ticks, labels and units;
+- automatic one-per-component tangent labels;
+- repeated and semantic manual label anchors;
+- per-glyph curved labels along projected arc length;
+- deterministic endpoint, viewport, curvature and label-collision rejection;
+- configurable final-resolution text style, normal offset and halo;
+- native transformed SVG text and final-resolution antialiased PNG text.
+
+Label placement is deliberately a final chart-space calculation. It may project and display-clip temporary paths, but it never mutates, resamples, reconnects or projects the numerical `ContourSet` back to an isolevel. Filled contours, chart-wide annotation collision solving, interactive label dragging and general text-on-path remain out of scope. See [contour-rendering.md](contour-rendering.md).
+
+### Reference artefacts
+
+```text
+examples/output/{png,svg}/contour_level_legend.*
+examples/output/{png,svg}/contour_color_bar.*
+examples/output/{png,svg}/contour_labels.*
+examples/output/{png,svg}/curved_contour_labels.*
+examples/output/{png,svg}/cropped_contour_labels.*
+examples/output/{png,svg}/manual_contour_labels.*
+examples/output/{png,svg}/repeated_contour_labels.*
+```
+
+## Milestone 10 and later: advanced capabilities
 
 These should be implemented only after the core API has real usage experience:
 

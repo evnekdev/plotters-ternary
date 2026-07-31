@@ -1,0 +1,139 @@
+<svg width="1000" height="800" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+<g id="ternary-geometry" shape-rendering="geometricPrecision" stroke-linecap="round" stroke-linejoin="round">
+
+<rect x="0" y="0" width="1000" height="800" opacity="1" fill="#FFFFFF" stroke="none"/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="209,606 789,606 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="282,480 717,480 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="354,355 644,355 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="427,229 572,229 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="427,229 717,731 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="354,355 572,731 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="282,480 427,731 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="209,606 282,731 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="572,229 282,731 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="644,355 427,731 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="717,480 572,731 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="789,606 717,731 "/>
+<polyline fill="none" opacity="1" stroke="#1C2634" stroke-width="3" points="137,731 862,731 "/>
+<polyline fill="none" opacity="1" stroke="#1C2634" stroke-width="3" points="862,731 499,103 "/>
+<polyline fill="none" opacity="1" stroke="#1C2634" stroke-width="3" points="499,103 137,731 "/>
+<polyline fill="none" opacity="1" stroke="#1C2634" stroke-width="2" points="492,541 480,540 464,536 458,534 451,530 440,521 428,507 425,501 419,485 417,470 417,462 418,456 421,440 427,427 433,417 442,408 456,395 459,393 462,391 480,384 494,381 504,381 519,382 533,387 541,390 548,395 558,404 568,417 572,425 577,440 578,459 578,462 578,465 572,485 569,493 560,507 554,513 540,526 537,528 534,530 516,537 506,539 492,541 "/>
+<polyline fill="none" opacity="1" stroke="#1C2634" stroke-width="2" points="490,581 482,581 462,578 459,577 451,574 437,569 428,564 418,557 412,552 402,541 394,530 388,520 383,507 379,492 377,485 377,475 377,462 379,447 380,440 381,437 388,417 392,411 401,395 405,390 421,373 421,373 421,372 440,360 458,350 460,349 461,349 482,343 491,342 507,341 517,341 534,344 541,346 552,350 561,354 569,359 580,367 586,373 596,384 603,395 609,406 613,417 618,436 618,440 618,445 618,462 615,483 614,485 612,490 606,507 604,510 592,530 591,531 586,536 574,548 569,552 556,561 541,570 536,572 527,574 514,578 509,579 490,581 "/>
+<polyline fill="none" opacity="1" stroke="#1C2634" stroke-width="2" points="486,620 486,620 488,619 511,617 513,617 534,612 544,608 555,604 569,597 575,594 581,589 593,580 600,574 610,565 621,552 625,546 636,530 639,525 646,507 649,498 653,485 656,466 657,462 657,458 657,440 654,418 654,417 654,417 647,395 645,389 636,373 632,366 620,350 617,347 610,341 600,332 594,328 581,320 569,315 560,311 541,305 538,305 537,305 514,302 510,302 487,304 485,304 479,305 462,309 457,311 441,317 422,327 421,327 420,328 403,341 392,350 386,356 371,373 370,374 357,395 357,395 347,417 346,422 341,440 339,454 338,462 338,472 338,485 341,502 342,507 342,510 349,530 352,537 361,552 365,559 378,574 381,577 387,583 398,592 406,597 418,603 428,608 439,612 459,617 461,618 484,619 486,620 "/>
+<polyline fill="none" opacity="1" stroke="#1C2634" stroke-width="2" points="298,452 297,462 297,471 297,485 298,497 299,507 303,527 304,530 304,531 312,552 315,557 324,574 328,580 341,597 342,599 348,604 359,615 364,619 377,629 394,639 396,640 400,642 417,649 427,652 439,655 457,658 463,659 484,660 488,660 509,658 516,657 532,654 546,650 554,647 568,642 575,639 580,636 594,628 607,619 613,615 622,607 630,600 634,597 646,583 654,574 661,564 669,552 674,542 680,530 686,517 689,507 694,487 695,485 696,481 698,462 698,449 "/>
+<polyline fill="none" opacity="1" stroke="#1C2634" stroke-width="2" points="382,306 383,306 383,305 401,293 420,283 421,282 422,282 442,274 455,270 464,267 485,263 487,263 512,261 512,261 537,263 539,263 560,267 569,270 582,274 602,283 602,283 603,284 "/>
+<polyline fill="none" opacity="1" stroke="#1C2634" stroke-width="2" points="258,521 259,530 265,550 265,552 266,553 275,574 277,579 287,597 289,601 302,619 304,621 310,628 320,639 323,642 337,654 351,664 355,667 360,670 375,678 394,687 395,687 396,687 417,694 427,697 440,699 456,701 464,702 482,702 490,702 507,701 517,699 531,697 547,693 553,691 567,687 575,684 579,682 595,674 614,664 615,664 616,663 634,651 645,642 651,636 665,624 668,621 669,619 684,603 688,597 698,583 703,574 711,561 716,552 723,536 725,530 733,508 "/>
+<polyline fill="none" opacity="1" stroke="#1C2634" stroke-width="2" points="422,237 443,230 454,227 465,224 483,221 489,221 510,219 514,219 535,220 541,220 559,223 569,225 "/>
+</g>
+<g id="ternary-text">
+
+<text x="500" y="5" dy="0.76em" text-anchor="middle" font-family="sans-serif" font-size="25.806451612903228" opacity="1" fill="#000000" font-weight="bold">
+Tangent-aligned contour labels
+</text>
+<text x="499" y="755" dy="0.5ex" text-anchor="middle" font-family="sans-serif" font-size="19.35483870967742" opacity="1" fill="#1C2634" font-weight="bold">
+A component
+</text>
+<text x="499" y="87" dy="-0.5ex" text-anchor="middle" font-family="sans-serif" font-size="21.774193548387096" opacity="1" fill="#1C2634" font-weight="bold">
+A
+</text>
+<text x="123" y="739" dy="0.76em" text-anchor="end" font-family="sans-serif" font-size="21.774193548387096" opacity="1" fill="#1C2634" font-weight="bold">
+B
+</text>
+<text x="876" y="739" dy="0.76em" text-anchor="start" font-family="sans-serif" font-size="21.774193548387096" opacity="1" fill="#1C2634" font-weight="bold">
+C
+</text>
+<text x="701" y="405" text-anchor="middle" dominant-baseline="middle" transform="rotate(59.970994 701 405)" font-family="sans-serif" font-size="24" fill="#1C2634" fill-opacity="1.000000" font-weight="bold">B component</text>
+<text x="297" y="405" text-anchor="middle" dominant-baseline="middle" transform="rotate(-60.039427 297 405)" font-family="sans-serif" font-size="24" fill="#1C2634" fill-opacity="1.000000" font-weight="bold">C component</text>
+<text x="503" y="379" text-anchor="middle" dominant-baseline="middle" transform="rotate(1.539371 503 379)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">25 °C</text>
+<text x="502" y="380" text-anchor="middle" dominant-baseline="middle" transform="rotate(1.539371 502 380)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">25 °C</text>
+<text x="503" y="380" text-anchor="middle" dominant-baseline="middle" transform="rotate(1.539371 503 380)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">25 °C</text>
+<text x="504" y="380" text-anchor="middle" dominant-baseline="middle" transform="rotate(1.539371 504 380)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">25 °C</text>
+<text x="501" y="381" text-anchor="middle" dominant-baseline="middle" transform="rotate(1.539371 501 381)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">25 °C</text>
+<text x="502" y="381" text-anchor="middle" dominant-baseline="middle" transform="rotate(1.539371 502 381)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">25 °C</text>
+<text x="504" y="381" text-anchor="middle" dominant-baseline="middle" transform="rotate(1.539371 504 381)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">25 °C</text>
+<text x="505" y="381" text-anchor="middle" dominant-baseline="middle" transform="rotate(1.539371 505 381)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">25 °C</text>
+<text x="502" y="382" text-anchor="middle" dominant-baseline="middle" transform="rotate(1.539371 502 382)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">25 °C</text>
+<text x="503" y="382" text-anchor="middle" dominant-baseline="middle" transform="rotate(1.539371 503 382)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">25 °C</text>
+<text x="504" y="382" text-anchor="middle" dominant-baseline="middle" transform="rotate(1.539371 504 382)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">25 °C</text>
+<text x="503" y="383" text-anchor="middle" dominant-baseline="middle" transform="rotate(1.539371 503 383)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">25 °C</text>
+<text x="503" y="381" text-anchor="middle" dominant-baseline="middle" transform="rotate(1.539371 503 381)" font-family="sans-serif" font-size="19" fill="#192332" fill-opacity="1.000000" font-weight="bold">25 °C</text>
+<text x="504" y="339" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.429379 504 339)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">55 °C</text>
+<text x="503" y="340" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.429379 503 340)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">55 °C</text>
+<text x="504" y="340" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.429379 504 340)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">55 °C</text>
+<text x="505" y="340" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.429379 505 340)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">55 °C</text>
+<text x="502" y="341" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.429379 502 341)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">55 °C</text>
+<text x="503" y="341" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.429379 503 341)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">55 °C</text>
+<text x="505" y="341" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.429379 505 341)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">55 °C</text>
+<text x="506" y="341" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.429379 506 341)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">55 °C</text>
+<text x="503" y="342" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.429379 503 342)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">55 °C</text>
+<text x="504" y="342" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.429379 504 342)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">55 °C</text>
+<text x="505" y="342" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.429379 505 342)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">55 °C</text>
+<text x="504" y="343" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.429379 504 343)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">55 °C</text>
+<text x="504" y="341" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.429379 504 341)" font-family="sans-serif" font-size="19" fill="#192332" fill-opacity="1.000000" font-weight="bold">55 °C</text>
+<text x="509" y="300" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.547013 509 300)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">95 °C</text>
+<text x="508" y="301" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.547013 508 301)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">95 °C</text>
+<text x="509" y="301" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.547013 509 301)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">95 °C</text>
+<text x="510" y="301" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.547013 510 301)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">95 °C</text>
+<text x="507" y="302" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.547013 507 302)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">95 °C</text>
+<text x="508" y="302" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.547013 508 302)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">95 °C</text>
+<text x="510" y="302" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.547013 510 302)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">95 °C</text>
+<text x="511" y="302" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.547013 511 302)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">95 °C</text>
+<text x="508" y="303" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.547013 508 303)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">95 °C</text>
+<text x="509" y="303" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.547013 509 303)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">95 °C</text>
+<text x="510" y="303" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.547013 510 303)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">95 °C</text>
+<text x="509" y="304" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.547013 509 304)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">95 °C</text>
+<text x="509" y="302" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.547013 509 302)" font-family="sans-serif" font-size="19" fill="#192332" fill-opacity="1.000000" font-weight="bold">95 °C</text>
+<text x="492" y="658" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.068830 492 658)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="491" y="659" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.068830 491 659)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="492" y="659" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.068830 492 659)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="493" y="659" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.068830 493 659)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="490" y="660" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.068830 490 660)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="491" y="660" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.068830 491 660)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="493" y="660" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.068830 493 660)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="494" y="660" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.068830 494 660)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="491" y="661" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.068830 491 661)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="492" y="661" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.068830 492 661)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="493" y="661" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.068830 493 661)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="492" y="662" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.068830 492 662)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="492" y="660" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.068830 492 660)" font-family="sans-serif" font-size="19" fill="#192332" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="490" y="261" text-anchor="middle" dominant-baseline="middle" transform="rotate(-5.169369 490 261)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="489" y="262" text-anchor="middle" dominant-baseline="middle" transform="rotate(-5.169369 489 262)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="490" y="262" text-anchor="middle" dominant-baseline="middle" transform="rotate(-5.169369 490 262)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="491" y="262" text-anchor="middle" dominant-baseline="middle" transform="rotate(-5.169369 491 262)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="488" y="263" text-anchor="middle" dominant-baseline="middle" transform="rotate(-5.169369 488 263)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="489" y="263" text-anchor="middle" dominant-baseline="middle" transform="rotate(-5.169369 489 263)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="491" y="263" text-anchor="middle" dominant-baseline="middle" transform="rotate(-5.169369 491 263)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="492" y="263" text-anchor="middle" dominant-baseline="middle" transform="rotate(-5.169369 492 263)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="489" y="264" text-anchor="middle" dominant-baseline="middle" transform="rotate(-5.169369 489 264)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="490" y="264" text-anchor="middle" dominant-baseline="middle" transform="rotate(-5.169369 490 264)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="491" y="264" text-anchor="middle" dominant-baseline="middle" transform="rotate(-5.169369 491 264)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="490" y="265" text-anchor="middle" dominant-baseline="middle" transform="rotate(-5.169369 490 265)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="490" y="263" text-anchor="middle" dominant-baseline="middle" transform="rotate(-5.169369 490 263)" font-family="sans-serif" font-size="19" fill="#192332" fill-opacity="1.000000" font-weight="bold">150 °C</text>
+<text x="495" y="700" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.849258 495 700)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="494" y="701" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.849258 494 701)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="495" y="701" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.849258 495 701)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="496" y="701" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.849258 496 701)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="493" y="702" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.849258 493 702)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="494" y="702" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.849258 494 702)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="496" y="702" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.849258 496 702)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="497" y="702" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.849258 497 702)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="494" y="703" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.849258 494 703)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="495" y="703" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.849258 495 703)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="496" y="703" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.849258 496 703)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="495" y="704" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.849258 495 704)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="495" y="702" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.849258 495 702)" font-family="sans-serif" font-size="19" fill="#192332" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="495" y="218" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.915666 495 218)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="494" y="219" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.915666 494 219)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="495" y="219" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.915666 495 219)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="496" y="219" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.915666 496 219)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="493" y="220" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.915666 493 220)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="494" y="220" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.915666 494 220)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="496" y="220" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.915666 496 220)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="497" y="220" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.915666 497 220)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="494" y="221" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.915666 494 221)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="495" y="221" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.915666 495 221)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="496" y="221" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.915666 496 221)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="495" y="222" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.915666 495 222)" font-family="sans-serif" font-size="19" fill="#FFFFFF" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+<text x="495" y="220" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.915666 495 220)" font-family="sans-serif" font-size="19" fill="#192332" fill-opacity="1.000000" font-weight="bold">220 °C</text>
+</g>
+</svg>
