@@ -12,5 +12,10 @@ pub use ternary_contours::{
     CubicGridField, FieldError, FieldEvaluationError, FieldInterpolation, FieldSample,
     GridEvaluationError, GridTriangle, GridVertexId, InterpolatedTernaryField, LatticeCoordinate,
     LocatedTriangle, POINT_LOCATION_TOLERANCE, PointBoundaryLocation, PointLocationError,
-    RegularTernaryGrid, RegularTernaryScalarField, TernaryCoordinate,
+    PreparedStablePhaseEnsemble, RegularTernaryGrid, RegularTernaryScalarField,
+    StableContourDiagnostics, StableContourError, StableContourJunction, StableContourJunctionKind,
+    StableContourLevel, StableContourPath, StableContourQuantity, StableContourSet,
+    StableJunctionId, StablePhaseId, StablePhaseSource, StableScalarSource,
+    StableSourceEvaluationError, StableUmbrellaOptions, StableUmbrellaVerification,
+    StableVerificationPassDiagnostics, TernaryCoordinate,
 };

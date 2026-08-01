@@ -41,3 +41,6 @@ spline1d = { version = "0.1.0", default-features = false, features = ["alloc"] }
 [dev-dependencies]
 image = { version = "=0.25.8", default-features = false, features = ["png"] }
 proptest = "1.6"
+
+[[example]]
+name = "stable_isotherm_gallery"

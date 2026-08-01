@@ -8,6 +8,7 @@ mod point;
 mod polygon;
 mod prepare;
 mod smooth;
+mod stable;
 mod text;
 
 pub use bands::{
@@ -33,3 +34,5 @@ pub use text::{
     AnnotationClipMode, AnnotationError, AnnotationTextStyle, HorizontalAnchor, TernaryText,
     TextAnchor, TextRotation, VerticalAnchor,
 };
+
+pub use stable::TernaryStableContourSeries;

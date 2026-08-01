@@ -48,8 +48,9 @@ pub use series::{
     MarkerSlice, MarkerStyle, PointMarkerStyleProvider, PolygonError, PreparedPolygon,
     ScalarMapResolution, SeriesError, SweepDirection, TernaryContourBandSeries,
     TernaryContourSeries, TernaryInterpolation, TernaryLineSeries, TernaryPointSeries,
-    TernaryPolygon, TernaryScalarMapSeries, TernarySeries, TernarySmoothSeries, TernaryText,
-    TextAnchor, TextRotation, VerticalAnchor, prepare_points, prepare_polygon, prepare_polyline,
+    TernaryPolygon, TernaryScalarMapSeries, TernarySeries, TernarySmoothSeries,
+    TernaryStableContourSeries, TernaryText, TextAnchor, TextRotation, VerticalAnchor,
+    prepare_points, prepare_polygon, prepare_polyline,
 };
 
 pub use contour::{
@@ -60,6 +61,9 @@ pub use contour::{
     CubicGridField, FieldError, FieldEvaluationError, FieldInterpolation, FieldSample,
     GridEvaluationError, GridTriangle, GridVertexId, InterpolatedTernaryField, LatticeCoordinate,
     LocatedTriangle, POINT_LOCATION_TOLERANCE, PointBoundaryLocation, PointLocationError,
-    RegularTernaryGrid, RegularTernaryScalarField, TernaryCoordinate,
+    PreparedStablePhaseEnsemble, RegularTernaryGrid, RegularTernaryScalarField,
+    StableContourDiagnostics, StableContourJunction, StableContourJunctionKind, StableContourLevel,
+    StableContourPath, StableContourQuantity, StableContourSet, StablePhaseId, StablePhaseSource,
+    StableScalarSource, StableUmbrellaOptions, StableUmbrellaVerification, TernaryCoordinate,
 };
 pub use interpolation::BinaryExtrapolation;
