@@ -1,0 +1,59 @@
+<svg width="520" height="430" viewBox="0 0 520 430" xmlns="http://www.w3.org/2000/svg">
+<rect x="0" y="0" width="520" height="430" opacity="1" fill="#FFFFFF" stroke="none"/>
+<text x="260" y="5" dy="0.76em" text-anchor="middle" font-family="sans-serif" font-size="12.903225806451614" opacity="1" fill="#000000" font-weight="bold">
+4. Three binary-edge maxima  [n=28]
+</text>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="72,370 446,370 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="93,334 425,334 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="114,298 404,298 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="135,262 384,262 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="155,226 363,226 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="176,190 342,190 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="197,154 321,154 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="218,118 301,118 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="238,82 280,82 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="238,82 425,405 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="218,118 384,405 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="197,154 342,405 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="176,190 301,405 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="155,226 259,405 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="135,262 218,405 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="114,298 176,405 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="93,334 135,405 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="72,370 93,405 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="280,82 93,405 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="301,118 135,405 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="321,154 176,405 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="342,190 218,405 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="363,226 259,405 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="384,262 301,405 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="404,298 342,405 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="425,334 384,405 "/>
+<polyline fill="none" opacity="1" stroke="#B9BEC6" stroke-width="1" points="446,370 425,405 "/>
+<polygon opacity="1" fill="#000000" points="50,406 469,406 465,404 54,404 "/>
+<polygon opacity="1" fill="#000000" points="469,406 259,44 259,48 465,404 "/>
+<polygon opacity="1" fill="#000000" points="259,44 50,406 54,404 259,48 "/>
+<polyline fill="none" opacity="1" stroke="#1F77B4" stroke-width="1" points="115,317 112,316 105,312 "/>
+<polyline fill="none" opacity="1" stroke="#D62728" stroke-width="1" points="389,400 396,399 403,398 413,395 416,395 422,393 428,391 431,389 440,385 451,380 452,380 "/>
+<polyline fill="none" opacity="1" stroke="#2CA02C" stroke-width="1" points="390,405 390,401 389,400 "/>
+<polyline fill="none" opacity="1" stroke="#2CA02C" stroke-width="1" points="87,405 87,395 87,393 88,391 89,380 91,371 92,367 95,355 96,354 96,354 101,341 102,339 108,329 109,326 115,317 "/>
+<polyline fill="none" opacity="1" stroke="#1F77B4" stroke-width="1" points="129,271 140,277 141,277 141,277 153,281 158,283 166,284 175,286 180,286 190,286 195,286 204,285 211,284 217,282 229,278 230,278 231,277 241,272 250,267 252,266 254,264 262,257 267,253 "/>
+<polyline fill="none" opacity="1" stroke="#1F77B4" stroke-width="1" points="300,166 300,162 300,156 298,149 295,137 295,136 293,131 290,123 289,122 283,111 282,109 275,100 274,98 273,98 264,89 260,85 254,80 245,74 244,73 "/>
+<polyline fill="none" opacity="1" stroke="#D62728" stroke-width="1" points="427,336 417,341 415,342 414,343 403,347 396,348 390,349 380,351 376,351 365,350 360,350 351,348 344,347 338,345 329,341 326,340 324,339 315,334 308,329 305,326 299,321 295,317 294,316 287,307 284,303 279,294 277,290 272,280 271,277 269,270 268,264 268,262 267,253 "/>
+<polyline fill="none" opacity="1" stroke="#D62728" stroke-width="1" points="300,166 305,162 309,159 315,154 320,151 "/>
+<polyline fill="none" opacity="1" stroke="#2CA02C" stroke-width="1" points="337,405 337,399 336,393 335,382 334,380 334,379 329,367 328,363 323,354 320,350 314,341 312,339 307,334 303,330 301,329 292,323 282,316 281,316 280,316 269,312 263,310 256,308 247,307 242,307 232,307 227,307 218,309 210,311 205,312 197,316 193,317 190,319 182,324 176,329 172,332 163,341 163,341 163,341 154,353 154,354 147,366 147,367 145,371 143,380 142,382 140,393 139,403 139,405 "/>
+<rect x="378" y="196" width="85" height="59" opacity="0.82" fill="#FFFFFF" stroke="none"/>
+<rect x="378" y="196" width="85" height="59" opacity="1" fill="none" stroke="#000000"/>
+<text x="418" y="206" dy="0.76em" text-anchor="start" font-family="sans-serif" font-size="9.67741935483871" opacity="1" fill="#000000">
+Phase 1
+</text>
+<text x="418" y="221" dy="0.76em" text-anchor="start" font-family="sans-serif" font-size="9.67741935483871" opacity="1" fill="#000000">
+Phase 2
+</text>
+<text x="418" y="236" dy="0.76em" text-anchor="start" font-family="sans-serif" font-size="9.67741935483871" opacity="1" fill="#000000">
+Phase 3
+</text>
+<polyline fill="none" opacity="1" stroke="#1F77B4" stroke-width="1" points="388,210 412,210 "/>
+<polyline fill="none" opacity="1" stroke="#D62728" stroke-width="1" points="388,225 412,225 "/>
+<polyline fill="none" opacity="1" stroke="#2CA02C" stroke-width="1" points="388,240 412,240 "/>
+</svg>
