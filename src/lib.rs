@@ -62,8 +62,10 @@ pub use contour::{
     GridEvaluationError, GridTriangle, GridVertexId, InterpolatedTernaryField, LatticeCoordinate,
     LocatedTriangle, POINT_LOCATION_TOLERANCE, PointBoundaryLocation, PointLocationError,
     PreparedStablePhaseEnsemble, RegularTernaryGrid, RegularTernaryScalarField,
-    StableContourDiagnostics, StableContourJunction, StableContourJunctionKind, StableContourLevel,
-    StableContourPath, StableContourQuantity, StableContourSet, StablePhaseId, StablePhaseSource,
-    StableScalarSource, StableUmbrellaOptions, StableUmbrellaVerification, TernaryCoordinate,
+    StableContourDiagnostics, StableContourError, StableContourJunction, StableContourJunctionKind,
+    StableContourLevel, StableContourPath, StableContourQuantity, StableContourSet,
+    StableJunctionId, StablePhaseId, StablePhaseSource, StableScalarSource,
+    StableSourceEvaluationError, StableUmbrellaOptions, StableUmbrellaVerification,
+    StableVerificationPassDiagnostics, TernaryCoordinate,
 };
 pub use interpolation::BinaryExtrapolation;
