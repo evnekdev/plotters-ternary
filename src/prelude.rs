@@ -8,10 +8,14 @@ pub use crate::{
     ContourBandStylePolicy, ContourColorBar, ContourInterpolation, ContourLabelConfig,
     ContourLegendPolicy, ContourOptions, ContourSet, ContourStylePolicy, CubicAlphaBuildOptions,
     CubicAlphaMethod, CubicAlphaOptions, FieldInterpolation, FieldSample, InterpolatedTernaryField,
-    MarkerClipMode, MarkerShape, MarkerStyle, Normalization, PreparedStablePhaseEnsemble,
-    RegularTernaryGrid, RegularTernaryScalarField, ScalarMapResolution, StableContourQuantity,
-    StablePhaseId, StablePhaseSource, StableScalarSource, StableUmbrellaOptions,
-    TernaryChartBuilder, TernaryContourBandSeries, TernaryContourSeries, TernaryGeometry,
-    TernaryLineSeries, TernaryPoint, TernaryPointSeries, TernaryPolygon, TernaryScalarMapSeries,
-    TernaryStableContourSeries, TernaryText, TernaryViewport, Tolerance,
+    MarkerClipMode, MarkerShape, MarkerStyle, Normalization, RegularTernaryGrid,
+    RegularTernaryScalarField, ScalarMapResolution, TernaryChartBuilder, TernaryContourBandSeries,
+    TernaryContourSeries, TernaryGeometry, TernaryLineSeries, TernaryPoint, TernaryPointSeries,
+    TernaryPolygon, TernaryScalarMapSeries, TernaryText, TernaryViewport, Tolerance,
+};
+
+#[cfg(feature = "stable-contours")]
+pub use crate::{
+    PreparedStablePhaseEnsemble, StableContourQuantity, StablePhaseId, StablePhaseSource,
+    StableScalarSource, StableUmbrellaOptions, TernaryStableContourSeries,
 };

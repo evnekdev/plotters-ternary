@@ -12,10 +12,14 @@ pub use ternary_contours::{
     CubicGridField, FieldError, FieldEvaluationError, FieldInterpolation, FieldSample,
     GridEvaluationError, GridTriangle, GridVertexId, InterpolatedTernaryField, LatticeCoordinate,
     LocatedTriangle, POINT_LOCATION_TOLERANCE, PointBoundaryLocation, PointLocationError,
-    PreparedStablePhaseEnsemble, RegularTernaryGrid, RegularTernaryScalarField,
-    StableContourDiagnostics, StableContourError, StableContourJunction, StableContourJunctionKind,
-    StableContourLevel, StableContourPath, StableContourQuantity, StableContourSet,
-    StableJunctionId, StablePhaseId, StablePhaseSource, StableScalarSource,
-    StableSourceEvaluationError, StableUmbrellaOptions, StableUmbrellaVerification,
-    StableVerificationPassDiagnostics, TernaryCoordinate,
+    RegularTernaryGrid, RegularTernaryScalarField, TernaryCoordinate,
+};
+
+#[cfg(feature = "stable-contours")]
+pub use ternary_contours::{
+    PreparedStablePhaseEnsemble, StableContourDiagnostics, StableContourError,
+    StableContourJunction, StableContourJunctionKind, StableContourLevel, StableContourPath,
+    StableContourQuantity, StableContourSet, StableJunctionId, StablePhaseId, StablePhaseSource,
+    StableScalarSource, StableSourceEvaluationError, StableUmbrellaOptions,
+    StableUmbrellaVerification, StableVerificationPassDiagnostics,
 };

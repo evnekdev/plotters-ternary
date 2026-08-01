@@ -48,9 +48,8 @@ pub use series::{
     MarkerSlice, MarkerStyle, PointMarkerStyleProvider, PolygonError, PreparedPolygon,
     ScalarMapResolution, SeriesError, SweepDirection, TernaryContourBandSeries,
     TernaryContourSeries, TernaryInterpolation, TernaryLineSeries, TernaryPointSeries,
-    TernaryPolygon, TernaryScalarMapSeries, TernarySeries, TernarySmoothSeries,
-    TernaryStableContourSeries, TernaryText, TextAnchor, TextRotation, VerticalAnchor,
-    prepare_points, prepare_polygon, prepare_polyline,
+    TernaryPolygon, TernaryScalarMapSeries, TernarySeries, TernarySmoothSeries, TernaryText,
+    TextAnchor, TextRotation, VerticalAnchor, prepare_points, prepare_polygon, prepare_polyline,
 };
 
 pub use contour::{
@@ -61,11 +60,18 @@ pub use contour::{
     CubicGridField, FieldError, FieldEvaluationError, FieldInterpolation, FieldSample,
     GridEvaluationError, GridTriangle, GridVertexId, InterpolatedTernaryField, LatticeCoordinate,
     LocatedTriangle, POINT_LOCATION_TOLERANCE, PointBoundaryLocation, PointLocationError,
-    PreparedStablePhaseEnsemble, RegularTernaryGrid, RegularTernaryScalarField,
-    StableContourDiagnostics, StableContourError, StableContourJunction, StableContourJunctionKind,
-    StableContourLevel, StableContourPath, StableContourQuantity, StableContourSet,
-    StableJunctionId, StablePhaseId, StablePhaseSource, StableScalarSource,
-    StableSourceEvaluationError, StableUmbrellaOptions, StableUmbrellaVerification,
-    StableVerificationPassDiagnostics, TernaryCoordinate,
+    RegularTernaryGrid, RegularTernaryScalarField, TernaryCoordinate,
 };
+
+#[cfg(feature = "stable-contours")]
+pub use contour::{
+    PreparedStablePhaseEnsemble, StableContourDiagnostics, StableContourError,
+    StableContourJunction, StableContourJunctionKind, StableContourLevel, StableContourPath,
+    StableContourQuantity, StableContourSet, StableJunctionId, StablePhaseId, StablePhaseSource,
+    StableScalarSource, StableSourceEvaluationError, StableUmbrellaOptions,
+    StableUmbrellaVerification, StableVerificationPassDiagnostics,
+};
+
 pub use interpolation::BinaryExtrapolation;
+#[cfg(feature = "stable-contours")]
+pub use series::TernaryStableContourSeries;
