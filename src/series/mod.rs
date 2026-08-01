@@ -8,6 +8,7 @@ mod point;
 mod polygon;
 mod prepare;
 mod smooth;
+#[cfg(feature = "stable-contours")]
 mod stable;
 mod text;
 
@@ -35,4 +36,5 @@ pub use text::{
     TextAnchor, TextRotation, VerticalAnchor,
 };
 
+#[cfg(feature = "stable-contours")]
 pub use stable::TernaryStableContourSeries;

@@ -26,6 +26,9 @@ default = []
 # Enables cubic-alpha contour construction. `spline1d` remains a normal
 # dependency because the stable smooth-series API also uses it.
 cubic-alpha = ["ternary-contours/cubic-alpha"]
+# Stable phase contour rendering; requires the matching core milestone.
+
+stable-contours = []
 
 [dependencies]
 plotters = { version = "0.3.7", default-features = false, features = [
@@ -44,3 +47,8 @@ proptest = "1.6"
 
 [[example]]
 name = "stable_isotherm_gallery"
+required-features = ["stable-contours"]
+
+[[test]]
+name = "stable_series_svg"
+required-features = ["stable-contours"]
