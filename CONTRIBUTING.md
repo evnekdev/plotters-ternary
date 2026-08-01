@@ -2,12 +2,22 @@
 
 Thanks for considering a contribution.
 
+## Repository boundary
+
+`plotters-ternary` is the rendering crate. Numerical grids, meshes, interpolation, scalar evaluation, contour topology, and band geometry belong in `ternary-contours`.
+
+Do not create a matching long-lived Plotters branch for an in-progress `ternary-contours` milestone. Complete and merge the numerical milestone in the core repository first. Then test this crate against the merged core API and open a Plotters pull request only when rendering integration, dependency metadata, re-exports, examples, or documentation genuinely need to change.
+
+This sequencing prevents cross-repository branch drift and avoids repeated merge conflicts.
+
 ## Before opening a pull request
 
-1. Keep numerical geometry independent of Plotters backends.
-2. Preserve semantic A/B/C composition order and invisible mathematical viewport clipping.
-3. Add focused tests for numerical changes and regenerate intentional reference artifacts.
-4. Run:
+1. Start from the latest `plotters-ternary/master` after the corresponding core work is merged.
+2. Keep numerical geometry independent of Plotters backends.
+3. Preserve semantic A/B/C composition order and invisible mathematical viewport clipping.
+4. Do not merge `master` into the feature branch; rebase the branch before updating the pull request.
+5. Add focused tests and regenerate intentional reference artifacts.
+6. Run:
 
    ```text
    cargo fmt --check
@@ -16,8 +26,6 @@ Thanks for considering a contribution.
    cargo test --no-default-features
    ```
 
-5. Update architecture notes or an ADR when public semantics change.
+7. Update architecture notes or an ADR when public rendering semantics change.
 
-Do not introduce unsupported scope—filled contours, arbitrary triangulation,
-Kuhn simplices, N-component grids, or bindings—without a separately agreed
-design milestone.
+Prefer squash merge when a branch contains corrective commits or accidental merge commits. Use rebase merge only for an already linear branch.
